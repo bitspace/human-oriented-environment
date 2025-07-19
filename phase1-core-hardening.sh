@@ -74,6 +74,34 @@ media-libs/mesa vulkan abi_x86_32
 media-libs/vulkan-loader abi_x86_32
 EOF
 
+# 32-bit ABI support for system libraries (required for gaming)
+sudo tee /etc/portage/package.use/multilib <<EOF
+# Core system libraries with 32-bit ABI support
+>=dev-libs/expat-2.7.1 abi_x86_32
+>=dev-util/spirv-tools-1.4.313.0 abi_x86_32
+>=media-libs/libglvnd-1.7.0 abi_x86_32
+>=sys-libs/zlib-1.3.1-r1 abi_x86_32
+>=llvm-core/llvm-20.1.7 abi_x86_32
+>=dev-libs/wayland-1.23.1 abi_x86_32
+>=x11-libs/libdrm-2.4.125 abi_x86_32
+>=x11-libs/libX11-1.8.12 abi_x86_32
+>=x11-libs/libxshmfence-1.3.3 abi_x86_32
+>=x11-libs/libXext-1.3.6 abi_x86_32
+>=x11-libs/libXxf86vm-1.1.6 abi_x86_32
+>=x11-libs/libxcb-1.17.0 abi_x86_32
+>=x11-libs/libXfixes-6.0.1 abi_x86_32
+>=x11-libs/xcb-util-keysyms-0.4.1 abi_x86_32
+>=app-arch/zstd-1.5.7-r1 abi_x86_32
+>=x11-libs/libXrandr-1.5.4 abi_x86_32
+>=x11-libs/libXrender-0.9.12 abi_x86_32
+>=x11-libs/libXau-1.0.12 abi_x86_32
+>=x11-libs/libXdmcp-1.1.5 abi_x86_32
+>=x11-libs/libpciaccess-0.18.1 abi_x86_32
+>=dev-libs/libffi-3.5.1 abi_x86_32
+>=dev-libs/libxml2-2.13.8 abi_x86_32
+>=dev-libs/icu-77.1 abi_x86_32
+EOF
+
 # Audio USE flags
 sudo tee /etc/portage/package.use/audio <<EOF
 # Professional audio with PipeWire
