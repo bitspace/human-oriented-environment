@@ -164,9 +164,13 @@ EOF
 
 echo "✓ Basic nftables configuration created"
 
-# Enable nftables service
-sudo systemctl enable nftables
-echo "✓ nftables service enabled"
+# Enable nftables service (updated for nftables-1.1.1-r1+)
+sudo systemctl enable nftables-load.service
+echo "✓ nftables-load.service enabled for startup rule loading"
+
+# Optionally enable nftables-store.service for automatic rule saving at shutdown
+echo "Note: To automatically save nftables rules at shutdown, run:"
+echo "sudo systemctl enable nftables-store.service"
 
 echo
 echo "=== Phase 1 Complete! ==="
