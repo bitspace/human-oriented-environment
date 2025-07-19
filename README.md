@@ -1,4 +1,4 @@
-# Gentoo Laptops
+# LLM-Guided Laptop Build Experiment
 
 ## Abstract
 
