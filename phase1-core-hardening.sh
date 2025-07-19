@@ -72,7 +72,6 @@ app-emulation/wine abi_x86_32 vulkan fontconfig gstreamer mono gecko
 app-emulation/wine-staging abi_x86_32 vulkan fontconfig gstreamer mono gecko
 media-libs/mesa vulkan abi_x86_32
 media-libs/vulkan-loader abi_x86_32
-games-util/lutris
 EOF
 
 # Audio USE flags
@@ -81,7 +80,6 @@ sudo tee /etc/portage/package.use/audio <<EOF
 media-video/pipewire bluetooth alsa jack pulseaudio
 media-sound/ardour jack lv2 vst
 media-sound/jack dbus
-media-sound/qjackctl
 EOF
 
 # AI/ML USE flags
