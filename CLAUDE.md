@@ -30,7 +30,7 @@ When synthesizing conflicting recommendations:
 
 1. **Primary Authority**: Official Gentoo best practices and documentation
 2. **Secondary Authority**: Gentoo community consensus
-3. **Hardware Constraint**: All decisions must be compatible with System76 Kudu6 (https://tech-docs.system76.com/models/kudu6/README.html)
+3. **Hardware Constraint**: All decisions must be compatible with [System76 Kudu6](gimli-system-specifications.md)
 
 ## Key Constraints
 
@@ -40,7 +40,7 @@ When synthesizing conflicting recommendations:
 
 ## Synthesis Process
 
-1. **Extract and Categorize**: 
+1. **Extract and Categorize**:
    - Parse each model's response
    - Group recommendations by category (kernel config, USE flags, packages, etc.)
    - Note which model(s) suggested each recommendation
@@ -127,15 +127,18 @@ Create `optimized-gentoo-build-plan.md` with these sections:
 ## Research Resources
 
 Primary:
-- Gentoo Wiki: https://wiki.gentoo.org/
-- Gentoo Handbook: https://wiki.gentoo.org/wiki/Handbook:AMD64
-- Gentoo Forums: https://forums.gentoo.org/
+
+- Gentoo Wiki: <https://wiki.gentoo.org/>
+- Gentoo Handbook: <https://wiki.gentoo.org/wiki/Handbook:AMD64>
+- Gentoo Forums: <https://forums.gentoo.org/>
 
 Hardware-specific:
-- System76 Kudu6 specs: https://tech-docs.system76.com/models/kudu6/README.html
+
+- System76 Kudu6 specs: <https://tech-docs.system76.com/models/kudu6/README.html>
 - System76 driver repository
 
 Gaming:
+
 - ProtonDB for compatibility checking
 - Wine AppDB
 - Gentoo Gaming Guide
@@ -152,8 +155,6 @@ Gaming:
    - Consider PRIME/Bumblebee for hybrid graphics if applicable
 
 3. **Storage Strategy**:
-   - Consider separate `/home` partition
-   - Evaluate filesystem choices (ext4, btrfs, zfs)
    - Plan for AI model storage requirements
 
 ## Conflict Documentation
@@ -177,6 +178,7 @@ When models disagree, create a decision log:
 ## Validation Checklist
 
 Before finalizing:
+
 - [ ] All recommendations tested against Kudu6 hardware specs
 - [ ] USE flag conflicts resolved
 - [ ] Gaming requirements verified
@@ -187,6 +189,7 @@ Before finalizing:
 ## Next Steps
 
 After creating the optimized plan:
+
 1. Create implementation checklist
 2. Generate troubleshooting guide for common issues
 3. Document post-installation optimization steps

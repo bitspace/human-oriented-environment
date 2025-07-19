@@ -16,6 +16,7 @@ This repository contains a comprehensive, optimized Gentoo Linux build plan spec
 - **`optimized-gentoo-build-plan.md`** - Complete synthesis and analysis of all AI recommendations
 - **`initial-llm-prompt.md`** - Original requirements sent to all AI models
 - **`troubleshooting-guide.md`** - Solutions for common issues during build process
+- **`gimli-system-specifications.md`** - Hardware and software specifications for the target system
 
 ### Implementation Scripts
 
@@ -49,7 +50,7 @@ This repository contains a comprehensive, optimized Gentoo Linux build plan spec
 
 ```bash
 git clone <repository-url>
-cd gentoo-laptops
+cd gentoo-laptop
 ```
 
 2. **Make scripts executable:**
@@ -116,9 +117,6 @@ VIDEO_CARDS="nvidia"
 
 # For AMD  
 VIDEO_CARDS="amdgpu radeonsi"
-
-# For Intel
-VIDEO_CARDS="intel i965 iris"
 ```
 
 **CPU Optimization:**
@@ -178,11 +176,7 @@ This project synthesizes AI recommendations into practical implementation. To co
 - [Gentoo Forums](https://forums.gentoo.org/)
 - [Gentoo Wiki](https://wiki.gentoo.org/)
 
-## 📄 License
-
-This documentation is provided as-is for educational and practical use. Individual software packages follow their respective licenses.
-
----
+## 📄 [License](LICENSE)
 
 **Built with AI assistance from**: ChatGPT (OpenAI), Claude (Anthropic), Gemini (Google), Perplexity  
 **Optimized for**: System76 Kudu6 + Gentoo Linux + Bleeding-edge workflow

@@ -2,18 +2,19 @@
 
 ## Abstract
 
-This documents the process and approach to installing Gentoo Linux on my laptops.  
-
-It started with just the System76 Kudu, but as I started working with it, I fell into the old sense of comfort and control and wonder that I had 20 years ago when I last ran Gentoo.
+This documents the process and approach to installing Gentoo Linux on my laptops. This project doubles as an experiment with agentic AI and LLM's.  
 
 ## Approach
 
-I think the best approach at this time is to work through this thoroughly on the Kudu laptop before I tackle the ThinkPad.  
+- Install base Gentoo system following [the Gentoo Handbook](https://wiki.gentoo.org/wiki/Handbook:AMD64). Base system uses desktop/systemd stage3.
+- Write a [prompt](initial-llm-prompt.md) to compel LLM's to design a plan for building a system that suits my needs.
+- Input this prompt to several models and collect their responses.
+- Leverage agent wrangler (Claude Code) to synthesize the responses from the other models to create a detailed plan
+- Iterate and execute
 
-I am going to also leverage various LLM's, initially by feeding them the same prompt, judging their output quality, and see where to go from there. Where possible I am going to set the model up as a Linux expert, probably using the same system prompt in each case. If I am so motivated, I might try different models in each LLM where that capability exists.
+## Ideas for the future
 
-This will include hand-rolling a kernel. I intend to work with LLM for that too, with follow-up prompts after the initial dialogue.
-
-Consideration: use one of the AI tools to help compare, distill, and analyze the output of all of the models to derive a "best of" approach. Do some verification/validation against web-based sources. My gut sense is that this may best be done with Claude Code.
-
-**IDEA**: Ask the LLM to help plan this approach. "How would you do this?" and expand on it.
+- Apply the refined process to another laptop (I've got a few). Install an agent wrangler on a base system and have it implement the plan directly
+- Give Claude Code its own computer! Inspired by a video clip on X in which somebody gave a Mac Mini to Claude Code.
+- Because I have more than one spare computer, do it on two computers and devise some sort of game in which they attempt to compromise the other
+  - alternatively, instead of compromise, maybe play a game.
