@@ -19,3 +19,13 @@ This documents the process and approach to installing Gentoo Linux on my laptops
 - Give Claude Code its own computer! Inspired by a video clip on X in which somebody gave a Mac Mini to Claude Code.
 - Because I have more than one spare computer, do it on two computers and devise some sort of game in which they attempt to compromise the other. Bonus: if the other agent wranglers work nearly as well as Claude Code, pit them against each other.
   - alternatively, instead of compromise, maybe play a game.
+
+## Process Journal
+
+I thought to keep notes about this experience only a while after having been through several iterations.  
+
+My biggest takeaway so far is that the ReAct sort of reason/do/analyze/re-reason/retry-do/re-analyze is a very slow process naturally. This is probably amplified by the nature of the project I've given the tools - the "do" involves compiling a shitload of software, after all - but iteration is repetitive and tedious.  
+
+The second takeaway, just as important, is that I am the bottleneck in this process. Because I was reluctant to Leeroy Jenkins this thing and wanted to verify input/output at each step, it's been a lot slower. I have changed nothing from the model's recommendations at any point.  
+
+At around the seventh or eighth iteration - at the point in the development tools install script (`phase2`) that installs `pipx` - the model rectified an issue by adding a `~amd64` testing flag to the `pipx` package, which is in the `USE` flag setup in the first script. That change required going all the way back to `phase1` again. This time, however, I am running the script itself in toto, since I've iterated through the whole thing manually already. At least it didn't take long.
