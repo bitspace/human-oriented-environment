@@ -21,9 +21,10 @@ echo "✓ Backed up make.conf"
 echo
 echo "Step 2: Updating Portage configuration..."
 
-# Create package.accept_keywords directory if it doesn't exist
+# Create portage configuration directories if they don't exist
 sudo mkdir -p /etc/portage/package.accept_keywords
 sudo mkdir -p /etc/portage/package.use
+sudo mkdir -p /etc/portage/package.mask
 
 echo "Step 3: Setting up bleeding-edge keywords..."
 sudo tee /etc/portage/package.accept_keywords/bleeding-edge <<EOF
@@ -32,8 +33,7 @@ sys-kernel/gentoo-sources ~amd64
 media-video/pipewire ~amd64
 gui-wm/sway ~amd64
 
-# Development tools on testing
-dev-lang/python ~amd64
+# Development tools on testing (excluding Python due to beta instability)
 dev-lang/rust ~amd64
 dev-java/openjdk ~amd64
 net-libs/nodejs ~amd64
@@ -46,6 +46,14 @@ app-emulation/lutris ~amd64
 # AI/ML libraries
 sci-libs/pytorch ~amd64
 sci-libs/tensorflow ~amd64
+EOF
+
+# Mask unstable Python versions to prevent beta issues
+sudo tee /etc/portage/package.mask/python-beta <<EOF
+# Mask Python beta/alpha versions to avoid dependency conflicts
+>=dev-lang/python-3.14.0_alpha
+>=dev-lang/python-3.14.0_beta
+>=dev-lang/python-3.15.0_alpha
 EOF
 
 echo "✓ Configured bleeding-edge package keywords"
