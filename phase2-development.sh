@@ -23,7 +23,11 @@ echo "Step 2: Installing core development toolchains..."
 
 # Core build tools
 echo "Installing core build tools..."
-sudo emerge --ask sys-devel/gcc sys-devel/clang sys-devel/make dev-util/cmake dev-util/ninja
+# Install LLVM first, then clang (clang depends on LLVM)
+sudo emerge --ask sys-devel/gcc sys-devel/llvm sys-devel/make dev-util/cmake dev-util/ninja
+
+echo "Installing clang compiler..."
+sudo emerge --ask sys-devel/clang
 
 # Version control
 echo "Installing version control systems..."
