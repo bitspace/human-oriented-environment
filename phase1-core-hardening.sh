@@ -108,6 +108,12 @@ sudo tee /etc/portage/package.use/multilib <<EOF
 >=dev-libs/libffi-3.5.1 abi_x86_32
 >=dev-libs/libxml2-2.13.8 abi_x86_32
 >=dev-libs/icu-77.1 abi_x86_32
+
+# Additional libraries requiring 32-bit ABI support
+>=virtual/libelf-3-r1 abi_x86_32
+>=dev-libs/elfutils-0.193 abi_x86_32
+>=app-arch/bzip2-1.0.8-r5 abi_x86_32
+>=app-arch/xz-utils-5.8.1-r1 abi_x86_32
 EOF
 
 # Audio USE flags
