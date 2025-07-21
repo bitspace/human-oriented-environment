@@ -40,6 +40,7 @@ net-libs/nodejs ~amd64
 
 # Python development tools on testing
 dev-python/pipx ~amd64
+dev-python/userpath ~amd64
 
 # Gaming on testing for latest features
 games-util/steam-launcher ~amd64

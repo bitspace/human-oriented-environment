@@ -1,0 +1,8 @@
+!!! All ebuilds that could satisfy ">=dev-python/userpath-1.9.1[python_targets_pypy3_11(-)?,python_targets_python3_11(-)?,python_targets_python3_12(-)?,python_targets_python3_13(-)?]" have been masked.
+!!! One of the following masked packages is required to complete your request:
+- dev-python/userpath-1.9.2::gentoo (masked by: ~amd64 keyword)
+
+(dependency required by "dev-python/pipx-1.7.1::gentoo" [ebuild])
+(dependency required by "dev-python/pipx" [argument])
+For more information, see the MASKED PACKAGES section in the emerge
+man page or refer to the Gentoo Handbook.
