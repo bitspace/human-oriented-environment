@@ -1,0 +1,7 @@
+The following USE changes are necessary to proceed:
+ (see "package.use" in the portage(5) man page for more details)
+# required by dev-python/qtconsole-5.6.1::gentoo
+# required by dev-python/ipython-9.3.0::gentoo[-python_targets_python3_11,python_targets_python3_13,qt5,-python_targets_python3_12]
+# required by dev-python/ipykernel-6.29.5-r1::gentoo[-test]
+# required by dev-python/ipyparallel-9.0.1::gentoo
+>=dev-python/qtpy-2.4.3 printsupport

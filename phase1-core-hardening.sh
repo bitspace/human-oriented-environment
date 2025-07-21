@@ -71,8 +71,11 @@ dev-lang/python sqlite ssl
 dev-lang/rust clippy rustfmt
 dev-java/openjdk headless-awt
 sys-devel/gcc fortran lto pgo
-dev-util/cmake ninja
+dev-build/cmake ninja
 app-editors/neovim lua
+
+# Python development tools
+>=dev-python/qtpy-2.4.3 printsupport
 EOF
 
 # Gaming USE flags
