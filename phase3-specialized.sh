@@ -62,12 +62,32 @@ install_gaming() {
     
     # Install gaming platforms
     echo "Installing gaming platforms..."
+    
+    # Install non-Steam gaming tools first
     sudo emerge --ask \
-        games-util/steam-launcher \
         app-emulation/wine-staging \
         app-emulation/winetricks \
         app-emulation/lutris \
         games-util/gamemode
+    
+    # Handle Steam installation (requires steam-overlay)
+    echo
+    echo "Installing Steam..."
+    echo "Note: Steam requires the steam-overlay. Setting up..."
+    
+    # Install prerequisites for overlay management
+    sudo emerge --ask --noreplace app-eselect/eselect-repository
+    
+    # Add and sync steam-overlay
+    sudo eselect repository enable steam-overlay
+    sudo emaint sync -r steam-overlay
+    
+    # Create license acceptance for Steam
+    sudo mkdir -p /etc/portage/package.license
+    echo "games-util/steam-launcher ValveSteamLicense" | sudo tee /etc/portage/package.license/steam
+    
+    # Install Steam
+    sudo emerge --ask games-util/steam-launcher
     
     # Install gaming enhancements
     echo "Installing gaming enhancements..."
