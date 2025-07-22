@@ -54,9 +54,9 @@ sudo emerge --ask \
     dev-python/black \
     dev-python/flake8
 
-# Set Python defaults
-echo "Setting Python defaults..."
-sudo eselect python set python3.12
+# Note: Python version management is handled via PYTHON_TARGETS in make.conf
+echo "Python version management is configured in make.conf via PYTHON_TARGETS"
+echo "Current system should be using Python 3.13 as configured in phase 1"
 
 echo
 echo "Step 3: Installing development utilities..."
@@ -130,9 +130,9 @@ cargo install ripgrep fd-find bat exa
 echo
 echo "Step 8: Setting up Python virtual environments..."
 # Create virtual environments for different purposes
-python3.12 -m venv ~/.venv/general
-python3.12 -m venv ~/.venv/ai-ml
-python3.12 -m venv ~/.venv/web-dev
+python3 -m venv ~/.venv/general
+python3 -m venv ~/.venv/ai-ml
+python3 -m venv ~/.venv/web-dev
 
 echo "Virtual environments created:"
 echo "  ~/.venv/general  - General Python development"
@@ -153,7 +153,7 @@ echo
 echo "=== Phase 2 Complete! ==="
 echo
 echo "Development environment ready! Key tools installed:"
-echo "✓ Core toolchains: GCC, Clang, Python 3.12, Rust, Java 21, Node.js, Go"
+echo "✓ Core toolchains: GCC, Clang, Python 3.13, Rust, Java 21, Node.js, Go"
 echo "✓ Development tools: Neovim, tmux, Git, debugging tools"
 echo "✓ Package management: pip, cargo, npm, yarn"
 echo "✓ Overlays: audio-overlay, GURU"
