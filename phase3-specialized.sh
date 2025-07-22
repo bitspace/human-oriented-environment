@@ -57,7 +57,7 @@ install_gaming() {
     echo "Installing Vulkan support..."
     sudo emerge --ask \
         media-libs/vulkan-loader \
-        media-libs/vulkan-tools \
+        dev-util/vulkan-tools \
         dev-util/vulkan-headers
     
     # Install gaming platforms
