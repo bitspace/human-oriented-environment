@@ -67,7 +67,7 @@ sudo emerge --ask \
     sys-process/iotop \
     app-portage/gentoolkit \
     app-portage/eix \
-    sys-devel/gdb \
+    dev-debug/gdb \
     dev-util/strace \
     dev-util/ltrace
 
