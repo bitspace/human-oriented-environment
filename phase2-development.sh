@@ -68,7 +68,7 @@ sudo emerge --ask \
     app-portage/gentoolkit \
     app-portage/eix \
     dev-debug/gdb \
-    dev-util/strace \
+    dev-debug/strace \
     dev-util/ltrace
 
 # Update eix database

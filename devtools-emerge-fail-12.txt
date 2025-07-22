@@ -1,0 +1,4 @@
+emerge: there are no ebuilds to satisfy "dev-util/strace".
+
+emerge: searching for similar names...
+emerge: Maybe you meant any of these: dev-util/uftrace, dev-util/pretrace, dev-util/ostree?
