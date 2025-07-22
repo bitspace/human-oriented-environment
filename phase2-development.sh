@@ -36,13 +36,15 @@ sudo emerge --ask dev-vcs/git dev-vcs/mercurial
 # Programming languages
 echo "Installing programming languages..."
 sudo emerge --ask \
-    dev-lang/python:3.12 \
     dev-lang/rust \
     dev-java/openjdk:21 \
-    net-libs/nodejs \
     dev-lang/go \
     dev-lang/perl \
     dev-lang/lua
+
+# Install Node.js with npm support
+echo "Installing Node.js with npm..."
+sudo emerge --ask net-libs/nodejs
 
 # Python development tools
 echo "Installing Python development tools..."
@@ -141,13 +143,21 @@ echo "  ~/.venv/web-dev  - Web development"
 
 echo
 echo "Step 9: Installing Node.js global packages..."
-# Install useful Node.js global packages
-sudo npm install -g \
-    typescript \
-    @types/node \
-    eslint \
-    prettier \
-    yarn
+# Check if npm is available, if not skip this step
+if command -v npm &> /dev/null; then
+    echo "Installing useful Node.js global packages..."
+    sudo npm install -g \
+        typescript \
+        @types/node \
+        eslint \
+        prettier \
+        yarn
+else
+    echo "npm not found. You may need to:"
+    echo "1. Restart your shell session to update PATH"
+    echo "2. Install npm separately: emerge -a net-libs/nodejs[npm]"
+    echo "3. Or install packages manually after completing setup"
+fi
 
 echo
 echo "=== Phase 2 Complete! ==="
