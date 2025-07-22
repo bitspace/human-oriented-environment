@@ -69,7 +69,7 @@ sudo emerge --ask \
     app-portage/eix \
     dev-debug/gdb \
     dev-debug/strace \
-    dev-util/ltrace
+    dev-debug/ltrace
 
 # Update eix database
 sudo eix-sync
