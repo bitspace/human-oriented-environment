@@ -42,6 +42,7 @@ net-libs/nodejs ~amd64
 dev-python/pipx ~amd64
 dev-python/userpath ~amd64
 dev-python/pypresence ~amd64
+dev-python/moddb ~amd64
 
 # Gaming on testing for latest features
 games-util/steam-launcher ~amd64
@@ -123,6 +124,90 @@ sudo tee /etc/portage/package.use/multilib <<EOF
 >=dev-libs/elfutils-0.193 abi_x86_32
 >=app-arch/bzip2-1.0.8-r5 abi_x86_32
 >=app-arch/xz-utils-5.8.1-r1 abi_x86_32
+
+# Wine/Gaming extensive multilib support
+>=x11-libs/libXcursor-1.2.3 abi_x86_32
+>=x11-libs/libXi-1.8.2 abi_x86_32
+>=x11-libs/libXcomposite-0.4.6 abi_x86_32
+>=net-print/cups-2.4.12 abi_x86_32
+>=sys-apps/dbus-1.16.2 abi_x86_32
+>=media-libs/fontconfig-2.16.2-r1 abi_x86_32
+>=media-libs/libsdl2-2.32.6 abi_x86_32
+>=net-libs/gnutls-3.8.9-r1 abi_x86_32
+>=media-libs/freetype-2.13.3 abi_x86_32
+>=media-libs/alsa-lib-1.2.14 abi_x86_32
+>=dev-libs/glib-2.84.3 abi_x86_32
+>=media-libs/gst-plugins-base-1.24.11-r1 abi_x86_32
+>=media-libs/gstreamer-1.24.11 abi_x86_32
+>=sys-libs/libunwind-1.8.2 abi_x86_32
+>=dev-libs/libusb-1.0.28 abi_x86_32
+>=x11-libs/libxkbcommon-1.10.0 abi_x86_32
+>=media-plugins/gst-plugins-meta-1.24.11 abi_x86_32
+>=media-libs/gst-plugins-good-1.24.11 abi_x86_32
+>=media-plugins/gst-plugins-a52dec-1.24.11 abi_x86_32
+>=media-plugins/gst-plugins-faad-1.24.11 abi_x86_32
+>=media-plugins/gst-plugins-dts-1.24.11 abi_x86_32
+>=media-libs/gst-plugins-ugly-1.24.11 abi_x86_32
+>=media-plugins/gst-plugins-dvdread-1.24.11 abi_x86_32
+>=media-plugins/gst-plugins-mpeg2dec-1.24.11 abi_x86_32
+>=media-plugins/gst-plugins-resindvd-1.24.11 abi_x86_32
+>=media-plugins/gst-plugins-flac-1.24.11 abi_x86_32
+>=media-plugins/gst-plugins-mpg123-1.24.11 abi_x86_32
+>=media-plugins/gst-plugins-x264-1.24.11 abi_x86_32
+>=media-libs/x264-0.0.20240513 abi_x86_32
+>=media-sound/mpg123-base-1.32.10-r2 abi_x86_32
+>=media-libs/flac-1.5.0 abi_x86_32
+>=media-libs/libogg-1.3.5-r2 abi_x86_32
+>=media-libs/libdvdnav-6.1.1 abi_x86_32
+>=media-libs/libdvdread-6.1.3 abi_x86_32
+>=media-libs/gst-plugins-bad-1.24.11 abi_x86_32
+>=dev-lang/orc-0.4.41 abi_x86_32
+>=media-libs/libdvdcss-1.4.3 abi_x86_32
+>=media-libs/libmpeg2-0.5.1-r3 abi_x86_32
+>=media-libs/libdca-0.0.7 abi_x86_32
+>=media-libs/faad2-2.11.1 abi_x86_32
+>=media-libs/a52dec-0.7.4-r9 abi_x86_32
+>=sys-libs/libcap-2.76 abi_x86_32
+>=sys-libs/pam-1.7.1 abi_x86_32
+>=sys-libs/gdbm-1.25 abi_x86_32
+>=sys-libs/readline-8.2_p13-r1 abi_x86_32
+>=sys-libs/ncurses-6.5_p20250329 abi_x86_32
+>=sys-libs/gpm-1.20.7-r6 abi_x86_32
+>=x11-libs/pango-1.56.3 abi_x86_32
+>=media-libs/libvorbis-1.3.7-r2 abi_x86_32
+>=x11-libs/libXv-1.8.13 abi_x86_32
+>=media-libs/graphene-1.10.8-r1 abi_x86_32
+>=media-libs/libpng-1.6.47 abi_x86_32
+>=media-libs/libjpeg-turbo-3.1.0 abi_x86_32
+>=dev-libs/fribidi-1.0.16 abi_x86_32
+>=media-libs/harfbuzz-11.2.1 abi_x86_32
+>=x11-libs/cairo-1.18.4-r1 abi_x86_32
+>=x11-libs/libXft-2.3.9 abi_x86_32
+>=x11-libs/pixman-0.46.0 abi_x86_32
+>=media-gfx/graphite2-1.3.14_p20210810-r3 abi_x86_32
+>=dev-libs/libpcre2-10.45 abi_x86_32
+>=sys-apps/util-linux-2.41.1 abi_x86_32
+>=dev-libs/libtasn1-4.20.0 abi_x86_32
+>=dev-libs/libunistring-1.3 abi_x86_32
+>=dev-libs/nettle-3.10.1 abi_x86_32
+>=dev-libs/gmp-6.3.0-r1 abi_x86_32
+>=net-dns/libidn2-2.3.8 abi_x86_32
+>=gui-libs/libdecor-0.2.2-r1 abi_x86_32
+>=virtual/libintl-0-r2 abi_x86_32
+>=virtual/libiconv-0-r2 abi_x86_32
+>=virtual/opengl-8 abi_x86_32
+>=virtual/glu-9.0-r2 abi_x86_32
+>=virtual/libudev-251-r2 abi_x86_32
+>=sys-apps/systemd-257.6 abi_x86_32
+>=dev-libs/libgcrypt-1.11.1 abi_x86_32
+>=app-arch/lz4-1.10.0-r1 abi_x86_32
+>=dev-libs/libgpg-error-1.55 abi_x86_32
+>=media-libs/glu-9.0.3 abi_x86_32
+>=media-plugins/gst-plugins-cdparanoia-1.24.11 abi_x86_32
+>=media-sound/cdparanoia-3.10.2-r8 abi_x86_32
+
+# Temporary fix for circular dependency
+sys-libs/ncurses -gpm
 EOF
 
 # Audio USE flags
