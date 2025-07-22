@@ -67,7 +67,7 @@ install_gaming() {
     sudo emerge --ask \
         app-emulation/wine-staging \
         app-emulation/winetricks \
-        app-emulation/lutris \
+        games-util/lutris \
         games-util/gamemode
     
     # Handle Steam installation (requires steam-overlay)
