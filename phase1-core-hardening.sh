@@ -46,6 +46,7 @@ dev-python/userpath ~amd64
 games-util/steam-launcher ~amd64
 app-emulation/wine-staging ~amd64
 games-util/lutris ~amd64
+games-util/gamemode ~amd64
 
 # AI/ML libraries
 sci-libs/pytorch ~amd64
