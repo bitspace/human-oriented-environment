@@ -112,8 +112,22 @@ EOF
     sudo emerge --ask --noreplace app-eselect/eselect-repository
     
     # Add and sync steam-overlay
-    sudo eselect repository enable steam-overlay
+    echo "Enabling steam-overlay repository..."
+    if ! sudo eselect repository enable steam-overlay; then
+        echo "Steam-overlay not available, trying to add it manually..."
+        sudo eselect repository add steam-overlay git https://github.com/gentoo-mirror/steam-overlay.git
+        sudo eselect repository enable steam-overlay
+    fi
+    
+    echo "Syncing steam-overlay..."
     sudo emaint sync -r steam-overlay
+    
+    # Verify steam-overlay is available
+    if [ ! -d "/var/db/repos/steam-overlay" ]; then
+        echo "ERROR: Steam-overlay sync failed. Cannot install Steam."
+        echo "You can install Steam manually later or use Flatpak version."
+        return 1
+    fi
     
     # Create license acceptance for Steam
     sudo mkdir -p /etc/portage/package.license
