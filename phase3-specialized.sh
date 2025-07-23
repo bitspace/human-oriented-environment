@@ -63,6 +63,11 @@ install_gaming() {
     # Install gaming platforms
     echo "Installing gaming platforms..."
     
+    # Configure webkit-gtk build settings to avoid memory issues
+    echo "Configuring webkit-gtk build settings..."
+    sudo mkdir -p /etc/portage/package.env
+    echo 'net-libs/webkit-gtk MAKEOPTS="-j4 -l4"' | sudo tee -a /etc/portage/package.env/webkit
+    
     # Install non-Steam gaming tools first
     sudo emerge --ask \
         app-emulation/wine-staging \
