@@ -175,7 +175,7 @@ sudo tee /etc/portage/package.use/multilib <<EOF
 >=sys-libs/gpm-1.20.7-r6 abi_x86_32
 >=x11-libs/pango-1.56.3 abi_x86_32
 >=media-libs/libvorbis-1.3.7-r2 abi_x86_32
->=x11-libs/libXv-1.8.13 abi_x86_32
+>=x11-libs/libXv-1.0.13 abi_x86_32
 >=media-libs/graphene-1.10.8-r1 abi_x86_32
 >=media-libs/libpng-1.6.47 abi_x86_32
 >=media-libs/libjpeg-turbo-3.1.0 abi_x86_32
