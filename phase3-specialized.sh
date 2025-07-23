@@ -65,15 +65,43 @@ install_gaming() {
     
     # Configure webkit-gtk build settings to avoid memory issues
     echo "Configuring webkit-gtk build settings..."
-    sudo mkdir -p /etc/portage/package.env
-    echo 'net-libs/webkit-gtk MAKEOPTS="-j4 -l4"' | sudo tee -a /etc/portage/package.env/webkit
+    sudo mkdir -p /etc/portage/package.env /etc/portage/env
     
-    # Install non-Steam gaming tools first
+    # Create multiple environment options for webkit-gtk
+    cat | sudo tee /etc/portage/env/webkit-minimal.conf <<EOF
+MAKEOPTS="-j2 -l2"
+CFLAGS="\${CFLAGS} -pipe"
+CXXFLAGS="\${CXXFLAGS} -pipe"
+EOF
+    
+    # Try to use binary packages first, fallback to source with minimal settings
+    echo "Attempting webkit-gtk installation with binary packages first..."
+    if ! sudo emerge --getbinpkg --usepkg --ask net-libs/webkit-gtk; then
+        echo "Binary package unavailable, configuring for minimal resource build..."
+        # Reference the minimal environment file for webkit-gtk
+        echo 'net-libs/webkit-gtk webkit-minimal.conf' | sudo tee /etc/portage/package.env/webkit
+        
+        # Also try disabling some features to reduce build complexity
+        cat | sudo tee -a /etc/portage/package.use/webkit-reduced <<EOF
+net-libs/webkit-gtk -gamepad -jpegxl -avif
+EOF
+        echo "Webkit-gtk configured for minimal build - this may take several hours."
+    fi
+    
+    # Install non-Steam gaming tools first (without lutris if webkit-gtk problematic)
+    echo "Installing core gaming packages..."
     sudo emerge --ask \
         app-emulation/wine-staging \
         app-emulation/winetricks \
-        games-util/lutris \
         games-util/gamemode
+    
+    # Try to install lutris separately (requires webkit-gtk)
+    echo "Attempting to install Lutris (requires webkit-gtk)..."
+    if ! sudo emerge --ask games-util/lutris; then
+        echo "WARNING: Lutris installation failed due to webkit-gtk build issues."
+        echo "You can install it later after webkit-gtk is resolved, or use alternative gaming tools."
+        echo "Consider using GameHub, Bottles, or directly using Wine for now."
+    fi
     
     # Handle Steam installation (requires steam-overlay)
     echo
