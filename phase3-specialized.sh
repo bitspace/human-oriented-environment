@@ -133,8 +133,22 @@ EOF
     sudo mkdir -p /etc/portage/package.license
     echo "games-util/steam-launcher ValveSteamLicense" | sudo tee /etc/portage/package.license/steam
     
+    # Unmask required dependencies for Steam
+    sudo mkdir -p /etc/portage/package.accept_keywords
+    cat | sudo tee /etc/portage/package.accept_keywords/steam <<EOF
+# Steam and its dependencies
+games-util/steam-launcher ~amd64
+sys-libs/libudev-compat ~amd64
+EOF
+    
     # Install Steam
-    sudo emerge --ask games-util/steam-launcher
+    echo "Installing Steam launcher..."
+    if ! sudo emerge --ask games-util/steam-launcher; then
+        echo "WARNING: Steam installation failed."
+        echo "You can try installing Steam via Flatpak as an alternative:"
+        echo "  flatpak install flathub com.valvesoftware.Steam"
+        echo "Or install it manually later after resolving dependencies."
+    fi
     
     # Install gaming enhancements
     echo "Installing gaming enhancements..."
