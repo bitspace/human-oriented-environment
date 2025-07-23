@@ -206,6 +206,17 @@ sudo tee /etc/portage/package.use/multilib <<EOF
 >=media-plugins/gst-plugins-cdparanoia-1.24.11 abi_x86_32
 >=media-sound/cdparanoia-3.10.2-r8 abi_x86_32
 
+# GTK and desktop libraries with 32-bit support
+>=x11-libs/gtk+-3.24.49-r1 abi_x86_32
+>=app-accessibility/at-spi2-core-2.54.1-r1 abi_x86_32
+>=media-libs/libepoxy-1.5.10-r3 abi_x86_32
+>=x11-libs/gdk-pixbuf-2.42.12 abi_x86_32
+>=x11-libs/libXdamage-1.1.6 abi_x86_32
+>=gnome-base/librsvg-2.58.5-r1 abi_x86_32
+>=media-libs/tiff-4.7.0-r1 abi_x86_32
+>=x11-libs/libXtst-1.2.5 abi_x86_32
+>=dev-lang/rust-bin-1.87.0 abi_x86_32
+
 # Temporary fix for circular dependency
 sys-libs/ncurses -gpm
 EOF
