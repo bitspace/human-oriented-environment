@@ -133,12 +133,57 @@ EOF
     sudo mkdir -p /etc/portage/package.license
     echo "games-util/steam-launcher ValveSteamLicense" | sudo tee /etc/portage/package.license/steam
     
+    # Configure USE flags for Steam dependencies
+    sudo mkdir -p /etc/portage/package.use
+    cat | sudo tee /etc/portage/package.use/steam <<EOF
+# Steam dependencies require 32-bit ABI support
+sys-libs/libudev-compat abi_x86_32
+media-libs/libpulse abi_x86_32
+x11-drivers/nvidia-drivers abi_x86_32
+gui-libs/egl-gbm abi_x86_32
+gui-libs/egl-wayland abi_x86_32
+gui-libs/egl-x11 abi_x86_32
+media-libs/libsndfile abi_x86_32
+net-libs/libasyncns abi_x86_32
+media-libs/opus abi_x86_32
+media-sound/lame abi_x86_32
+media-plugins/alsa-plugins pulseaudio abi_x86_32
+
+# Additional audio/video libraries that may be needed
+media-libs/alsa-lib abi_x86_32
+media-libs/fontconfig abi_x86_32
+media-libs/freetype abi_x86_32
+x11-libs/libX11 abi_x86_32
+x11-libs/libXext abi_x86_32
+x11-libs/libXrandr abi_x86_32
+x11-libs/libXinerama abi_x86_32
+x11-libs/libXrender abi_x86_32
+x11-libs/libXcomposite abi_x86_32
+x11-libs/libXcursor abi_x86_32
+x11-libs/libXdamage abi_x86_32
+x11-libs/libXfixes abi_x86_32
+x11-libs/libXi abi_x86_32
+x11-libs/libXtst abi_x86_32
+media-libs/mesa abi_x86_32
+virtual/opengl abi_x86_32
+EOF
+    
     # Unmask required dependencies for Steam
     sudo mkdir -p /etc/portage/package.accept_keywords
     cat | sudo tee /etc/portage/package.accept_keywords/steam <<EOF
 # Steam and its dependencies
 games-util/steam-launcher ~amd64
+games-util/game-device-udev-rules ~amd64
 sys-libs/libudev-compat ~amd64
+sys-fs/eudev ~amd64
+sys-apps/hwids ~amd64
+EOF
+
+    # Handle eudev slot conflicts
+    sudo mkdir -p /etc/portage/package.mask
+    cat | sudo tee /etc/portage/package.mask/steam-conflicts <<EOF
+# Mask conflicting eudev version for Steam
+=sys-fs/eudev-3.2.14
 EOF
     
     # Install Steam

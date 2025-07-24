@@ -1,0 +1,8 @@
+!!! All ebuilds that could satisfy "games-util/game-device-udev-rules" have been masked.
+!!! One of the following masked packages is required to complete your request:
+- games-util/game-device-udev-rules-20240523::gentoo (masked by: ~amd64 keyword)
+
+(dependency required by "games-util/steam-launcher-1.0.0.82-r1::steam-overlay[udev,joystick]" [ebuild])
+(dependency required by "games-util/steam-launcher" [argument])
+For more information, see the MASKED PACKAGES section in the emerge
+man page or refer to the Gentoo Handbook.

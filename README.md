@@ -1,5 +1,11 @@
 # LLM-Guided Laptop Build Experiment
 
+## Update 2025-07-23
+
+This devolved into a morass of crazy flags and dependencies and silly tweaks and... well, it's a mess. It's likely that the way I approached this - with me being the "human in the loop" and evaluating everything the AI generated and running each command myself.  
+
+I'm going to table this for now. My next adventure - soon, within the next few days - will be to hand the reins over to the tool and set it free without human intervention.
+
 ## Abstract
 
 This documents the process and approach to installing Gentoo Linux on my laptops. This project doubles as an experiment with agentic AI and LLM's.  
