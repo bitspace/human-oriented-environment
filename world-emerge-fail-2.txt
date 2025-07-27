@@ -1,9 +1,0 @@
-sudo emerge --ask --update --deep --newuse @world
-These are the packages that would be merged, in order:
-Calculating dependencies... done!
-Dependency resolution took 13.89 s (backtrack: 0/20).
-emerge: there are no ebuilds to satisfy "dev-lang/python-exec [python_targets_python3_14(-)]".
-dependency required by "dev-lang/python-3.14.0_beta4::gentoo" [ebuild])
-dependency required by "sys-kernel/gentoo-kernel-6.12.34::gentoo" [installed])
-dependency required by "@selected" [set])
-dependency y required by "@world" [argument])

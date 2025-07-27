@@ -7,11 +7,25 @@ You are tasked with orchestrating the synthesis of multiple LLM responses to cre
 ## Input Files to Process
 
 1. `initial-llm-prompt.md` - The original prompt sent to all models
-2. `chatgpt-input.md` - Responses from ChatGPT models
-3. `claude-web-input.md` - Responses from Claude models
-4. `gemini-web-input.md` - Responses from Gemini models
-5. `perplexity-web-input.md` - Responses from Perplexity models
-6. `linux-sme-system-prompt.md` - System prompt for Linux expertise context
+2. `linux-sme-system-prompt.md` - System prompt for Linux expertise context
+3. `gimli-system-specifications.md` - System specifications for the System76 Kudu laptop
+4. `llm-responses/chatgpt-o3.md` - Response from ChatGPT o3 model
+5. `llm-responses/chatgpt-o4-mini-high.md` - Response from ChatGPT o4 mini high model
+6. `llm-responses/chatgpt-o4-mini.md` - Response from ChatGPT o4 mini model
+7. `llm-responses/claude-opus-4.md` - Response from Claude Opus 4 model
+8. `llm-responses/claude-sonnet-3.7.md` - Response from Claude Sonnet 3.7 model
+9. `llm-responses/claude-sonnet-4.md` - Response from Claude Sonnet 4 model
+10. `llm-responses/deepseek-r1-0528.md` - Response from DeepSeek R1 0528 model
+11. `llm-responses/gemini-2.5-flash-consumer-custom-system-prompt.md` - Response from Gemini 2.5 Flash consumer with custom system prompt
+12. `llm-responses/gemini-2.5-flash-consumer-default-system-prompt.md` - Response from Gemini 2.5 Flash consumer with default system prompt
+13. `llm-responses/gemini-2.5-flash-enterprise-custom-system-prompt.md` - Response from Gemini 2.5 Flash enterprise with custom system prompt
+14. `llm-responses/gemini-2.5-flash-enterprise-default-system-prompt.md` - Response from Gemini 2.5 Flash enterprise with default system prompt
+15. `llm-responses/gemini-2.5-pro-consumer-custom-system-prompt.md` - Response from Gemini 2.5 Pro consumer with custom system prompt
+16. `llm-responses/gemini-2.5-pro-consumer-default-system-prompt.md` - Response from Gemini 2.5 Pro consumer with default system prompt
+17. `llm-responses/gemini-2.5-pro-enterprise-custom-system-prompt.md` - Response from Gemini 2.5 Pro enterprise with custom system prompt
+18. `llm-responses/gemini-2.5-pro-enterprise-default-system-prompt.md` - Response from Gemini 2.5 Pro enterprise with default system prompt
+19. `llm-responses/kimi-k2-instruct.md` - Response from Kimi K2 Instruct model
+20. `llm-responses/perplexity.md` - Response from Perplexity model
 
 ## Primary Objectives
 

@@ -1,5 +1,13 @@
 # LLM-Guided Laptop Build Experiment
 
+## 2025-07-26
+
+I'm back at it! I'm doing some quick crash-course/cram-study type learning about RAG, agents, tool use, prompting techniques, and some specifics for each of the tools I'm using here.  
+
+My approach has not changed, except that instead of my executing the synthesized task list, I'm going to hand it off to the agent orchestrator directly. That means Claude Code in this initial version.  
+
+Random thought: I might turn this into a little bit of a test of capabilities of the various tools. Can it build and install a Gentoo system on the testing (`ACCEPT_KEYWORDS="~x86"`) branch?  
+
 ## Update 2025-07-23
 
 This devolved into a morass of crazy flags and dependencies and silly tweaks and... well, it's a mess. It's likely that the way I approached this - with me being the "human in the loop" and evaluating everything the AI generated and running each command myself.  

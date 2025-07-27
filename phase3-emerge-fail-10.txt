@@ -1,8 +1,0 @@
-The following USE changes are necessary to proceed:
- (see "package.use" in the portage(5) man page for more details)
-# required by media-libs/gst-plugins-base-1.24.11-r1::gentoo[X]
-# required by media-plugins/gst-plugins-opus-1.24.11::gentoo
-# required by net-libs/webkit-gtk-2.46.5-r411::gentoo[gstreamer]
-# required by games-util/lutris-0.5.19::gentoo
-# required by games-util/lutris (argument)
->=x11-libs/libXv-1.0.13 abi_x86_32

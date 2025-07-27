@@ -1,6 +1,0 @@
-!!! All ebuilds that could satisfy "dev-python/pipx" have been masked.
-!!! One of the following masked packages is required to complete your request:
-- dev-python/pipx-1.7.1::gentoo (masked by: ~amd64 keyword)
-
-For more information, see the MASKED PACKAGES section in the emerge
-man page or refer to the Gentoo Handbook.
