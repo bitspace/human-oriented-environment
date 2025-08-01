@@ -1,5 +1,9 @@
 # LLM-Guided Laptop Build Experiment
 
+## 2025-08-01
+
+I'm discovering that Claude Code struggles with long-running tasks. Anybody who's worked with Gentoo realizes that there are a lot of these. I'm rethinking the approach here, and whether I want to use Gentoo and build lots of things from source, use binaries, or just a different distribution.
+
 ## 2025-07-26
 
 I'm back at it! I'm doing some quick crash-course/cram-study type learning about RAG, agents, tool use, prompting techniques, and some specifics for each of the tools I'm using here.  
