@@ -53,7 +53,7 @@ This documents the process and approach to installing Gentoo Linux on my laptops
 ## Approach
 
 - Install base Gentoo system following [the Gentoo Handbook](https://wiki.gentoo.org/wiki/Handbook:AMD64). Base system uses desktop/systemd stage3.
-- Write a [prompt](initial-llm-prompt.md) to compel LLM's to design a plan for building a system that suits my needs.
+- Write a [prompt](llm-inputs/initial-llm-prompt.md) to compel LLM's to design a plan for building a system that suits my needs.
 - Input this prompt to several models and collect their responses.
 - Leverage agent wrangler (Claude Code) to synthesize the responses from the other models to create a detailed plan
 - Iterate and execute

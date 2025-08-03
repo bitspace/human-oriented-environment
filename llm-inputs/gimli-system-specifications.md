@@ -1,4 +1,4 @@
-# Gimli System Specifications
+# Target System Specifications
 
 ## Hardware
 
@@ -34,7 +34,7 @@
 
 ### Operating System
 
-Gentoo Linux installed from desktop profile/systemd stage 3
+To be determined; a Linux distribution optimized for automation and LLM "friendliness"
 
 ### Disk Partitions and Filesystem
 

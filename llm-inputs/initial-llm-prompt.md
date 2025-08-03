@@ -4,9 +4,10 @@ I am customizing a laptop computer. I am going to install a Linux distribution, 
 
 ## Constraints and usage requirements
 
-- A rolling release is preferred over a point-release distribution. I am partial to Gentoo's portage package/dependency system and Arch's pacman/AUR ecosystem, but I am open to other rolling release based systems such as OpenSUSE Tumbleweed (although I have no idea what sort of package management system it uses).
+- A rolling release is preferred over a point-release distribution. I am partial to Gentoo's portage package/dependency system and Arch's pacman/AUR ecosystem, but I am open to other rolling release based systems such as OpenSUSE Tumbleweed (although I have no idea what sort of package management system it uses). Consider also a declarative style distribution like NixOS.
+- Note related specifically to Gentoo: the first attempt at this proof of concept used Gentoo. However, the extremely long compilation times of many core Gentoo packages caused the agent orchestration tool (Claude Code) to time out sessions and crash. It seems likely that a fully source-based option is not feasible, and if Gentoo is identified as the candidate that best suits other requirements, then we should consider a hybrid binary/source configuration.
 - The system configuration structure must be straightforward to script and automate. The configuration must be easily parseable by a Large Language Model.
-- The graphical environment, whether a desktop environment, window manager, or Wayland compositor, must be similarly parseable by a large language model, well-documented, and easily scripted and automated. Do not recommend Gnome or KDE.
+- The graphical environment, whether a desktop environment, window manager, or Wayland compositor, must be similarly parseable by a large language model, well-documented, and easily scripted and automated. **Important**: do not recommend Gnome or KDE.
 - A wayland-based graphical interface is desired, but given some software's dependency upon X11, it is acceptable to maintain X11 compatibility. The target system has integrated AMD graphics (AMD CPU) and a discrete Nvidia mobile GPU.
 - The init system must be systemd.
 - System will be used for gaming with Steam, Proton, WINE, and some Linux-native games. Consider tuned or customized builds of Proton such as that developed by GloriousEggroll. Custom tuned forks of WINE are also acceptable, if such a thing exists.

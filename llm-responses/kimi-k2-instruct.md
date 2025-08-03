@@ -3,168 +3,116 @@
 ## Model Parameters
 
 - *Temperature*: 0.6
-- *Max Tokens*: 4096
+- *Max Tokens*: 16384
 - *Top P*: 1
 - *Top K*: 40
 - *Presence Penalty*: 0
 - *Frequency Penalty*: 0
 
+## Model Notes
+
+I did not have the option to provide a system prompt. Instead, I included the text of the `linux-sme-system-prompt.md` file at the start of my initial prompt.  
+I did not have the ability to upload a markdown file, as the Fireworks Playground UI only permitted image and pdf types. Instead, I included the text of `gimli-system-specifications.md` after inlining my system prompt.
+
 ## Model Response
 
-Below is a concise “first-100-minutes” checklist that will leave you with a fully up-to-date, hardened, **~amd64/test-branch** system, ready for everything on your wish-list (IDEs, LLM tools, cloud SDKs, Steam, music production, etc.).  
-Everything is split into **mandatory** (security, toolchain, portage hygiene) and **optional** (per-use-case) sections so you can stop whenever you like.
+Top 5 distributions (ranked by how well they satisfy *all* constraints, not just “rolling release”)
 
---------------------------------------------------------------------
-1. Portage hygiene – put the system on the bleeding edge
---------------------------------------------------------------------
-```
-# /etc/portage/make.conf
-ACCEPT_KEYWORDS="~amd64"
-ACCEPT_LICENSE="*"
-EMERGE_DEFAULT_OPTS="--keep-going --with-bdeps=y"
-FEATURES="parallel-fetch parallel-install buildpkg"
-VIDEO_CARDS="nvidia"           # or amdgpu/radeon if you have an AMD GPU
-USE="${USE} systemd dbus elogind X wayland alsa pulseaudio jack"
-```
-Add a sane set of masks/unmasks for anything that is still keyword-masked:
-```
-mkdir -p /etc/portage/package.accept_keywords
-echo "*/*::gentoo ~amd64" >> /etc/portage/package.accept_keywords/99-bleeding-edge
-```
+1. NixOS unstable  
+   • Purely declarative (`configuration.nix` + flakes) – easily scripted, diffable, and LLM-parsable.  
+   • Rolling release, every package rebuilds daily.  
+   • Binary cache covers >95 % of what you need; local rebuild only when you explicitly override.  
+   • Full systemd, Wayland/X11 both trivially available.  
+   • Steam, Proton-GE, CUDA, ROCm all packaged; switch between versions with a one-line override.  
+   • Entire system state is a text file – perfect for agent orchestration.
 
---------------------------------------------------------------------
-2. Harden the base system (mandatory)
---------------------------------------------------------------------
-```
-emerge --sync
-emerge -avuND @world
+2. Arch Linux (or Arch-based EndeavourOS if you want the installer)  
+   • Native pacman + AUR gives you the largest rolling software pool.  
+   • No “compilation by default”; binary packages are the norm.  
+   • systemd is the standard.  
+   • Configuration is plain text (`/etc`, `~/.config`) – still LLM-friendly.  
+   • Downside: imperative package management; reproducibility is only as good as your discipline.
 
-# Kernel hardening (if you built your own kernel)
-echo "CONFIG_SECURITY_SELINUX=y" >> /etc/kernel/config.d/50-hardening.conf
-emerge -v hardened-sources  # or keep your own .config
-eselect kernel set … && genkernel --menuconfig --install all
+3. openSUSE Tumbleweed  
+   • rpm-ostree-style snapshots (`snapper + btrfs`) give you automatic roll-back if an update breaks anything.  
+   • Uses `dnf` (libzypp backend), so binary packages only.  
+   • ` transactional-update` lets you treat even `/etc` atomically.  
+   • Slightly higher friction for non-packaged software (Flatpak/AUR-like OBS repos exist but are smaller).
 
-# Mandatory packages
-emerge app-portage/gentoolkit sys-apps/systemd-utils \
-       sys-fs/e2fsprogs net-misc/openssh \
-       app-admin/sudo app-editors/vim
-```
-If you use LUKS/dm-crypt, verify cryptsetup is present and keys are backed up.
+4. Void Linux (glibc)  
+   • Completely systemd-free upstream, but you can replace runit with systemd from their repo.  
+   • Rolling, binary by default, xbps-src when you need source.  
+   • Smaller community, so you’ll package more things yourself.
 
---------------------------------------------------------------------
-3. Daily-driver toolchain (mandatory)
---------------------------------------------------------------------
-```
-emerge -v dev-vcs/git app-portage/eix app-portage/gentoolkit \
-        dev-util/ccache dev-util/icecream \
-        sys-devel/clang sys-devel/lld \
-        sys-apps/fakeroot dev-libs/openssl
+5. Gentoo with binpkgs (hybrid approach)  
+   • Use the official Gentoo binhost (amd64, ~amd64) for everything except the few packages you really want optimized.  
+   • `EMERGE_DEFAULT_OPTS="--usepkg=y --getbinpkg=y"` keeps compile times near zero.  
+   • Still gives you USE-flag flexibility *only* for the packages you choose to build.  
+   • Draw-back: you still have to maintain a portage tree and occasional blockers; LLM agents struggle with the interactive parts of `emerge`.
 
-# Rust nightly
-eselect rust set stable  # or rustup default nightly
-rustup component add rust-src clippy rustfmt
-```
+Window-manager / compositor shortlist (all Wayland-first, text-configurable, lightweight)
 
---------------------------------------------------------------------
-4. Cloud SDKs & CLI helpers
---------------------------------------------------------------------
-```
-# GCP
-emerge -av app-admin/google-cloud-sdk
-# AWS
-emerge -av dev-python/awscli sys-apps/aws-cli-v2
-# Azure (not in main tree)
-curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash  # or use pip
-```
+1. Sway – drop-in i3 replacement, pure Wayland, config is `~/.config/sway/config` (i3 syntax).  
+2. Hyprland – dynamic tiling, animations, plugin system; config is `hyprland.conf`.  
+3. river – Zig-based, tags instead of workspaces; config in Lua.  
+4. Qtile Wayland backend – entire WM written/configured in Python.  
+5. Wayfire – floating/compositor hybrid, config is INI; good X11 fallback via XWayland.
 
---------------------------------------------------------------------
-5. Python ecosystem (AI/LLM focus)
---------------------------------------------------------------------
-```
-eselect python set python3.12
-emerge -av dev-python/pipx dev-python/virtualenv dev-python/poetry \
-        dev-python/pyenv dev-python/jupyter dev-python/ipython \
-        dev-python/uv
+Installation roadmap (agent-orchestrated, entirely scriptable)
 
-pipx install aider-chat
-pipx install ollama-cli
-pipx install 'claude-code'
-```
+Phase 0 – prepare host for agent  
+0.1 Boot latest Arch ISO (has `openssh` and `cloud-init`)  
+0.2 Start `sshd`, set a temporary password, let the LLM agent SSH in.
 
---------------------------------------------------------------------
-6. IDEs & editors
---------------------------------------------------------------------
-```
-emerge -av app-editors/vscode dev-util/clion dev-util/intellij-idea-ultimate
-# JetBrains ToolBox (if you prefer latest EAP builds)
-wget https://download.jetbrains.com/toolbox/jetbrains-toolbox-*.tar.gz
-```
+Phase 1 – disk & base system  
+1.1 Scripted `gdisk` → create identical layout as requested (ESP, swap, XFS root).  
+1.2 `mkfs.xfs`, `mkswap`, `mount`, `swapon`.  
+1.3 Install `systemd-bootctl install` → `loader.conf` and `arch.conf` entries.  
+1.4 Pacstrap minimal set: `base linux linux-firmware sof-firmware neovim git openssh`.  
+1.5 Chroot in, set root password, create user with sudo.
 
---------------------------------------------------------------------
-7. Steam / Proton / gaming
---------------------------------------------------------------------
-```
-# Enable ~amd64 for games too
-echo "games-util/gamemode ~amd64" >> /etc/portage/package.accept_keywords/steam
-emerge -av games-util/gamemode games-util/steam-launcher games-util/lutris
-# GloriousEggroll Proton
-mkdir -p ~/.steam/steam/compatibilitytools.d
-cd ~/.steam/steam/compatibilitytools.d
-curl -L https://github.com/GloriousEggroll/proton-ge-custom/releases/latest/download/proton-ge-custom.tar.gz | tar xzf -
-```
-Reboot into multi-user.target, log back in, start Steam once so it bootstraps itself.
+Phase 2 – pick the final distribution  
+Agent evaluates constraints again (compile-time, declarative, binary cache hit-rate).  
+If the agent chooses NixOS:  
+2a. `nixos-generate-config --root /mnt` → edit `/mnt/etc/nixos/configuration.nix` directly from the agent.  
+2b. Enable flakes, add `nixpkgs.config.allowUnfree = true;`, enable `steam`, `programs.wayland.wm.sway.enable = true`, GPU drivers (`hardware.nvidia.open = true` + `hardware.amdgpu.initrd = true`).  
+2c. `nixos-install --root /mnt`.
 
---------------------------------------------------------------------
-8. Music production (JACK & friends)
---------------------------------------------------------------------
-```
-emerge -av media-sound/jack2 media-sound/ardour media-sound/qsynth \
-        media-sound/carla media-plugins/calf media-plugins/lv2 \
-        media-sound/a2jmidid media-sound/alsa-utils media-sound/pulseaudio-jack
-# Native Instruments – use the official installer under Wine
-emerge -av app-emulation/wine-staging media-plugins/wineasio
-```
-Add your user to the **audio** and **realtime** groups:
-```
-gpasswd -a $USER audio
-gpasswd -a $USER realtime
-```
-Create **/etc/security/limits.d/audio.conf**:
-```
-@audio - rtprio 95
-@audio - memlock unlimited
-```
+If the agent sticks with Arch:  
+2d. Continue normal Arch install, then configure declarative dotfiles via `chezmoi` or `yadm` pulled from a git repo.
 
---------------------------------------------------------------------
-9. Final portage house-keeping
---------------------------------------------------------------------
-```
-emerge -avuDN @world
-eclean-dist -d
-eix-update
-```
+Phase 3 – graphical stack  
+3.1 Install GPU drivers:  
+   • AMD: `mesa`, `libva-mesa-driver`, `vulkan-radeon`.  
+   • Nvidia: `nvidia-dkms`, `egl-wayland`, `libva-nvidia-driver`.  
+3.2 Install chosen compositor (example: `sway`, `foot`, `bemenu`, `waybar`).  
+3.3 Systemd user services for `pipewire`, `wireplumber`, `xdg-desktop-portal-wlr`.
 
---------------------------------------------------------------------
-10. Optional but useful dotfiles helpers
---------------------------------------------------------------------
-```
-emerge -av app-shells/fish app-shells/starship app-shells/zsh
-eselect shell set fish   # or zsh
-```
+Phase 4 – development & AI stack  
+4.1 `nix-shell -p python311 rustup nodejs_20 gcc clang glibc` (or `pacman -S …`).  
+4.2 Install `pyenv`, `rustup`, `nvm`, `ghcup` via user-level scripts.  
+4.3 Pull `ollama` or `ollama-nvidia` container for local LLM inference.  
+4.4 Configure `docker`, `podman`, `kind`, `kubectl`, `gcloud`, `aws-cli-v2` via declarative module (NixOS) or `yay` (Arch).  
+4.5 Steam + Proton-GE: `steam`, `proton-ge-custom-bin` (AUR) or `programs.steam.enable = true;` in NixOS.
 
---------------------------------------------------------------------
-Quick sanity check
---------------------------------------------------------------------
-```
-eix-installed -a | grep -iE "clang|rust|python|steam|jack|proton"
-systemctl --user status pipewire || systemctl --user start pipewire
-```
-You should now have:
-- bleeding-edge ~amd64 system  
-- latest compilers (GCC 14, Clang 18, Rust nightly)  
-- Steam + Proton-GE ready  
-- cloud SDKs installed  
-- Python/AI toolchain set up  
-- JACK + Wine for Native Instruments  
+Phase 5 – music production  
+5.1 Install `pipewire-jack`, `carla`, `ardour`, `yabridge`, `lmms`.  
+5.2 Add user to `realtime` group, install `rtirq` (only if low-latency kernel needed).  
+5.3 All configs live in `~/.config` – versioned in the same dotfiles repo.
 
-From here you can install GNOME/KDE/Hyprland whenever you feel like it; the foundations are solid.
+Phase 6 – LLM agent hooks  
+6.1 `systemctl --user enable agent-resume.service` that pulls latest dotfiles on boot.  
+6.2 Provide the agent a JSON schema of every editable config file (generated from `nixos-option`, `chezmoi data`, or `sway --get-socketpath`).  
+6.3 Add `inotifywait` triggers so the agent can auto-reload changed configs.
+
+Phase 7 – snapshot & rollback  
+NixOS: every `nixos-rebuild switch` is automatically in the boot menu.  
+Arch: `snapper` on `/` + `grub-btrfs` for instant roll-back.
+
+Phase 8 – documentation artifact  
+After first successful boot, agent outputs a single markdown file containing:  
+• exact disk layout, LUKS keyfile location, kernel cmdline,  
+• flake URL and lockfile hash,  
+• systemd service list with `systemctl cat` output,  
+• declarative list of packages (`nix-store -q --requisites /run/current-system`).  
+Result: an LLM can reproduce the entire system with two commands (`nix flake clone` + `nixos-rebuild switch --flake .#hostname`).
