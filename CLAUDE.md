@@ -102,7 +102,7 @@ Create detailed plans for:
 
 ## Output Deliverables
 
-### 1. Consensus Analysis (`consensus_analysis.md`)
+### 1. Consensus Analysis (`consensus-analysis.md`)
 - Summary of all LLM recommendations
 - Identified patterns and conflicts
 - Recommended resolutions
@@ -178,9 +178,9 @@ Structure:
 ### 3. Implementation Scripts
 - `install.sh` - Base system installation
 - `configure.py` - System configuration manager
-- `setup_dev.sh` - Development environment setup
-- `setup_gaming.sh` - Gaming layer setup
-- `backup_restore.sh` - Backup and recovery
+- `setup-dev.sh` - Development environment setup
+- `setup-gaming.sh` - Gaming layer setup
+- `backup-restore.sh` - Backup and recovery
 
 ### 4. Configuration Templates
 - `/etc/llm-laptop/` - System-wide configs
