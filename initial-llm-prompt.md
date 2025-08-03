@@ -1,20 +1,28 @@
-I am building a Gentoo Linux system. I have the base system successfully installed so that I now have a laptop with Linux and a bash shell prompt and no GUI. Before installing the GUI, I would like to be certain that I have an otherwise working and secure system.
+# Human Oriented Environment: A Customized Laptop Experience
+
+I am customizing a laptop computer. I am going to install a Linux distribution, but I have not determined which to choose. I have attached a markdown file that describes the target system's hardware.
+
+## Constraints and usage requirements
+
+- A rolling release is preferred over a point-release distribution. I am partial to Gentoo's portage package/dependency system and Arch's pacman/AUR ecosystem, but I am open to other rolling release based systems such as OpenSUSE Tumbleweed (although I have no idea what sort of package management system it uses).
+- The system configuration structure must be straightforward to script and automate. The configuration must be easily parseable by a Large Language Model.
+- The graphical environment, whether a desktop environment, window manager, or Wayland compositor, must be similarly parseable by a large language model, well-documented, and easily scripted and automated. Do not recommend Gnome or KDE.
+- A wayland-based graphical interface is desired, but given some software's dependency upon X11, it is acceptable to maintain X11 compatibility. The target system has integrated AMD graphics (AMD CPU) and a discrete Nvidia mobile GPU.
+- The init system must be systemd.
+- System will be used for gaming with Steam, Proton, WINE, and some Linux-native games. Consider tuned or customized builds of Proton such as that developed by GloriousEggroll. Custom tuned forks of WINE are also acceptable, if such a thing exists.
+- System will be used for software development with many different programming languages, frameworks, and environments. Programming languages required include Python, Java, Rust, JavaScript, C, C++, and some scripting systems such as Lua, Perl, and shell script, as well as some functional languages such as Haskell and Lisp dialects.
+- System will be used for Artificial Intelligence and Machine Learning research and development. The exploding innovation around Large Language Models and surrounding tooling such as MCP and Google's A2A will be a core component of this system.
+- System will be heavily used for Cloud development, primarily with GCP and AWS, but also some Azure.
+- System will be used for music production with MIDI and input from keyboards and guitars. This use is the lowest priority, so nothing should be tuned to improve music production capability that causes instability or conflicts with any previously mentioned uses.
 
 I am very experienced with Linux, having used it as my primary desktop operating system for over 30 years. I used Gentoo extensively for several years, but that was around 20 years ago.  
 
-I am always trying to keep up to date with the latest versions of most software I use; I tend to spend my time on the bleeding edge. As such, I wish to use the testing branch of Gentoo and all installed software.
+I am always trying to keep up to date with the latest versions of most software I use; I tend to spend my time on the bleeding edge. As such, consider early development and beta versions of software as appropriate for compatibility with the requirements.
 
-This is a list of my uses for the computer, in descending order of importance:
+## Your instructions
 
-- Software development using a wide array of programming languages and frameworks, mostly Python, Rust, Java, JavaScript, some C, a little bit of C++, as well as scripting "languages" like bash, Perl, and Lua.
-- Cloud Development with GCP and AWS; I may try to learn a bit about Azure too.
-- AI and LLM's, especially in the nascent agentic/generative software development automation area. I am very excited by things like Claude Code, Google Gemini CLI, and OpenAI Codex, as well as the integration of the LLM capabilities in IDE's (JetBrains product stack and Visual Studio Code, primarily). MCP excites me too.
-- Linux administration and possibly some light development of Linux software.
-- Gaming via Steam, Proton, WINE, and other mechanisms. I have a moderately sized Steam library with a mix of Linux native ports of popular games and Windows games that run with Proton. I am partial to GloriousEggroll's versions of Proton.
-- Music recording, especially electric and acoustic guitar, and some music production with MIDI. I would love to figure out a way to take advantage of my Native Instruments MIDI hardware (keyboards and drum machines).  
+Given the above constraints, determine the top 5 most suitable Linux distributions. Further, suggest 5 window managers or desktop environments that suit the stated constraints and requirements.
 
-Please suggest some initial packages that I should install and any configuration and administration steps that I should take.
+Assume that the base system will be installed. Assume that at the earliest possible time in the operating system installation process, I will install a LLM agent orchestration tool such as Claude Code, Gemini CLI, or OpenAI Codex. This agentic orchestration tool will be heavily leveraged for all rmaining work in installing the system, and will continue to be an integral part of the system usage and maintenance.
 
-I am using [the Gentoo Wiki](https://wiki.gentoo.org/wiki/Main_Page) for guidance, but I was hoping that I could use some LLM love to help distill all of that information into a task list.
-
-I have completed all of the "Installing Gentoo" section of the Gentoo Handbook [here[(https://wiki.gentoo.org/wiki/Handbook:AMD64) from a desktop/systemd profile.
+Put together a step-by-step plan to perform the installation as outlined.
