@@ -169,7 +169,30 @@ The initial `flake.nix` should enable flakes and the new `nix` command-line inte
 }
 ```
 
-1.4. Installing the Base SystemWith the declarative configuration in place, install the system using a single command from the live environment:nixos-install --flake /mnt/etc/nixos#my-laptopThis command will use disko to partition the disk and then build and install the initial system generation as defined in the flake.81.5. Earliest Agent Integration PointAfter rebooting into the newly installed system, the environment will be minimal but fully functional and declaratively managed. The immediate next step is to install the chosen LLM agent orchestration tool. This is done by adding the tool (e.g., pkgs.google-cloud-sdk for Gemini CLI) to the environment.systemPackages list in configuration.nix and running sudo nixos-rebuild switch --flake.#my-laptop. From this point forward, all subsequent system modifications should be performed by prompting the installed agent to edit the Nix configuration files in /etc/nixos/.Phase 2: Declarative Hybrid Graphics Configuration (AMD/Nvidia)This phase configures the complex AMD/Nvidia hybrid graphics for optimal performance and power management under Wayland, all within the declarative NixOS framework.2.1. Kernel and Mesa ConfigurationThe use of the nixos-unstable channel in the flake ensures that the latest kernel and Mesa drivers are used, providing the best support for the integrated AMD GPU out of the box.2.2. NVIDIA Driver and PRIME Offload DeclarationAdd the following configuration block to configuration.nix. This declaratively installs the latest proprietary NVIDIA driver, enables kernel mode setting (essential for Wayland), configures power management for the dGPU, and enables 32-bit OpenGL support for gaming.78Nix# /etc/nixos/configuration.nix
+#### 1.4. Installing the Base System
+
+With the declarative configuration in place, install the system using a single command from the live environment:
+`nixos-install --flake /mnt/etc/nixos#my-laptop`
+This command will use `disko` to partition the disk and then build and install the initial system generation as defined in the flake.
+
+#### 1.5. Earliest Agent Integration Point
+
+After rebooting into the newly installed system, the environment will be minimal but fully functional and declaratively managed. The immediate next step is to install the chosen LLM agent orchestration tool. This is done by adding the tool (e.g., `pkgs.google-cloud-sdk` for Gemini CLI) to the `environment.systemPackages` list in `configuration.nix` and running `sudo nixos-rebuild switch --flake.#my-laptop`. From this point forward, all subsequent system modifications should be performed by prompting the installed agent to edit the Nix configuration files in `/etc/nixos/`.
+
+### Phase 2: Declarative Hybrid Graphics Configuration (AMD/Nvidia)
+
+This phase configures the complex AMD/Nvidia hybrid graphics for optimal performance and power management under Wayland, all within the declarative NixOS framework.
+
+#### 2.1. Kernel and Mesa Configuration
+
+The use of the `nixos-unstable` channel in the flake ensures that the latest kernel and Mesa drivers are used, providing the best support for the integrated AMD GPU out of the box.
+
+#### 2.2. NVIDIA Driver and PRIME Offload Declaration
+
+Add the following configuration block to `configuration.nix`. This declaratively installs the latest proprietary NVIDIA driver, enables kernel mode setting (essential for Wayland), configures power management for the dGPU, and enables 32-bit OpenGL support for gaming.
+
+```nix
+# /etc/nixos/configuration.nix
 {
   #...
   # Enable OpenGL and Vulkan
@@ -205,7 +228,14 @@ The initial `flake.nix` should enable flakes and the new `nix` command-line inte
   };
   #...
 }
-2.3. Wayland Environment VariablesTo ensure Wayland compositors correctly use the NVIDIA driver's GBM backend, set the following environment variables globally. Add this block to configuration.nix.77Nix# /etc/nixos/configuration.nix
+```
+
+#### 2.3. Wayland Environment Variables
+
+To ensure Wayland compositors correctly use the NVIDIA driver's GBM backend, set the following environment variables globally. Add this block to `configuration.nix`.
+
+```nix
+# /etc/nixos/configuration.nix
 {
   #...
   environment.sessionVariables = {
@@ -216,7 +246,22 @@ The initial `flake.nix` should enable flakes and the new `nix` command-line inte
   };
   #...
 }
-After adding these configurations, run sudo nixos-rebuild switch --flake. to apply them. The system will now be correctly configured for hybrid graphics.Phase 3: LLM-Driven Environment ConfigurationWith the base system and graphics configured, the LLM agent can now be tasked with tailoring the environment for the specified use cases.3.1. Gaming EnvironmentPrompt to Agent: "Agent, modify the NixOS configuration to install Steam. Enable the Gamescope session for a console-like experience and include the proton-ge-bin package for enhanced Windows game compatibility."Resulting Nix Code in configuration.nix:Nix# /etc/nixos/configuration.nix
+```
+
+After adding these configurations, run `sudo nixos-rebuild switch --flake.` to apply them. The system will now be correctly configured for hybrid graphics.
+
+### Phase 3: LLM-Driven Environment Configuration
+
+With the base system and graphics configured, the LLM agent can now be tasked with tailoring the environment for the specified use cases.
+
+#### 3.1. Gaming Environment
+
+- Prompt to Agent: "Agent, modify the NixOS configuration to install Steam. Enable the Gamescope session for a console-like experience and include the `proton-ge-bin` package for enhanced Windows game compatibility."
+
+- Resulting Nix Code in `configuration.nix`:
+
+```nix
+# /etc/nixos/configuration.nix
 { pkgs,... }: {
   programs.steam = {
     enable = true;
@@ -231,7 +276,17 @@ After adding these configurations, run sudo nixos-rebuild switch --flake. to app
     "steam-run"
   ];
 }
-This single, declarative block installs Steam, configures system services, opens firewall ports, and adds a custom Proton version, demonstrating the power of the NixOS module system.813.2. AI/ML Development EnvironmentPrompt to Agent: "Agent, prepare the system for deep learning. Ensure the NVIDIA CUDA toolkit is available. For the integrated AMD GPU, enable ROCm OpenCL support. Then, create a development shell in our project's flake.nix that provides Python 3.11 with PyTorch (CUDA-enabled), torchvision, and Jupyter."Resulting Nix Code in configuration.nix:Nix# /etc/nixos/configuration.nix
+```
+
+This single, declarative block installs Steam, configures system services, opens firewall ports, and adds a custom Proton version, demonstrating the power of the NixOS module system.
+
+#### 3.2. AI/ML Development Environment
+
+- Prompt to Agent: "Agent, prepare the system for deep learning. Ensure the NVIDIA CUDA toolkit is available. For the integrated AMD GPU, enable ROCm OpenCL support. Then, create a development shell in our project's `flake.nix` that provides Python 3.11 with PyTorch (CUDA-enabled), torchvision, and Jupyter."
+- Resulting Nix Code in `configuration.nix`:
+
+```nix
+# /etc/nixos/configuration.nix
 { pkgs,... }: {
   # CUDA is automatically included with the nvidia driver package
   # Enable ROCm OpenCL for the iGPU
@@ -242,7 +297,12 @@ This single, declarative block installs Steam, configures system services, opens
     rocm-opencl-icd
   ];
 }
-Resulting Nix Code in a project flake.nix:Nix# ~/projects/my-ai-project/flake.nix
+```
+
+- Resulting Nix Code in a project `flake.nix`:
+
+```nix
+# ~/projects/my-ai-project/flake.nix
 {
   #... inputs...
   outputs = { self, nixpkgs,... }:
@@ -258,7 +318,17 @@ Resulting Nix Code in a project flake.nix:Nix# ~/projects/my-ai-project/flake.ni
       };
     };
 }
-This demonstrates how Nix flakes can create isolated, per-project development environments with complex dependencies like CUDA-enabled libraries, without polluting the global system state.853.3. Cloud and Polyglot DevelopmentPrompt to Agent: "Agent, add the command-line tools for AWS, Google Cloud, and Azure to my system packages. Also install the toolchains for Rust, Go, and Java (JDK 21)."Resulting Nix Code in configuration.nix:Nix# /etc/nixos/configuration.nix
+```
+
+This demonstrates how Nix flakes can create isolated, per-project development environments with complex dependencies like CUDA-enabled libraries, without polluting the global system state.
+
+#### 3.3. Cloud and Polyglot Development
+
+- Prompt to Agent: "Agent, add the command-line tools for AWS, Google Cloud, and Azure to my system packages. Also install the toolchains for Rust, Go, and Java (JDK 21)."
+- Resulting Nix Code in `configuration.nix`:
+
+```nix
+# /etc/nixos/configuration.nix
 { pkgs,... }: {
   environment.systemPackages = with pkgs; [
     awscli2
@@ -269,7 +339,22 @@ This demonstrates how Nix flakes can create isolated, per-project development en
     jdk21
   ];
 }
-This highlights the trivial nature of adding system-wide developer tooling.89Phase 4: LLM Agent Hooks and System ControlThis final phase outlines the creation of scripts and hooks that enable the LLM agent to interact with and control the system and its graphical environment dynamically.4.1. Hooking into the Build ProcessThe LLM agent should not invoke nixos-rebuild directly. Instead, it should use a wrapper script that performs validation checks before committing to a system build.Script Example (/usr/local/bin/agent-rebuild):Bash#!/usr/bin/env bash
+```
+
+This highlights the trivial nature of adding system-wide developer tooling.
+
+### Phase 4: LLM Agent Hooks and System Control
+
+This final phase outlines the creation of scripts and hooks that enable the LLM agent to interact with and control the system and its graphical environment dynamically.
+
+#### 4.1. Hooking into the Build Process
+
+The LLM agent should not invoke `nixos-rebuild` directly. Instead, it should use a wrapper script that performs validation checks before committing to a system build.
+
+- Script Example (`/usr/local/bin/agent-rebuild`):
+
+```bash
+#!/usr/bin/env bash
 # This script is invoked by the LLM agent after it modifies the system flake.
 
 set -e
@@ -296,7 +381,21 @@ echo "INFO: Applying new system configuration..."
 # Use sudo to apply the configuration.
 sudo nixos-rebuild switch --flake ".#$HOSTNAME"
 echo "SUCCESS: Configuration applied successfully."
-This script adds a layer of safety and integrates the declarative configuration with version control, providing a full audit trail of agent-initiated changes.4.2. Interacting with the Wayland Compositor: The UI as an APIThe Sway IPC interface allows the LLM agent to move beyond static configuration and into dynamic, real-time control of the graphical environment. The agent can query the state of the UI (windows, workspaces, outputs) and issue commands to manipulate it, effectively treating the GUI as a scriptable API.This enables powerful, context-aware automations. The LLM can be given high-level tasks, which it translates into a series of swaymsg commands.Python Script Example (sway_agent_hook.py):This script demonstrates a complete control loop: querying the UI state, packaging it as context for an LLM, receiving executable commands in response, and applying them.Pythonimport subprocess
+```
+
+This script adds a layer of safety and integrates the declarative configuration with version control, providing a full audit trail of agent-initiated changes.
+
+#### 4.2. Interacting with the Wayland Compositor: The UI as an API
+
+The Sway IPC interface allows the LLM agent to move beyond static configuration and into dynamic, real-time control of the graphical environment. The agent can query the state of the UI (windows, workspaces, outputs) and issue commands to manipulate it, effectively treating the GUI as a scriptable API.
+
+This enables powerful, context-aware automations. The LLM can be given high-level tasks, which it translates into a series of `swaymsg` commands.
+
+- Python Script Example (`sway_agent_hook.py`):
+  This script demonstrates a complete control loop: querying the UI state, packaging it as context for an LLM, receiving executable commands in response, and applying them.
+
+```python
+import subprocess
 import json
 import os
 
@@ -358,4 +457,6 @@ def main():
 
 if __name__ == "__main__":
     main()
+```
+
 This script provides a concrete and powerful example of the agent-driven paradigm in action, fulfilling the user's core requirement for an LLM-parseable and controllable system at both the configuration and runtime levels. By binding this script to a hotkey, the user can invoke the LLM to reconfigure their graphical workspace on demand.
