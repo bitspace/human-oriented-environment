@@ -57,7 +57,7 @@ hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;
 
 ### System76 Kudu6 Specifications
 - **CPU**: Intel Core i7-10750H (6 cores, 12 threads)
-- **RAM**: 32GB DDR4-2933
+- **RAM**: 64GB DDR4-2933
 - **GPU**: Hybrid setup - AMD Vega 8 (integrated) + NVIDIA RTX 3060 (discrete)
 - **Storage**: NVMe SSD
 - **Display**: 15.6" 1920x1080
@@ -175,7 +175,7 @@ environment.systemPackages = with pkgs; [
   rustc                   # Systems programming
   cargo                   # Rust package manager
   nodejs                  # JavaScript runtime
-  npm                     # Node package manager
+  nodePackages.npm        # Node package manager
   openjdk                 # Java development
   gcc                     # C/C++ compilation
   
@@ -296,7 +296,7 @@ security = {
    
    # Format and mount
    mkfs.fat -F 32 -n boot /dev/nvme0n1p1
-   mkfs.ext4 -L nixos /dev/nvme0n1p2
+   mkfs.xfs -f -L nixos /dev/nvme0n1p2
    mkswap -L swap /dev/nvme0n1p3
    
    mount /dev/disk/by-label/nixos /mnt
