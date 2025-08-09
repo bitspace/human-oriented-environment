@@ -35,18 +35,3 @@
 ### Operating System
 
 To be determined; a Linux distribution optimized for automation and LLM "friendliness"
-
-### Disk Partitions and Filesystem
-
-- 2 TiB NVMe SSD
-  - `/dev/nvme0n1p1` 1GiB EFI System mounted on `/efi`
-  - `/dev/nvme0n1p2` 16GiB swap
-  - `/dev/nvme0n1p3` 1.8TiB xfs mounted on `/`
-
-### Bootloader
-
-- `systemd-boot`
-
-### init system
-
-- systemd
