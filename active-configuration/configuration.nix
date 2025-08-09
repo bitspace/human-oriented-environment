@@ -235,15 +235,7 @@
     unzip
     usbutils
     vim
-    (vscode.overrideAttrs (oldAttrs: rec {
-      pname = "vscode-insiders";
-      version = "1.96.0-insider";
-      src = pkgs.fetchurl {
-        name = "VSCode-linux-x64-insider.tar.gz";
-        url = "https://code.visualstudio.com/sha/download?build=insider&os=linux-x64";
-        sha256 = "0000000000000000000000000000000000000000000000000000000000000000";
-      };
-    }))
+    vscode
     waybar
     wget
     wine
