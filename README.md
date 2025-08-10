@@ -42,3 +42,20 @@ These are the models I used to contribute to the consensus. The selection was no
 - [Mistral Le Chat](llm-responses/mistral.md) - via [Mistral's chat UI](https://chat.mistral.ai/chat) with "Research" activated. Activating "Research" disables the file attachment ability, so I used the [generic chatbot input](llm-inputs/generic-chatbot-input.md) that collates system prompt, target system specifications, and user prompt into one user prompt.
 - [Perplexity](llm-responses/perplexity-research.md) - via [the Perplexity web UI](https://www.perplexity.ai/); enabled "Research" mode, attached target system specifications, entered "system prompt" as first portion of user prompt.
 - [Qwen3 Coder 480B A35B Instruct](llm-responses/qwen.md) - via Fireworks.AI playground. Used generic chatbot combined prompt.
+## The Result
+
+This has been a nearly unqualified success, especially considering the primary goal: to learn the capabilities and limitations of an agentic AI orchestration tool and the underlying models.  
+
+The first attempt used Gentoo Linux, which it turns out is not a good choice for managing with something that's essentially a tool to facilitate iterative changes and thinking. Gentoo's flexibility, ordinarily a benefit, turned out to be something of a liability with the LLM agent guided experiment. Additionally, the very long compile times of many core packages caused the agent tool (Claude Code) to time out and crash. (Aside: I think Anthropic could do a little better than outright crashing the app when it times out waiting for tool response.)  
+
+Back to the drawing board, I asked the models "hey, what Linux distribution do you think is suitable?" However, I asked in something of a leading way, providing a few examples (Arch, Gentoo, Debian-based, RPM-based). Only the Gemini model ventured outside the box a bit and suggested NixOS as suitable for LLM parsing: a consistent text-based configuration approach: "Operating System as Code". Once I added that into the examples for the other models, it became nearly unanimous.  
+
+One of the things I wanted to accomplish with this experiment was to compare the capabilities of three agent orchestrators: Claude Code, Gemini CLI, and OpenAI Codex CLI.  
+
+I started with Codex, but that shit the bed very quickly. The UX for that tool is hostile and inscrutable, not even offering any sort of internal "help" command.  
+
+I ditched that fairly quickly and moved on to Gemini CLI. The UX is much more approachable, very similar to Claude Code's UX (I would say "a direct rip-off" but a good idea is a good idea). While that was substantially better than Codex, it fumbled a _lot_. It devised a comprehensive plan, but once it started executing and iterating, it made lots of mistakes. Worse, it is extremely sycophantic. I am certain that I could provide some instructions to compel it to be less of an ass-kisser, but it was very off-putting. "Oh, my! You're absolutely _right_, I am so stupid! What a dumb mistake and you are next to God for having pointed it out to me. I bow to your greatness."  
+
+So, back to Claude Code. What an absolute banger. There were a couple of minor course corrections provided along the way, but once I got the base system installed and instrumented with Claude Code, it essntially ran with it and left me with a running and functional Wayland/Hyprland/Steam/AI/Coding laptop. Oddly enough, it didn't install a browser!  
+
+I'm intrigued by NixOS, and will probably replace Arch on my other devices with that. Unfortunately it's not an option on my VPS. (Turns out, ssdnodes kinda sucks. You get what you pay for.)
