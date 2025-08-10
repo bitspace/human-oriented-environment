@@ -42,7 +42,6 @@ These are the models I used to contribute to the consensus. The selection was no
 - [Mistral Le Chat](llm-responses/mistral.md) - via [Mistral's chat UI](https://chat.mistral.ai/chat) with "Research" activated. Activating "Research" disables the file attachment ability, so I used the [generic chatbot input](llm-inputs/generic-chatbot-input.md) that collates system prompt, target system specifications, and user prompt into one user prompt.
 - [Perplexity](llm-responses/perplexity-research.md) - via [the Perplexity web UI](https://www.perplexity.ai/); enabled "Research" mode, attached target system specifications, entered "system prompt" as first portion of user prompt.
 - [Qwen3 Coder 480B A35B Instruct](llm-responses/qwen.md) - via Fireworks.AI playground. Used generic chatbot combined prompt.
-
 ## The Result
 
 This has been a nearly unqualified success, especially considering the primary goal: to learn the capabilities and limitations of an agentic AI orchestration tool and the underlying models.  
