@@ -400,6 +400,11 @@
         extraConfig = {
           init.defaultBranch = "main";
           pull.rebase = false;
+          pull.ff = "only";
+          merge.conflictStyle = "diff3";
+          rerere.enabled = true;
+          # Set default behavior for diverged branches
+          advice.diverging = false;
         };
       };
       
