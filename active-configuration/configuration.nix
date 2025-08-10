@@ -192,7 +192,7 @@
   };
 
   # Enable sudo for wheel group
-  security.sudo.wheelNeedsPassword = false; # Temporary for setup
+  security.sudo.wheelNeedsPassword = true; # Re-enable password for sudo (required for production)
 
   # programs.firefox.enable = true;
   
