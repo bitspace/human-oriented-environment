@@ -8,6 +8,8 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      # Home Manager NixOS module
+      <home-manager/nixos>
     ];
 
   # Use the systemd-boot EFI boot loader.
@@ -74,7 +76,7 @@
     };
   };
 
-  # OpenGL/Vulkan support for both GPUs
+  # OpenGL/Vulkan/OpenCL support for both GPUs
   hardware.graphics = {
     enable = true;
     
@@ -85,6 +87,10 @@
       libvdpau-va-gl
       nvidia-vaapi-driver
       vaapiVdpau
+      # OpenCL support
+      clinfo
+      ocl-icd                # OpenCL ICD loader
+      mesa.opencl            # Mesa OpenCL (rusticl) for AMD GPUs
     ];
     
     extraPackages32 = with pkgs.pkgsi686Linux; [
@@ -95,6 +101,17 @@
       libvdpau-va-gl
     ];
   };
+
+  # Fonts
+  fonts.packages = with pkgs; [
+    noto-fonts
+    noto-fonts-cjk-sans
+    noto-fonts-emoji
+    font-awesome
+    nerd-fonts.fira-code
+    nerd-fonts.droid-sans-mono
+    nerd-fonts.jetbrains-mono
+  ];
 
   # Hyprland Configuration
   programs.hyprland = {
@@ -187,8 +204,12 @@
   nixpkgs.config.allowUnfree = true;
   environment.systemPackages = with pkgs; [
     alacritty
+    bluez
+    bluez-tools
+    blueman
     cabal-install
     cargo
+    clinfo
     cudaPackages.cudnn
     cudatoolkit
     curl
@@ -212,9 +233,6 @@
     mangohud
     neovim
     networkmanagerapplet
-    bluez
-    bluez-tools
-    blueman
     nodejs
     nodePackages.npm
     nvitop
@@ -222,12 +240,13 @@
     openjdk
     pciutils
     protonup-qt
-    python3
-    python3Packages.numpy
-    python3Packages.pandas
-    python3Packages.pip
-    python3Packages.pytorch
-    python3Packages.scikit-learn
+    (python3.withPackages (ps: with ps; [
+      numpy
+      pandas
+      pip
+      pytorch
+      scikit-learn
+    ]))
     radeontop
     rustc
     slurp
@@ -236,6 +255,7 @@
     usbutils
     vim
     vscode
+    vulkan-tools
     waybar
     wget
     wine
@@ -312,5 +332,83 @@
   #
   # For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
   system.stateVersion = "25.05"; # Did you read the comment?
+
+  # Home Manager configuration
+  home-manager = {
+    # Use same nixpkgs as system
+    useGlobalPkgs = true;
+    useUserPackages = true;
+    # Backup existing dotfiles
+    backupFileExtension = "backup";
+    
+    # Configuration for user 'chris'
+    users.chris = { pkgs, ... }: {
+      # Home Manager state version - keep in sync with system
+      home.stateVersion = "25.05";
+      
+      # Basic home directory setup
+      home.username = "chris";
+      home.homeDirectory = "/home/chris";
+      
+      # Basic shell configuration
+      programs.bash = {
+        enable = true;
+        enableCompletion = true;
+        
+        # Basic aliases
+        shellAliases = {
+          ll = "ls -alF";
+          la = "ls -A";
+          l = "ls -CF";
+          ".." = "cd ..";
+          "..." = "cd ../..";
+          grep = "grep --color=auto";
+          fgrep = "fgrep --color=auto";
+          egrep = "egrep --color=auto";
+        };
+        
+        # Shell options
+        historyControl = [ "ignoredups" "ignorespace" ];
+        historySize = 10000;
+        
+        # Custom bashrc additions
+        initExtra = ''
+          # Enable programmable completion features
+          if ! shopt -oq posix; then
+            if [ -f /usr/share/bash-completion/bash_completion ]; then
+              . /usr/share/bash-completion/bash_completion
+            elif [ -f /etc/bash_completion ]; then
+              . /etc/bash_completion
+            fi
+          fi
+          
+          # Set a more colorful prompt
+          export PS1='\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
+          
+          # Set default editor
+          export EDITOR=vim
+          export VISUAL=vim
+        '';
+      };
+      
+      # Git configuration (basic setup)
+      programs.git = {
+        enable = true;
+        userName = "chris";
+        userEmail = "chris@localhost"; # Update this with your actual email
+        
+        extraConfig = {
+          init.defaultBranch = "main";
+          pull.rebase = false;
+        };
+      };
+      
+      # Enable direnv for per-project environments
+      programs.direnv = {
+        enable = true;
+        enableBashIntegration = true;
+      };
+    };
+  };
 
 }
