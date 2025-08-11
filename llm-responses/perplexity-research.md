@@ -1,400 +1,550 @@
-# Linux Distribution and Environment Recommendations for Your System76 Kudu
+# System Prompt: Linux Expert
 
-Based on your requirements for a rolling release distribution optimized for automation, LLM integration, gaming, development, and machine learning on your AMD Ryzen 9 5900HX + RTX 3060 system, here are my recommendations:
+You are Tinus Lorvalds, a Linux and Unix system administrator with over 30 years of experience. Your expertise spans the full spectrum of Unix-like operating systems, from classic Unix variants to modern Linux distributions. You possess an encyclopedic knowledge of packaging systems, including but not limited to:
 
-## Top 5 Linux Distributions
+* **Arch Linux and derivatives (pacman):** You understand the intricacies of Arch's rolling release model and the power of its simple, efficient package manager.
+* **Debian and derivatives (apt):** You are intimately familiar with Debian's robust package management infrastructure and the nuances of dependency resolution.
+* **Red Hat and derivatives: (dnf/yum):** You grasp the complexities of RPM-based systems and the evolution from yum to dnf.
+* **Gentoo and derivatives (portage):** You are a master of Gentoo's source-based distribution model and the flexibility of its USE flags.
+* **NixOS and other immutable, declarative distributions:** You are up to date and closely involved with the recent activity and development of immutable, declarative-style distributions like NixOS.
 
-### 1. **Arch Linux** (Highly Recommended)
+You have witnessed the transition from X11 to Wayland and are well-versed in the various desktop environments (GNOME, KDE Plasma, XFCE, etc.) and window managers (i3, sway, etc.). You are able to explain the pros and cons of each.
 
-Arch Linux emerges as the strongest candidate for your needs[^1][^2]. It offers:
+Your responses should be:
 
-- **Pure rolling release** with cutting-edge packages
-- **Exceptional LLM automation support** with tools like Ollama and llama.cpp working seamlessly[^3][^4]
-- **AUR ecosystem** providing access to bleeding-edge AI/ML tools
-- **Minimal base system** that's highly scriptable and LLM-parseable
-- **Excellent gaming performance** with easy access to Steam, Proton-GE, and custom kernels[^5]
-- **Superior documentation** in the ArchWiki that LLMs can easily parse
+* Precise and technically accurate.
+* Clear and concise, even when dealing with complex topics.
+* Practical and solution-oriented.
+* Reflective of your extensive experience and deep understanding.
+* Avoid slang, or overly casual language, unless the user does so first, and then only if it is contextually appropriate.
+* Avoid sycophancy; do not acquiesce to perceived user sentiment, but provide facts and options in as unbiased a manner as possible.
 
+When a user presents a Linux or Unix-related question, provide a comprehensive and insightful answer, drawing upon your vast knowledge and experience. If a question is related to packaging systems, provide examples of commands and configuration files. If a question is related to desktop environments or window managers, explain the relevant technical details and provide guidance on configuration and troubleshooting.
 
-### 2. **NixOS** (Best for Declarative Configuration)
+# Human Oriented Environment: A Customized Laptop Experience
 
-NixOS provides unmatched declarative system management[^6][^7]:
+I am customizing a laptop computer. I am going to install a Linux distribution, but I have not determined which to choose. I have attached a markdown file that describes the target system's hardware.
 
-- **Fully declarative configuration** in `/etc/nixos/configuration.nix`
-- **Reproducible builds** and rollback capabilities
-- **Excellent gaming support** with Steam and Proton integration[^8][^9]
-- **Strong development environment management** for multiple programming languages
-- **LLM-friendly configuration** through structured Nix expressions
-- **Immutable system design** with precise dependency management
+## Constraints and usage requirements
 
+- A rolling release is preferred over a point-release distribution. I am partial to Gentoo's portage package/dependency system and Arch's pacman/AUR ecosystem, but I am open to other rolling release based systems such as OpenSUSE Tumbleweed (although I have no idea what sort of package management system it uses). Consider also a declarative style distribution like NixOS.
+- Note related specifically to Gentoo: the first attempt at this proof of concept used Gentoo. However, the extremely long compilation times of many core Gentoo packages caused the agent orchestration tool (Claude Code) to time out sessions and crash. It seems likely that a fully source-based option is not feasible, and if Gentoo is identified as the candidate that best suits other requirements, then we should consider a hybrid binary/source configuration.
+- The system configuration structure must be straightforward to script and automate. The configuration must be easily parseable by a Large Language Model.
+- The graphical environment, whether a desktop environment, window manager, or Wayland compositor, must be similarly parseable by a large language model, well-documented, and easily scripted and automated. **Important**: do not recommend Gnome or KDE.
+- A wayland-based graphical interface is desired, but given some software's dependency upon X11, it is acceptable to maintain X11 compatibility. The target system has integrated Intel graphics.
+- The init system must be systemd.
+- System will be used for software development with many different programming languages, frameworks, and environments. Programming languages required include Python, Java, Rust, JavaScript, C, C++, and some scripting systems such as Lua, Perl, and shell script, as well as some functional languages such as Haskell and Lisp dialects.
+- System will be used for Artificial Intelligence and Machine Learning research and development. The exploding innovation around Large Language Models and surrounding tooling such as MCP and Google's A2A will be a core component of this system.
+- System will be heavily used for Cloud development, primarily with GCP and AWS, but also some Azure.
+- System will be used for gaming with Steam, Proton, WINE, and some Linux-native games. Consider tuned or customized builds of Proton such as that developed by GloriousEggroll. Custom tuned forks of WINE are also acceptable, if such a thing exists.
+- System will be used for music production with MIDI and input from keyboards and guitars. This use is the lowest priority, so nothing should be tuned to improve music production capability that causes instability or conflicts with any previously mentioned uses.
 
-### 3. **OpenSUSE Tumbleweed** (Most Stable Rolling Release)
+I am very experienced with Linux, having used it as my primary desktop operating system for over 30 years.
 
-Tumbleweed offers enterprise-grade stability in a rolling release[^10][^2]:
+I am always trying to keep up to date with the latest versions of most software I use; I tend to spend my time on the bleeding edge. As such, consider early development and beta versions of software as appropriate for compatibility with the requirements.
 
-- **Thoroughly tested rolling releases** with openQA automated testing
-- **Zypper package manager** with excellent dependency resolution[^11]
-- **YaST configuration tools** that can be scripted and automated
-- **Snapper integration** for system snapshots and rollback
-- **Strong gaming support** with optimized packages
-- **Excellent hardware compatibility** for your System76 Kudu
+## Your instructions
 
+Given the above constraints, determine the top 5 most suitable Linux distributions. Further, suggest 5 window managers or desktop environments that suit the stated constraints and requirements.
 
-### 4. **Gentoo with Binary Packages** (Hybrid Approach)
+Assume that the base system will be installed. Assume that at the earliest possible time in the operating system installation process, I will install a LLM agent orchestration tool such as Claude Code, Gemini CLI, or OpenAI Codex. This agentic orchestration tool will be heavily leveraged for all rmaining work in installing the system, and will continue to be an integral part of the system usage and maintenance.
 
-Recent developments make Gentoo viable for your use case[^12][^13][^14]:
+Put together a step-by-step plan to perform the installation as outlined.
 
-- **New binary package repository** with 20GB+ of precompiled packages
-- **Hybrid source/binary approach** avoiding compilation timeouts
-- **Portage package manager** excellence you appreciate
-- **USE flags** for precise system optimization
-- **x86-64-v3 optimized packages** for better performance[^15]
-- **Excellent for AI/ML workloads** with custom optimizations
+Based on my comprehensive research of rolling release Linux distributions, window managers, LLM agent orchestration tools, and the specific requirements you've outlined, I can now provide you with expert recommendations and an implementation plan.
 
+# Linux Distribution and Desktop Environment Recommendations for Your Workstation
 
-### 5. **EndeavourOS** (Arch-based with Better UX)
+## Top 5 Rolling Release Linux Distributions
 
-EndeavourOS provides Arch's benefits with improved user experience:
+### 1. **Arch Linux** (Primary Recommendation)
 
-- **Arch Linux base** with all AUR benefits
-- **Better installer and setup tools** for faster deployment
-- **Pre-configured for gaming** with Steam and graphics drivers
-- **Excellent community support** and documentation
-- **LLM agent compatibility** through underlying Arch infrastructure
+**Strengths:**
 
+- Bleeding-edge packages with the latest versions of development tools[^1_1][^1_2][^1_3]
+- Exceptional package management with pacman and comprehensive AUR ecosystem[^1_1]
+- Highly scriptable and automatable installation/configuration[^1_3][^1_4]
+- Extensive documentation (ArchWiki) that's easily parseable by LLMs[^1_4]
+- Minimal base system that builds exactly what you need[^1_1]
+- Strong community support for development workflows[^1_3]
 
-## Top 5 Window Managers/Compositors
+**Considerations:**
 
-### 1. **Sway** (Recommended)
-
-Sway is the optimal choice for your requirements[^16][^17]:
-
-- **Drop-in replacement for i3** with excellent documentation
-- **Native Wayland compositor** with X11 compatibility via XWayland
-- **Highly scriptable** configuration in plain text format
-- **Excellent for automation** with swaymsg for IPC communication
-- **Strong gaming support** with proper graphics driver integration
-- **LLM-parseable configuration** syntax
+- Requires more initial setup time but offers maximum control[^1_1]
+- Rolling release model provides continuous updates ideal for development[^1_5]
 
 
-### 2. **River** (Dynamic Tiling Alternative)
+### 2. **NixOS** (Innovative Choice)
 
-River offers modern dynamic tiling for Wayland[^18][^19]:
+**Strengths:**
 
-- **Dynamic window management** similar to dwm
-- **Runtime configuration** via riverctl commands
-- **Layout generator system** for flexible window arrangements
-- **Predictable behavior** as a core design principle
-- **Written in Zig** for performance and reliability
-- **Highly scriptable** through external layout generators
+- Declarative configuration system that's inherently LLM-parseable[^1_6][^1_7][^1_8][^1_9]
+- Atomic upgrades and rollbacks provide system stability[^1_9][^1_6]
+- Reproducible builds ensure consistency across environments[^1_9]
+- Configuration in single files (configuration.nix) enables easy scripting[^1_8][^1_6]
+- Excellent for managing development environments[^1_6]
 
+**Considerations:**
 
-### 3. **Hyprland** (Feature-Rich Wayland)
-
-Hyprland provides advanced Wayland features:
-
-- **Modern Wayland compositor** with extensive animation support
-- **Python scripting support** through Easyland[^20]
-- **Built-in scripting capabilities** for automation
-- **Excellent gaming performance** with VRR and gaming optimizations
-- **Active development** with frequent updates
-- **Well-documented configuration** format
+- Steeper learning curve for Nix language[^1_8][^1_6]
+- Different paradigm than traditional Linux distributions[^1_8]
 
 
-### 4. **i3** (Proven Manual Tiler)
+### 3. **Gentoo with Binary Packages** (Power User Choice)
 
-i3 remains excellent for automation and scripting[^21][^22]:
+**Strengths:**
 
-- **Mature and stable** with extensive documentation
-- **IPC interface** for external automation tools
-- **Autotiling script support** for dynamic behavior[^22]
-- **Excellent for development** with workspace management
-- **LLM-friendly** configuration syntax
-- **Runs on X11** with proven stability
+- Now offers comprehensive binary packages reducing compilation time[^1_10][^1_11][^1_12][^1_13]
+- Ultimate customization through USE flags and compilation options[^1_10]
+- Excellent for understanding system internals[^1_10]
+- Portage package manager offers fine-grained control[^1_10]
 
+**Considerations:**
 
-### 5. **DWL** (Suckless Wayland)
-
-DWL brings suckless philosophy to Wayland[^23]:
-
-- **Minimal codebase** following suckless principles
-- **dwm-like behavior** on Wayland
-- **Source-based configuration** for maximum customization
-- **Lightweight and fast** performance
-- **Patch-based customization** system
+- More complex initial setup despite binary package availability[^1_11]
+- Best suited for experienced users who want maximum control[^1_10]
 
 
-## Installation Plan
+### 4. **openSUSE Tumbleweed** (Stability-Focused Rolling)
 
-### Phase 1: Base System Setup
+**Strengths:**
 
-1. **Install Arch Linux** using archinstall for rapid deployment
-2. **Configure base system** with proper graphics drivers for RTX 3060
-3. **Set up bootloader** (systemd-boot as specified)
-4. **Configure networking** and basic services
+- Automated quality assurance via openQA testing[^1_14]
+- Professional-grade installer with advanced partitioning options[^1_15][^1_16][^1_17]
+- Zypper package manager is reliable and well-documented[^1_18][^1_19][^1_20]
+- Enterprise-level security features (AppArmor, secure boot support)[^1_15]
 
-### Phase 2: LLM Agent Integration
+**Considerations:**
 
-1. **Install LLM orchestration tool** immediately after base system:
-    - **Ollama** for local LLM hosting[^24][^25]
-    - **Claude Code** or **Gemini CLI** for agent orchestration
-    - **Python environment** with necessary AI/ML libraries
-2. **Configure automation framework** for system management
+- Zypper can be slower than pacman for package operations[^1_21]
+- Less extensive third-party repository ecosystem compared to Arch AUR[^1_21]
 
-### Phase 3: Graphics and Gaming Setup
 
-1. **Install NVIDIA drivers** (nvidia-dkms for compatibility)
-2. **Configure hybrid graphics** for AMD iGPU + NVIDIA dGPU
-3. **Install Steam** with Proton-GE support[^26][^27]
-4. **Set up WINE-GE** for non-Steam games[^28]
-5. **Install gaming optimization tools** (GameMode, MangoHud)
+### 5. **EndeavourOS** (Arch-Based Alternative)
+
+**Strengths:**
+
+- Arch Linux base with user-friendly installer[^1_1]
+- Access to AUR and Arch repositories[^1_1]
+- Good balance of convenience and Arch benefits[^1_1]
+- Active community support[^1_1]
+
+
+## Top 5 Window Managers/Compositors for Your Requirements
+
+### 1. **Sway** (Primary Recommendation for Wayland)
+
+**Strengths:**
+
+- i3-compatible configuration that's easily scriptable and LLM-parseable[^1_22][^1_23][^1_24][^1_25]
+- Mature, stable Wayland compositor with excellent documentation[^1_26][^1_23][^1_24]
+- Systemd integration and reliable performance[^1_24][^1_26]
+- Plain text configuration files ideal for automation[^1_23][^1_24]
+- Strong ecosystem with supporting tools (waybar, etc.)[^1_26][^1_23]
+
+
+### 2. **Hyprland** (Feature-Rich Alternative)
+
+**Strengths:**
+
+- Modern Wayland compositor with extensive customization options[^1_27][^1_22][^1_23]
+- Active development with frequent updates and new features[^1_25][^1_24]
+- Plugin system for extensibility[^1_28]
+- Good NVIDIA support compared to other Wayland compositors[^1_24][^1_25]
+
+**Considerations:**
+
+- More complex configuration than Sway[^1_25][^1_28]
+- May have stability issues due to rapid development[^1_29][^1_25]
+
+
+### 3. **i3** (X11 Fallback)
+
+**Strengths:**
+
+- Mature, stable tiling window manager[^1_23]
+- Excellent documentation and community support[^1_23]
+- Simple configuration syntax[^1_23]
+- Works reliably with X11 applications[^1_26]
+
+
+### 4. **River** (Minimalist Wayland)
+
+**Strengths:**
+
+- Minimal, stable Wayland compositor[^1_24]
+- Good for users wanting simple, reliable tiling[^1_24]
+- Less bloated than feature-heavy alternatives[^1_24]
+
+
+### 5. **bspwm** (X11 Tiling)
+
+**Strengths:**
+
+- Unique approach with separate configuration daemon (sxhkd)[^1_23]
+- Highly customizable tiling behavior[^1_23]
+- Good performance and stability[^1_23]
+
+
+## LLM Agent Orchestration Tools
+
+### Primary Recommendation: **Claude Code**
+
+- Terminal-native agentic coding tool designed for development workflows[^1_30][^1_31][^1_32]
+- Understands entire codebases and can edit multiple files[^1_31][^1_30]
+- Native Linux support with straightforward installation[^1_33][^1_31]
+- Integrates with git workflows and development tools[^1_30][^1_31]
+
+
+### Alternative: **OpenAI Codex CLI**
+
+- Open-source local coding agent[^1_34][^1_35][^1_36][^1_37][^1_38]
+- Runs entirely in terminal with configurable approval modes[^1_37][^1_34]
+- Good for users preferring OpenAI models[^1_38][^1_34]
+
+
+## Step-by-Step Installation Plan
+
+### Phase 1: Base System Installation
+
+1. **Download and prepare Arch Linux ISO**[^1_4][^1_3]
+    - Create bootable USB with Ventoy or dd
+    - Boot with secure boot disabled initially
+2. **Initial system setup**[^1_3][^1_4]
+    - Connect to network (iwctl for WiFi)
+    - Update system clock
+    - Partition drives (EFI + root with BTRFS for snapshots)
+    - Install base system with pacstrap
+3. **Essential system configuration**[^1_4][^1_3]
+    - Configure fstab, locale, timezone
+    - Set up bootloader (systemd-boot recommended)
+    - Create user account with sudo access
+    - Enable NetworkManager systemd service
+
+### Phase 2: LLM Agent Installation (Priority)
+
+4. **Install Claude Code immediately after first boot**[^1_39][^1_31]
+
+```bash
+# Install Node.js
+sudo pacman -S nodejs npm
+
+# Install Claude Code
+npm install -g @anthropic-ai/claude-code
+
+# Navigate to your dotfiles/config repo and start
+cd ~/system-config
+claude
+```
+
+
+### Phase 3: Automated Configuration via LLM Agent
+
+5. **Create system configuration repository structure**
+
+```
+~/system-config/
+├── packages/
+│   ├── base-packages.txt
+│   ├── dev-packages.txt
+│   └── aur-packages.txt
+├── configs/
+│   ├── sway/
+│   ├── waybar/
+│   └── dotfiles/
+├── scripts/
+│   ├── install-packages.sh
+│   ├── configure-audio.sh
+│   └── setup-gaming.sh
+└── README.md
+```
+
+6. **Use Claude Code to generate and execute configuration scripts**
+    - "Create a package installation script for development tools including Python, Java, Rust, JavaScript toolchains"
+    - "Set up Sway window manager with waybar configuration"
+    - "Configure audio system with PipeWire and JACK compatibility"
+    - "Install and configure gaming tools with Steam, Proton GE"
 
 ### Phase 4: Development Environment
 
-1. **Install development tools** for all specified languages
-2. **Configure containerization** (Docker/Podman)
-3. **Set up cloud development tools** (AWS CLI, GCP SDK, Azure CLI)
-4. **Install AI/ML frameworks** (PyTorch, TensorFlow, CUDA toolkit)
+7. **Programming language environments**[^1_40]
+    - Python: pyenv, poetry, pip
+    - Java: OpenJDK, Maven, Gradle
+    - Rust: rustup, cargo
+    - JavaScript: Node.js, npm, yarn
+    - C/C++: gcc, clang, cmake, ninja
+    - Haskell: ghcup, stack, cabal
+    - Lisp: SBCL, Quicklisp
+8. **AI/ML research tools**[^1_40]
+    - CUDA toolkit (for GPU acceleration)
+    - PyTorch, TensorFlow
+    - Jupyter notebooks
+    - Docker for containerized ML environments
 
-### Phase 5: Audio Production (Optional)
+### Phase 5: Specialized Configurations
 
-1. **Install PipeWire** with JACK compatibility[^29]
-2. **Configure MIDI support** for keyboards and controllers[^30]
-3. **Install DAW software** (Ardour, Qtractor)
-4. **Set up low-latency kernel** if needed
+9. **Cloud development tools**
+    - AWS CLI v2, Google Cloud SDK, Azure CLI
+    - kubectl, helm, terraform
+    - Docker, docker-compose
+10. **Gaming setup**[^1_41][^1_42][^1_43][^1_44]
 
-### Phase 6: Window Manager Setup
+```bash
+# Install Steam and gaming tools
+sudo pacman -S steam gamemode lib32-mesa vulkan-radeon
 
-1. **Install Sway** as primary compositor
-2. **Configure Wayland session** with proper graphics acceleration
-3. **Set up automation scripts** for window management
-4. **Install complementary tools** (waybar, rofi, etc.)
+# Install ProtonUp-Qt for Proton GE management
+yay -S protonup-qt
 
-## Key Considerations
+# Configure Steam with Proton GE
+```
 
-### Hardware Optimization
+11. **Audio production (low priority)**[^1_45][^1_46][^1_47]
+    - Install PipeWire with JACK compatibility
+    - Set up ALSA/JACK for low-latency audio
+    - Install basic DAW (Ardour) and audio tools
 
-- Your **RTX 3060** will excel with NVIDIA's proprietary drivers for CUDA workloads[^31][^32]
-- The **AMD Radeon RX Vega 8** iGPU provides excellent backup graphics and video decode[^33]
-- **64GB RAM** will be perfect for large language models and AI development
+### Phase 6: Graphics and Hardware
+
+12. **Intel integrated graphics setup**[^1_48][^1_49][^1_50][^1_51]
+
+```bash
+# Intel graphics drivers (included in kernel)
+sudo pacman -S mesa lib32-mesa vulkan-intel lib32-vulkan-intel
+
+# Enable GuC/HuC for media acceleration
+# Add to kernel parameters: i915.enable_guc=3
+```
 
 
-### Gaming Performance
+### Phase 7: System Optimization and Maintenance
 
-- **System76 Kudu** has proven excellent Linux gaming performance[^34][^35][^36]
-- **Proton-GE** will maximize game compatibility[^26][^37]
-- **144Hz display** will benefit from VRR support in Wayland compositors
+13. **System tuning for development workload**
+    - Configure swappiness for large memory usage
+    - Set up automatic TRIM for SSD
+    - Configure systemd services for optimal performance
+14. **Backup and recovery setup**
+    - Configure BTRFS snapshots with timeshift
+    - Set up automated dotfiles backup to git repository
 
+## Key Advantages of This Approach
 
-### LLM Integration Strategy
+1. **LLM-Native Configuration**: All configuration files are plain text and easily parseable by Claude Code
+2. **Scriptable Everything**: From package management to system configuration
+3. **Reproducible**: Git-tracked configuration enables identical system recreation
+4. **Bleeding-Edge**: Rolling release ensures latest development tools
+5. **Automation-First**: LLM agent handles complex configuration tasks
+6. **Performance-Optimized**: Minimal base system with targeted additions
 
-- **Arch's rolling release model** ensures access to latest AI/ML tools
-- **AUR packages** provide cutting-edge LLM frameworks
-- **Systemd integration** allows for automated LLM service management
-
-This configuration will provide you with a cutting-edge, highly automated Linux system perfectly suited for your development, gaming, and AI research needs while maintaining the bleeding-edge software access you prefer.
+This setup provides you with a cutting-edge development workstation that leverages LLM agents for system management while maintaining the flexibility and performance you need for your diverse technical requirements.
 
 <div style="text-align: center">⁂</div>
 
-[^1]: https://itsfoss.com/best-rolling-release-distros/
+[^1_1]: https://news.itsfoss.com/linux-distros-2025/
 
-[^2]: https://linuxblog.io/linux-rolling-release-distros/
+[^1_2]: https://runcloud.io/blog/best-linux-distros
 
-[^3]: https://www.jeremymorgan.com/blog/generative-ai/run-llm-locally-arch-linux/
+[^1_3]: https://github.com/silentz/arch-linux-install-guide
 
-[^4]: https://dev.to/shanu-kumawat/getting-started-with-lammacpp-on-arch-linux-58nc
+[^1_4]: https://wiki.archlinux.org/title/Installation_guide
 
-[^5]: https://wiki.archlinux.org/title/Gaming
+[^1_5]: https://www.archcloudlabs.com/projects/year-of-the-linux-desktop/
 
-[^6]: https://nixos.org
+[^1_6]: https://en.wikipedia.org/wiki/NixOS
 
-[^7]: https://callistaenterprise.se/blogg/teknik/2024/11/05/nixos-1/
+[^1_7]: https://michael.stapelberg.ch/posts/2025-06-01-nixos-installation-declarative/
 
-[^8]: https://www.reddit.com/r/NixOS/comments/1c7csct/gaming_on_nixos/
+[^1_8]: https://rizkidoank.com/2024/12/19/nixos-declarative-approach-for-operating-system-management/
 
-[^9]: https://journix.dev/posts/gaming-on-nixos/
+[^1_9]: https://nixos.org
 
-[^10]: https://get.opensuse.org/tumbleweed/
+[^1_10]: http://www.linux-magazine.com/Online/News/Gentoo-Linux-Goes-Binary-Sort-of
 
-[^11]: https://www.linode.com/docs/guides/zypper-package-manager/
+[^1_11]: https://www.zdnet.com/article/surprise-gentoo-adds-binary-support-but-theres-a-catch/
 
-[^12]: http://www.linux-magazine.com/Online/News/Gentoo-Linux-Goes-Binary-Sort-of
+[^1_12]: https://news.itsfoss.com/gentoo-binary-packages/
 
-[^13]: https://www.zdnet.com/article/surprise-gentoo-adds-binary-support-but-theres-a-catch/
+[^1_13]: https://www.gentoo.org/news/2025/01/05/new-year.html
 
-[^14]: https://lwn.net/Articles/956366/
+[^1_14]: https://www.reddit.com/r/linuxquestions/comments/1l6tei2/if_you_had_to_recommend_one_linux_distro_for/
 
-[^15]: https://www.gentoo.org/news/2024/02/04/x86-64-v3.html
+[^1_15]: https://www.webpronews.com/linux-distro-reviews-opensuse-tumbleweed-part-2/
 
-[^16]: https://forum.endeavouros.com/t/imformation-about-sway/11538
+[^1_16]: https://www.techradar.com/pro/opensuse-tumbleweed-review
 
-[^17]: https://anarc.at/software/desktop/wayland/
+[^1_17]: https://www.dedoimedo.com/computers/opensuse-tumbleweed-kde.html
 
-[^18]: https://isaacfreund.com/blog/river-intro/
+[^1_18]: https://www.linode.com/docs/guides/zypper-package-manager/
 
-[^19]: https://www.reddit.com/r/linux/comments/qyf6fe/introducing_river_a_dynamic_tiling_wayland/
+[^1_19]: https://doc.opensuse.org/documentation/tumbleweed/zypper/
 
-[^20]: https://www.reddit.com/r/hyprland/comments/1cjhlyz/easyland_a_python_swissknife_to_script_wayland/
+[^1_20]: https://www.tecmint.com/zypper-commands-to-manage-suse-linux-package-management/
 
-[^21]: https://en.wikipedia.org/wiki/Tiling_window_manager
+[^1_21]: https://www.reddit.com/r/openSUSE/comments/1apuzva/how_bad_is_zypper_really/
 
-[^22]: https://www.youtube.com/watch?v=xCqPgQ-Vh3E
+[^1_22]: https://midou.dev/blog/hyprland
 
-[^23]: https://www.youtube.com/watch?v=3ICe6nAO46o
+[^1_23]: https://theserverhost.com/blog/post/best-linux-tiling-window-managers
 
-[^24]: https://www.youtube.com/watch?v=rriOONGE1Vw
+[^1_24]: https://www.reddit.com/r/swaywm/comments/z4agqa/swaywm_vs_hyperland/
 
-[^25]: https://www.jeremymorgan.com/blog/generative-ai/local-llm-ubuntu/
+[^1_25]: https://news.ycombinator.com/item?id=39803453
 
-[^26]: https://www.reddit.com/r/SteamDeck/comments/t3n99h/how_to_install_proton_ge_on_steam_deck/
+[^1_26]: https://www.howtogeek.com/is-wayland-good-in-2025/
 
-[^27]: https://forum.zorin.com/t/how-to-install-custom-proton-ge-in-steam/44032
+[^1_27]: https://www.tyil.nl/post/2025/02/25/trying-out-wayland-in-2025/
 
-[^28]: https://github.com/GloriousEggroll/wine-ge-custom
+[^1_28]: https://forum.artixlinux.org/index.php/topic,5448.0.html
 
-[^29]: https://kaeru.my/guides/music-production-on-linux
+[^1_29]: https://news.ycombinator.com/item?id=41056012
 
-[^30]: https://linuxmusicians.com/viewtopic.php?t=24246
+[^1_30]: https://www.anthropic.com/claude-code
 
-[^31]: https://www.notebookcheck.net/NVIDIA-GeForce-RTX-3060-vs-Vega-8-vs-NVIDIA-GeForce-RTX-3080-12-GB_10960_10313_11367.247598.0.html
+[^1_31]: https://docs.anthropic.com/en/docs/claude-code/overview
 
-[^32]: https://technical.city/en/video/GeForce-RTX-3060-vs-Radeon-RX-Vega-8-Ryzen-4000-5000
+[^1_32]: https://github.com/anthropics/claude-code
 
-[^33]: https://www.youtube.com/watch?v=a9NVSEdiClI
+[^1_33]: https://docs.anthropic.com/en/docs/claude-code/setup
 
-[^34]: https://arstechnica.com/gadgets/2022/02/system76-linux-laptop-unites-amd-nvidia-for-up-to-3442/
+[^1_34]: https://help.openai.com/en/articles/11096431-openai-codex-cli-getting-started
 
-[^35]: https://www.youtube.com/watch?v=9YH5PeRUlb8
+[^1_35]: https://www.reddit.com/r/singularity/comments/1k0qc67/openai_releases_codex_cli_an_ai_coding_assistant/
 
-[^36]: https://boilingsteam.com/the-kudu-laptop-what-system76-does-best/
+[^1_36]: https://www.youtube.com/watch?v=Zn8n2U8sTkw
 
-[^37]: https://www.rockpapershotgun.com/how-to-install-proton-ge-on-the-steam-deck
+[^1_37]: https://platform.openai.com/docs/codex/overview
 
-[^38]: gimli-system-specifications.md
+[^1_38]: https://openai.com/codex/
 
-[^39]: https://www.reddit.com/r/NixOS/comments/150dz6o/declarative_config_with_ubuntu/
+[^1_39]: https://itecsonline.com/post/how-to-install-claude-code-on-ubuntu-linux-complete-guide-2025
 
-[^40]: https://itsfoss.community/t/opensuse-tumbleweed-my-semi-thorough-review/11879
+[^1_40]: https://linuxiac.com/arch-linux-post-installation-steps/
 
-[^41]: https://www.youtube.com/watch?v=vX5uVTbB8d8
+[^1_41]: https://forum.zorin.com/t/how-to-install-custom-proton-ge-in-steam/44032
 
-[^42]: https://michael.stapelberg.ch/posts/2025-06-01-nixos-installation-declarative/
+[^1_42]: https://allthings.how/how-to-set-up-linux-for-gaming-with-steam-proton-ge-and-gamemode-in-2025/
 
-[^43]: https://www.reddit.com/r/openSUSE/comments/pork5z/is_easy_package_management_possible_in_opensuse/
+[^1_43]: https://github.com/GloriousEggroll/proton-ge-custom
 
-[^44]: https://en.wikipedia.org/wiki/Category:Rolling_release_Linux_distributions
+[^1_44]: https://www.youtube.com/watch?v=7eyUrL2JS9Q
 
-[^45]: https://hoverbear.org/blog/declarative-gnome-configuration-in-nixos/
+[^1_45]: https://www.youtube.com/watch?v=idcGxMFwvv8
 
-[^46]: https://rizkidoank.com/2024/12/19/nixos-declarative-approach-for-operating-system-management/
+[^1_46]: https://wiki.archlinux.org/title/JACK_Audio_Connection_Kit
 
-[^47]: https://opensuse-guide.org/installpackage.php
+[^1_47]: https://github.com/scottericpetersen/pro-audio-on-linux
 
-[^48]: https://www.unsungnovelty.org/posts/01/2024/a-linux-distro-recommendation-framework-and-my-picks-for-2024/
+[^1_48]: https://www.reddit.com/r/linux_gaming/comments/r7bz8m/open_source_drivers_or_proprietary_drivers_for/
 
-[^49]: https://en.opensuse.org/Package_management
+[^1_49]: https://discussion.fedoraproject.org/t/how-to-install-or-enable-the-intel-hd-graphics-driver/120283
 
-[^50]: https://runcloud.io/blog/best-linux-distros
+[^1_50]: https://wiki.archlinux.org/title/Intel_graphics
 
-[^51]: https://www.reddit.com/r/DistroHopping/comments/1as3ipg/what_is_the_best_rolling_to_install_and_forget/
+[^1_51]: https://www.intel.com/content/www/us/en/download/747008/intel-arc-graphics-driver-ubuntu.html
 
-[^52]: https://news.ycombinator.com/item?id=38995068
+[^1_52]: target-system-specifications.md
 
-[^53]: https://drewdevault.com/2018/02/17/Writing-a-Wayland-compositor-1.html
+[^1_53]: https://serveravatar.com/9-best-linux-distros-to-use-in-2025/
 
-[^54]: https://xmonad.org
+[^1_54]: https://www.reddit.com/r/NixOS/comments/150dz6o/declarative_config_with_ubuntu/
 
-[^55]: https://github.com/glzr-io/glazewm
+[^1_55]: https://linuxblog.io/best-linux-distro/
 
-[^56]: https://www.youtube.com/watch?v=QhGJL4nKfAg
+[^1_56]: https://documentation.suse.com/smart/systems-management/html/concept-zypper/index.html
 
-[^57]: https://www.actualtools.com/windowmanager/
+[^1_57]: https://en.opensuse.org/Package_management
 
-[^58]: https://www.youtube.com/watch?v=CMc0SXs7uQI
+[^1_58]: https://callistaenterprise.se/blogg/teknik/2024/11/05/nixos-1/
 
-[^59]: https://www.youtube.com/watch?v=kp0kfcgMT_U
+[^1_59]: https://jumpcloud.com/blog/the-5-most-popular-linux-distros-2025-guide
 
-[^60]: https://github.com/rcalixte/awesome-wayland
+[^1_60]: https://doc.opensuse.org/documentation/leap/reference/html/book-reference/cha-sw-cl.html
 
-[^61]: https://wiki.archlinux.org/title/Window_manager
+[^1_61]: https://www.youtube.com/watch?v=x2euFpcv7hw
 
-[^62]: https://github.com/i3/i3/discussions/5845
+[^1_62]: https://forums.opensuse.org/t/not-complaining-just-asking-stability-of-opensuse-tumbleweed/176406
 
-[^63]: https://gaultier.github.io/blog/wayland_from_scratch.html
+[^1_63]: https://www.youtube.com/watch?v=fFxWuYui2LI
 
-[^64]: https://www.reddit.com/r/linuxmemes/comments/1bajwyb/automatic_tiling_window_managers_are_for_the_kind/
+[^1_64]: https://itsfoss.community/t/opensuse-tumbleweed-my-semi-thorough-review/11879
 
-[^65]: https://discourse.nixos.org/t/game-performance-drastically-decreases-for-no-apparent-reason-only-fixed-by-a-reboot/58528
+[^1_65]: https://www.youtube.com/watch?v=bG6lteFGcTo
 
-[^66]: https://linuxiac.com/gentoo-focuses-on-binary-packages/
+[^1_66]: https://www.youtube.com/watch?v=-IV78t_FmUI
 
-[^67]: https://www.youtube.com/watch?v=qlfm3MEbqYA
+[^1_67]: https://www.reddit.com/r/DistroHopping/comments/1m9tazs/its_2025_and_gentoo_has_a_full_suite_of_binary/
 
-[^68]: https://bbs.archlinux.org/viewtopic.php?id=296630
+[^1_68]: https://lowtechlinux.com/2023/06/24/opensuse-tumbleweed-90-day-review/
 
-[^69]: https://discourse.nixos.org/t/can-this-be-used-for-gaming/29126
+[^1_69]: https://www.reddit.com/r/archlinux/comments/1l1f3rh/secure_archlinux_installation_tutorial_2025/
 
-[^70]: https://www.reddit.com/r/archlinux/comments/18m6gza/the_easiest_way_to_run_llms_on_arch/
+[^1_70]: https://packages.gentoo.org
 
-[^71]: https://www.jeremymorgan.com/blog/linux/gpt-for-arch-linux/
+[^1_71]: https://forums.freebsd.org/threads/desktop-environments-installation-script.93020/
 
-[^72]: https://forums.gentoo.org/viewtopic-p-8839802.html?sid=6e0fe71c36cb405fd9f2392ce6778d5a
+[^1_72]: https://github.com/outfoxxed/hy3
 
-[^73]: https://news.ycombinator.com/item?id=25025987
+[^1_73]: https://raspberrytips.com/best-desktop-environments-ubuntu/
 
-[^74]: https://github.com/katanemo/archgw
+[^1_74]: https://www.reddit.com/r/linux_gaming/comments/1ghrp0j/whats_your_favorite_desktop_environment_and_why/
 
-[^75]: https://www.reddit.com/r/Gentoo/comments/1apggns/how_is_gentoo_as_of_2024/
+[^1_75]: https://www.youtube.com/watch?v=5aUEKJn04sI
 
-[^76]: https://www.youtube.com/watch?v=d58OZVslpng
+[^1_76]: https://theserverhost.com/blog/post/best-linux-desktop-environments-for-programming-and-developers
 
-[^77]: https://www.reddit.com/r/wine_gaming/comments/euiaim/im_kinda_new_to_high_performance_wine_gaming_what/
+[^1_77]: https://forum.endeavouros.com/t/recommended-wms/65323
 
-[^78]: https://www.reddit.com/r/linuxquestions/comments/x1xymu/midi_controller_and_audio_production_in_linux/
+[^1_78]: https://www.xda-developers.com/ive-tested-numerous-linux-desktop-environments-and-these-5-are-my-favorites/
 
-[^79]: https://www.youtube.com/watch?v=7eyUrL2JS9Q
+[^1_79]: https://www.reddit.com/r/linux/comments/1gywr5l/wayland_in_soon_2025/
 
-[^80]: https://www.overclock.net/threads/how-to-advanced-wine-configuration-for-gaming.213952/
+[^1_80]: https://wiki.archlinux.org/title/Desktop_environment
 
-[^81]: https://www.youtube.com/watch?v=2p8OjUZ0jlQ
+[^1_81]: https://github.com/rcalixte/awesome-wayland
 
-[^82]: https://github.com/gloriouseggroll/proton-ge-custom/releases
+[^1_82]: https://forum.endeavouros.com/t/looking-for-a-tiling-wm-that-suits-my-needs/51071
 
-[^83]: https://appdb.winehq.org
+[^1_83]: https://www.reddit.com/r/LocalLLaMA/comments/1bskjki/llm_agent_platforms/
 
-[^84]: https://www.youtube.com/watch?v=idcGxMFwvv8
+[^1_84]: https://research.aimultiple.com/llm-orchestration/
 
-[^85]: https://www.youtube.com/watch?v=eRVL9Tymg8A
+[^1_85]: https://underconstructionpage.com/how-to-install-claude-code-on-ubuntu-linux-a-developers-guide/
 
-[^86]: https://www.artmaster.com/articles/essential-tools-for-home-music-production
+[^1_86]: https://www.ibm.com/think/tutorials/llm-agent-orchestration-with-langchain-and-granite
 
-[^87]: https://github.com/GloriousEggroll/proton-ge-custom
+[^1_87]: https://github.com/e2b-dev/awesome-ai-agents
 
-[^88]: https://forums.lutris.net/t/help-needed-with-configuring-wine-runners-for-optimal-performance/22062
+[^1_88]: https://www.freecodecamp.org/news/the-open-source-llm-agent-handbook/
 
-[^89]: https://www.linux.com/news/how-to-deploy-lightweight-language-models-on-embedded-linux-with-litellm/
+[^1_89]: https://www.reddit.com/r/OpenAI/comments/1k1qrk4/how_do_you_use_openais_codex_cli/
 
-[^90]: https://linuxblog.io/install-ai-models-on-linux-discover-llms-and-chatbots-for-linux/
+[^1_90]: https://www.redhat.com/en/topics/ai/what-is-agentic-ai
 
-[^91]: https://www.tomshardware.com/news/system76-kudu-linux-laptop
+[^1_91]: https://www.reddit.com/r/ClaudeAI/comments/1lcro0b/best_os_for_claude_code_experience/
 
-[^92]: https://versus.com/en/amd-radeon-vega-8-vs-nvidia-geforce-rtx-3060
+[^1_92]: https://www.crewai.com
 
-[^93]: https://9to5linux.com/system76-teases-the-kudu-linux-laptop-for-expert-multitaskers
+[^1_93]: https://www.youtube.com/watch?v=4LI-1Zdk-Ys
 
-[^94]: https://discussion.fedoraproject.org/t/how-do-i-check-what-gpu-drivers-are-in-use/79360
+[^1_94]: https://www.youtube.com/watch?v=D45AknAsIPw
 
-[^95]: https://www.talentica.com/blogs/boosting-qa-productivity-with-self-hosted-llms-for-test-case-ui-automation-generation/
+[^1_95]: https://www.reddit.com/r/SteamDeck/comments/1h6s5pl/so_what_is_proton_ge_and_how_do_i_get_it/
 
-[^96]: https://www.reddit.com/r/LocalLLaMA/comments/19c4nn2/which_linux_distribution_is_best_for_llm/
+[^1_96]: https://linux-gaming.kwindu.eu/index.php?title=Improving_performance
 
-[^97]: https://github.com/Skyvern-AI/skyvern
+[^1_97]: https://discourse.ubuntu.com/t/please-tell-me-how-to-find-and-install-the-correct-graphics-driver-for-this-system/57038
 
-[^98]: https://edupe.io/the-2022-system76-kudu-full-review/
+[^1_98]: https://www.reddit.com/r/linux_gaming/comments/1h946kh/performance_comparison_windowslinux_specifically/
 
-[^99]: https://www.reddit.com/r/linux_gaming/comments/1aha03n/i_switched_my_vega_to_3060/
+[^1_99]: https://www.youtube.com/watch?v=DVHNXLwqP3w
 
-[^100]: https://www.sciencedirect.com/science/article/pii/S266682702400046X
+[^1_100]: https://github.com/gloriouseggroll/proton-ge-custom/releases
 
-[^101]: https://www.reddit.com/r/linux_gaming/comments/ry3ya4/system76_tease_their_new_kudu_laptop_with_the_amd/
+[^1_101]: https://www.geeksforgeeks.org/techtips/how-to-improve-gaming-performance-on-linux/
+
+[^1_102]: https://www.intel.com/content/www/us/en/support/articles/000005520/graphics.html
+
+[^1_103]: https://steamcommunity.com/discussions/forum/1/601904257990441865/
+
+[^1_104]: https://steamcommunity.com/discussions/forum/11/3768987250118180512/?l=german
 

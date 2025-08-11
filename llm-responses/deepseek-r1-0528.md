@@ -1,171 +1,165 @@
-# System76 Kudu Custom LLM-Friendly Developer Gaming Laptop Build
-
-### Top 5 Distribution Recommendations
-1. **NixOS (Declarative)**  
-   - **Why**: Ideal for scriptability/LLM parsing due to declarative configuration. Atomic updates ensure stability. Excellent for development environments and reproducible AI/ML workflows. Hybrid graphics support via Nix expressions.
-   - **Package Manager**: Nix (with flakes for versioning)
-   - **Rolling Option**: `nixos-unstable` channel
-   - **GPU Handling**: Pre-configured NVIDIA PRIME offloading
-
-2. **Arch Linux (Binary)**  
-   - **Why**: Bleeding-edge packages with AUR access. Pacman's simplicity aids automation. Artix (systemd variant) possible if avoiding Arch's installer.
-   - **Package Manager**: Pacman + AUR helpers (e.g., `paru`)
-   - **GPU Handling**: `optimus-manager` or `nvidia-prime`
-
+### **Top 5 Linux Distributions**
+1. **Arch Linux**  
+   - **Why**: Bleeding-edge rolling release with unparalleled documentation. Pacman + AUR provides access to 95% of Linux software. Configuration files are simple text-based (ideal for LLM parsing). Avoids Gentoo's compilation delays.
+2. **NixOS**  
+   - **Why**: Fully declarative configuration (single `configuration.nix` file) is perfect for LLM automation. Atomic updates and reproducibility align with your automation goals. Use `unstable` channel for rolling updates.
 3. **Gentoo (Hybrid Binary/Source)**  
-   - **Why**: Balance Portage flexibility with reduced compile times via `binhost` setup. Use binaries for large packages (Chromium, LibreOffice, LLVM).
-   - **Config**: Set `FEATURES="getbinpkg"` in `make.conf`
-   - **GPU Handling**: `envycontrol` for GPU switching
+   - **Why**: Portage's flexibility meets your preferences. Configure with:  
+     ```bash
+     # Enable binary packages for heavy dependencies
+     FEATURES="buildpkg"  
+     EMERGE_DEFAULT_OPTS="--usepkg --getbinpkg"
+     ```
+     Use [Gentoo binhost](https://wiki.gentoo.org/wiki/Binary_package_guide) for critical packages (gcc, llvm, rust). Retains USE flag customization.
+4. **openSUSE Tumbleweed**  
+   - **Why**: Rolling release with rigorous testing (`zypper` package manager). Uses human-readable YAML for configuration (good for LLMs). Robust Btrfs snapshots provide rollback safety.
+5. **Fedora Rawhide**  
+   - **Why**: Bleeding-edge packages with faster updates than stable Fedora. DNF package manager supports modular dependencies. SELinux enhances security for cloud/AI work.
 
-4. **openSUSE Tumbleweed (Binary)**  
-   - **Why**: Robust rolling release (`zypper`). YaST configurations are scriptable via XML. OBS provides custom packages.
-   - **Package Manager**: Zypper + OBS
-   - **GPU Handling**: `suse-prime` for NVIDIA
+---
 
-5. **Fedora Rawhide (Binary)**  
-   - **Why**: Bleeding-edge with reliable SELinux integration. DNF configurations are YAML-based for LLM parsing.
-   - **Package Manager**: DNF
-   - **GPU Handling**: `akmod-nvidia` + `xorg-x11-drv-nvidia-power`
-
-### Window Manager Recommendations (Wayland-Compatible)
-1. **Hyprland**  
-   - **Why**: Dynamic tiling with declarative config (hyprland.conf). Explicit NVIDIA support. Low-latency rendering for gaming.
-   - **Automation**: Config files support variable substitution
-   - **Best for**: Gaming/development balance
-
-2. **Sway**  
-   - **Why**: i3-compatible with strict Wayland support. Config uses plaintext. Battle-tested for stability.
-   - **Automation**: `swaymsg` for runtime control
-   - **Best for**: Development focus
-
+### **Top 5 Window Managers (Wayland-Compatible)**
+1. **Sway**  
+   - **Why**: i3-compatible Wayland compositor. Configured via single text file (`~/.config/sway/config`). Ideal for scripting. Lightweight with full Wayland support.
+2. **Hyprland**  
+   - **Why**: Dynamic tiling with animations. HIGHLY scriptable via `hyprland.conf`. Active development and GPU acceleration (good for gaming).
 3. **River**  
-   - **Why**: Simple Lua-configurable tiling. Explicit NVIDIA support. Low resource footprint.
-   - **Automation**: Lua scripts for dynamic layouts
-   - **Best for**: GPU-heavy workflows
+   - **Why**: Simple scripting API (configured via executable shell script). Minimalist design with full Wayland protocol support.
+4. **Wayfire**  
+   - **Why**: Modular plugin system. Configuration via `wayfire.ini` (INI-style). Supports XWayland for compatibility.
+5. **Labwc (Lightweight)**
+   - **Why**: Openbox-like for Wayland. XML configuration files easy for LLMs to parse. Supports themes and panels.
 
-4. **Qtile (Wayland Preview)**  
-   - **Why**: Python-configured. Extensible via plugins. Experimental Wayland support.
-   - **Automation**: Full API access for scripting
-   - **Best for**: Python-centric development
+---
 
-5. **Labwc**  
-   - **Why**: Openbox-compatible with XML configs. Lightweight but XDG-compliant.
-   - **Automation**: `obconf`-style declarative theming
-   - **Best for**: Music production low overhead
-
-### Installation Plan
-**Phase 1: Base System (NixOS Example)**
-1. Prepare installation media:  
+### **Step-by-Step Installation Plan**
+**Phase 1: Base System (Arch Linux Example)**  
+1. **Boot Arch ISO**:  
    ```bash
-   nix-shell -p nixos-install-tools
+   iwctl station wlan0 connect "SSID"  # Connect to WiFi
+   timedatectl set-ntp true
+   ```
+
+2. **Partitioning (4TB SSD)**:  
+   - ESP (500MB), swap (64GB), Btrfs root (remainder)  
+   ```bash
    parted /dev/nvme0n1 mklabel gpt
-   parted /dev/nvme0n1 mkpart ESP fat32 1MiB 1GiB
-   parted /dev/nvme0n1 mkpart swap linux-swap 1GiB 17GiB
-   parted /dev/nvme0n1 mkpart root xfs 17GiB 100%
+   parted /dev/nvme0n1 mkpart ESP fat32 1MiB 501MiB
+   parted /dev/nvme0n1 set 1 esp on
+   parted /dev/nvme0n1 mkpart primary linux-swap 501MiB 64.5GiB
+   parted /dev/nvme0n1 mkpart primary btrfs 64.5GiB 100%
+   ```
+
+3. **Format & Mount**:  
+   ```bash
    mkfs.fat -F32 /dev/nvme0n1p1
    mkswap /dev/nvme0n1p2
-   mkfs.xfs /dev/nvme0n1p3
+   mkfs.btrfs -f /dev/nvme0n1p3
+   mount /dev/nvme0n1p3 /mnt
+   btrfs subvolume create /mnt/@
+   btrfs subvolume create /mnt/@home
+   umount /mnt
+   mount -o noatime,compress=zstd:3,subvol=@ /dev/nvme0n1p3 /mnt
+   mkdir -p /mnt/{boot,home}
+   mount /dev/nvme0n1p1 /mnt/boot
+   mount -o noatime,compress=zstd:3,subvol=@home /dev/nvme0n1p3 /mnt/home
+   swapon /dev/nvme0n1p2
    ```
 
-2. Configure hardware:  
-   ```nix
-   # /etc/nixos/hardware.nix
-   { config, ... }: {
-     boot.initrd.kernelModules = ["nvidia"];
-     hardware.nvidia = {
-       modesetting.enable = true;
-       prime = {
-         offload.enable = true;
-         amdgpuBusId = "PCI:5:0:0";
-         nvidiaBusId = "PCI:1:0:0";
-       };
-     };
-   }
-   ```
-
-3. Minimal install:  
+4. **Install System**:  
    ```bash
-   nixos-generate-config --root /mnt
-   nixos-install --flake github:yourusername/yourrepo#kudu
+   pacstrap /mnt base linux linux-firmware intel-ucode btrfs-progs \
+              networkmanager nano sudo
    ```
 
-**Phase 2: LLM Orchestration Early Integration**
+5. **FSTAB & Chroot**:  
+   ```bash
+   genfstab -U /mnt >> /mnt/etc/fstab
+   arch-chroot /mnt
+   ```
+
+6. **Configure Base**:  
+   ```bash
+   ln -sf /usr/share/zoneinfo/Region/City /etc/localtime
+   hwclock --systohc
+   echo "LANG=en_US.UTF-8" > /etc/locale.conf
+   echo "KEYMAP=us" > /etc/vconsole.conf
+   passwd  # Set root password
+   ```
+
+7. **Bootloader (systemd-boot)**:  
+   ```bash
+   bootctl install
+   echo "options root=UUID=$(blkid -s UUID -o value /dev/nvme0n1p3) rootflags=subvol=@" > /boot/loader/entries/arch.conf
+   echo "initrd /intel-ucode.img" >> /boot/loader/entries/arch.conf
+   ```
+
+**Phase 2: LLM Agent Integration**  
 ```bash
-# Post-install before first reboot
-nix-env -iA nixos.claude-code
-claude-code setup --automatic --env=system_config
+# Install Python and critical tools
+pacman -S git python python-pip base-devel llvm
+sudo -u username git clone https://github.com/anthropic/claude-code /home/username/claude
+cd /home/username/claude && pip install -r requirements.txt
 ```
 
-**Phase 3: Declarative Environment Build**
-1. NVIDIA-optimized Proton:  
-   ```nix
-   # configuration.nix
-   nixpkgs.overlays = [(final: prev: {
-     proton-ge = prev.callPackage ./custom/proton-ge.nix {};
-   })];
-   ```
-
-2. AI/ML stack:  
-   ```nix
-   environment.systemPackages = with pkgs; [
-     cudaPackages.cudatoolkit
-     python3.withPackages(ps: [ps.tensorflowWithCuda ps.torchWithCuda])
-   ];
-   ```
-
-3. Hybrid Graphics Automation:  
+**Phase 3: Sway Setup**  
+1. **Install Packages**:  
    ```bash
-   # Create GPU switcher script
-   envycontrol -s nvidia --dm lightdm  # For X11 fallback
+   pacman -S sway waybar wofi foot grim slurp wl-clipboard \
+             pipewire wireplumber pavucontrol bluez
    ```
 
-**Phase 4: Wayland Environment**
-Hyprland configuration example:
-```conf
-# ~/.config/hypr/hyprland.conf
-monitor=,preferred,auto,1
-exec-once = dbus-update-activation-environment --systemd WAYLAND_DISPLAY
-env = LIBVA_DRIVER_NAME,nvidia
-env = __GLX_VENDOR_LIBRARY_NAME,nvidia
-```
-
-**Phase 5: Development Environments**
-Per-project Nix shells:  
-```nix
-# shell.nix
-{ pkgs ? import <nixpkgs> {} }:
-pkgs.mkShell {
-  packages = [ pkgs.rustc pkgs.cargo ];
-  LD_LIBRARY_PATH = "${pkgs.stdenv.cc.cc.lib}/lib";
-}
-```
-
-### Critical Considerations
-1. **NVIDIA on Wayland**: Use 550+ drivers with explicit modesetting. Patch XWayland for gaming performance:
-   ```nix
-   nixpkgs.config.packageOverrides = pkgs: {
-     xwayland = pkgs.xwayland.overrideAttrs (old: {
-       patches = old.patches ++ [ ./xwayland-nvidia.patch ];
-     });
-   }
-   ```
-
-2. **Gentoo Hybrid Compromise**: Set binary packages for:
+2. **Configure Sway**:  
    ```bash
-   # /etc/portage/binrepos.conf
-   [gentoo-binhost]
-   priority = 9999
-   sync-uri = https://gentoo-binary-packages.example.com
-   ```
-   Use `emerge --getbinpkg` for large packages (LLVM, rust, web browsers).
+   mkdir -p ~/.config/sway
+   cat << EOF > ~/.config/sway/config
+   # Keybindings
+   bindsym $mod+Return exec foot
+   bindsym $mod+d exec wofi --show drun
 
-3. **Music Production Fallback**: Use PipeWire with low-latency kernel when needed:
-   ```nix
-   # NixOS audio config
-   sound.lowLatency = {
-     enable = true;
-     quantum = 64;
+   # Output scaling (for 3840x2400)
+   output * scale 1.5
+
+   # Status bar
+   bar {
+       position top
+       status_command waybar
    }
+   EOF
    ```
 
-This approach prioritizes reproducibility, automation compatibility, and gaming/AI performance while maintaining your hardware-specific constraints. The NixOS implementation provides atomic rollbacks - critical when experimenting with bleeding-edge components.
+**Phase 4: Critical Software Stacks**  
+```bash
+# AI/ML
+pacman -S python-tensorflow-cuda python-pytorch-cuda nvtop
+
+# Cloud Tools
+pacman -S terraform kubectl aws-cli google-cloud-cli
+
+# Gaming
+yay -S proton-ge-custom wine-staging
+echo "PROTON_ENABLE_NGX_UPDATER=1" >> ~/.steam/steam/config/config.vdf
+
+# Music (Low Priority)
+pacman -S ardour carla
+```
+
+**Phase 5: Automation via LLM Agent**  
+1. Structure configurations as:  
+   - `/etc/` for system configs (pacman.conf, mkinitcpio.conf)  
+   - `~/.config/` for user apps (sway, waybar, neovim)  
+2. Ensure all configs are:  
+   - Version-controlled in Git  
+   - Documented with header comments  
+   - Avoid binary formats (use text/INI/YAML)  
+
+---
+
+### **Key Rationale**
+- **Arch Linux** balances bleeding-edge packages with practicality. The AUR provides access to Proton-GE and niche AI tools without compilation delays.
+- **Sway** offers scriptable tiling with Wayland support. Its plain-text config is ideal for LLM parsing, and it avoids GNOME/KDE complexity.
+- **Hybrid Gentoo** could work (using `--usepkg` for LLVM/Python toolchains), but Arch is more practical for your hardware/time constraints.
+- **192GB RAM** utilization: Btrfs + zstd compression handles large datasets, while swap space supports memory-intensive AI workloads.
+- **LLM Integration**: Text-based configs across Arch/Sway/NixOS allow Claude/Gemini to safely modify system state via code.
+
+For your ThinkPad P16's hardware and use cases, **Arch Linux + Sway** provides the optimal blend of cutting-edge software, automation capabilities, and gaming/AI readiness. The declarative nature of NixOS is a strong alternative if reproducibility outweighs immediate access to bleeding-edge packages.

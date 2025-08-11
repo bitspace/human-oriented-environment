@@ -38,52 +38,44 @@ The information in the section with the heading "Target System Specifications" i
 
 ### Manufacturer and Model
 
-- System76 Kudu (kudu6)
-
+- Lenovo ThinkPad P16 Gen2 Intel (16") Mobile Workstation
+  
 ### CPU
 
-- AMD Ryzen 9 5900HX with Radeon Graphics
+- 13th Generation Intel® Core™ i9-13980HX Processor (E-cores up to 4.00 GHz P-cores up to 5.60 GHz) 
 
 ### BIOS
 
-- Programmed with System76 firmware (non-open)
+- Lenovo Absolute BIOS
 
 ### Graphics
 
-- **Dedicated GPU**: NVidia GeForce RTX 3060
-
-- **Integrated GPU**: AMD Radeon RX Vega 8
+- **Integrated GPU**: Integrated Intel® UHD Graphics
+- **Display**: 16" WQUXGA (3840 x 2400), IPS, Anti-Glare, Non-Touch, HDR 400, 100%DCI-P3, 800 nits, 60Hz, Low Blue 
+- **Camera**: 1080P FHD IR Hybrid with Microphone
 
 ### Memory
 
-- 64 GiB 3200MHz
+- 192 GB DDR5-5600MHz (SODIMM) - (4 x 48 GB)
+
+### Storage
+
+- 4 TB SSD M.2 2280 PCIe Gen4 Performance TLC Opal
 
 ### Networking
 
-- Ethernet: Realtek RTL8125 2.5GbE Controller (rev 05)
-- WiFi: M.2 PCIe/CNVi WiFi/Bluetooth
-  - Intel Wi-Fi 6 AX200 (rev 1a)
+- Wireless: Intel® Wi-Fi 6E AX211 2x2 AX vPro® & Bluetooth® 5.3
 
-## Software
+### Battery
 
-### Operating System
+- 6 Cell Li-Polymer 94Wh
 
-Gentoo Linux installed from desktop profile/systemd stage 3
+### Additional Hardware
 
-### Disk Partitions and Filesystem
-
-- 2 TiB NVMe SSD
-  - `/dev/nvme0n1p1` 1GiB EFI System mounted on `/efi`
-  - `/dev/nvme0n1p2` 16GiB swap
-  - `/dev/nvme0n1p3` 1.8TiB xfs mounted on `/`
-
-### Bootloader
-
-- `systemd-boot`
-
-### init system
-
-- systemd
+- Near Field Communications (NFC) Support
+- Fingerprint reader
+- Keyboard backlight
+- TPM Setting Enabled Discrete TPM2.0
 
 # Human Oriented Environment: A Customized Laptop Experience
 
@@ -95,15 +87,15 @@ I am customizing a laptop computer. I am going to install a Linux distribution, 
 - Note related specifically to Gentoo: the first attempt at this proof of concept used Gentoo. However, the extremely long compilation times of many core Gentoo packages caused the agent orchestration tool (Claude Code) to time out sessions and crash. It seems likely that a fully source-based option is not feasible, and if Gentoo is identified as the candidate that best suits other requirements, then we should consider a hybrid binary/source configuration.
 - The system configuration structure must be straightforward to script and automate. The configuration must be easily parseable by a Large Language Model.
 - The graphical environment, whether a desktop environment, window manager, or Wayland compositor, must be similarly parseable by a large language model, well-documented, and easily scripted and automated. **Important**: do not recommend Gnome or KDE.
-- A wayland-based graphical interface is desired, but given some software's dependency upon X11, it is acceptable to maintain X11 compatibility. The target system has integrated AMD graphics (AMD CPU) and a discrete Nvidia mobile GPU.
+- A wayland-based graphical interface is desired, but given some software's dependency upon X11, it is acceptable to maintain X11 compatibility. The target system has integrated Intel graphics.
 - The init system must be systemd.
-- System will be used for gaming with Steam, Proton, WINE, and some Linux-native games. Consider tuned or customized builds of Proton such as that developed by GloriousEggroll. Custom tuned forks of WINE are also acceptable, if such a thing exists.
 - System will be used for software development with many different programming languages, frameworks, and environments. Programming languages required include Python, Java, Rust, JavaScript, C, C++, and some scripting systems such as Lua, Perl, and shell script, as well as some functional languages such as Haskell and Lisp dialects.
 - System will be used for Artificial Intelligence and Machine Learning research and development. The exploding innovation around Large Language Models and surrounding tooling such as MCP and Google's A2A will be a core component of this system.
 - System will be heavily used for Cloud development, primarily with GCP and AWS, but also some Azure.
+- System will be used for gaming with Steam, Proton, WINE, and some Linux-native games. Consider tuned or customized builds of Proton such as that developed by GloriousEggroll. Custom tuned forks of WINE are also acceptable, if such a thing exists.
 - System will be used for music production with MIDI and input from keyboards and guitars. This use is the lowest priority, so nothing should be tuned to improve music production capability that causes instability or conflicts with any previously mentioned uses.
 
-I am very experienced with Linux, having used it as my primary desktop operating system for over 30 years. I used Gentoo extensively for several years, but that was around 20 years ago.  
+I am very experienced with Linux, having used it as my primary desktop operating system for over 30 years.  
 
 I am always trying to keep up to date with the latest versions of most software I use; I tend to spend my time on the bleeding edge. As such, consider early development and beta versions of software as appropriate for compatibility with the requirements.
 

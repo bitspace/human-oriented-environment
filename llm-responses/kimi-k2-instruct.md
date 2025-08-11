@@ -1,102 +1,131 @@
-# System76 Kudu Custom LLM-Friendly Developer Gaming Laptop Build
+### Top 5 Distributions (ranked by suitability)
 
-## Top 5 distributions (ranked by how well they satisfy *all* constraints, not just “rolling release”)
+1. **NixOS (unstable channel)**  
+   - **Pros**: Purely declarative (`configuration.nix`), atomic rollbacks, LLM-parseable configs, no compilation bottlenecks (binary cache), systemd-first.  
+   - **Cons**: Learning curve for nix-language, some proprietary packages need overlays.  
+   - **Key**: Use `nixos-generate-config` to bootstrap, then let the LLM mutate `/etc/nixos/*.nix`.
 
-1. NixOS unstable  
-   • Purely declarative (`configuration.nix` + flakes) – easily scripted, diffable, and LLM-parsable.  
-   • Rolling release, every package rebuilds daily.  
-   • Binary cache covers >95 % of what you need; local rebuild only when you explicitly override.  
-   • Full systemd, Wayland/X11 both trivially available.  
-   • Steam, Proton-GE, CUDA, ROCm all packaged; switch between versions with a one-line override.  
-   • Entire system state is a text file – perfect for agent orchestration.
+2. **Arch Linux**  
+   - **Pros**: Vanilla rolling release, AUR for bleeding-edge, pacman simplicity.  
+   - **Cons**: Manual intervention on major updates; needs declarative glue (e.g., `ansible-nix` or `archinstall --config`).  
+   - **Key**: Pair with `yay` for AUR and script `/etc/pacman.conf` + systemd units.
 
-2. Arch Linux (or Arch-based EndeavourOS if you want the installer)  
-   • Native pacman + AUR gives you the largest rolling software pool.  
-   • No “compilation by default”; binary packages are the norm.  
-   • systemd is the standard.  
-   • Configuration is plain text (`/etc`, `~/.config`) – still LLM-friendly.  
-   • Downside: imperative package management; reproducibility is only as good as your discipline.
+3. **OpenSUSE Tumbleweed**  
+   - **Pros**: Rolling but QA-tested, `zypper` is fast, transactional updates with `snapper`.  
+   - **Cons**: Declarative configs require `yast2-firstboot` or `autoyast` XML (less LLM-friendly).  
+   - **Key**: Use `transactional-server` role + Salt for automation.
 
-3. openSUSE Tumbleweed  
-   • rpm-ostree-style snapshots (`snapper + btrfs`) give you automatic roll-back if an update breaks anything.  
-   • Uses `dnf` (libzypp backend), so binary packages only.  
-   • ` transactional-update` lets you treat even `/etc` atomically.  
-   • Slightly higher friction for non-packaged software (Flatpak/AUR-like OBS repos exist but are smaller).
+4. **Void Linux**  
+   - **Pros**: Runit init (but you need systemd), xbps-src for hybrid binary/source builds.  
+   - **Cons**: Smaller community, fewer ML packages prebuilt.  
+   - **Key**: Compile only kernel/drivers via `xbps-src`, rest binary.
 
-4. Void Linux (glibc)  
-   • Completely systemd-free upstream, but you can replace runit with systemd from their repo.  
-   • Rolling, binary by default, xbps-src when you need source.  
-   • Smaller community, so you’ll package more things yourself.
+5. **Gentoo (hybrid binary/source)**  
+   - **Pros**: Portage flexibility, USE flags for minimal builds.  
+   - **Cons**: Even with `binpkg`, LLVM/ML frameworks (PyTorch, TensorFlow) compile for hours.  
+   - **Key**: Use `emerge --usepkgonly` for base system, `binpkg-multi-instance`, and offload heavy builds to a binhost.
 
-5. Gentoo with binpkgs (hybrid approach)  
-   • Use the official Gentoo binhost (amd64, ~amd64) for everything except the few packages you really want optimized.  
-   • `EMERGE_DEFAULT_OPTS="--usepkg=y --getbinpkg=y"` keeps compile times near zero.  
-   • Still gives you USE-flag flexibility *only* for the packages you choose to build.  
-   • Draw-back: you still have to maintain a portage tree and occasional blockers; LLM agents struggle with the interactive parts of `emerge`.
+---
 
-## Window-manager / compositor shortlist (all Wayland-first, text-configurable, lightweight)
+### Top 5 Window Managers/Compositors (non-Gnome/KDE)
 
-1. Sway – drop-in i3 replacement, pure Wayland, config is `~/.config/sway/config` (i3 syntax).  
-2. Hyprland – dynamic tiling, animations, plugin system; config is `hyprland.conf`.  
-3. river – Zig-based, tags instead of workspaces; config in Lua.  
-4. Qtile Wayland backend – entire WM written/configured in Python.  
-5. Wayfire – floating/compositor hybrid, config is INI; good X11 fallback via XWayland.
+1. **Hyprland** (Wayland tiling compositor)  
+   - **Config**: `~/.config/hypr/hyprland.conf` (LLM-parseable INI-style).  
+   - **Pros**: Tiling, animations, IPC via `hyprctl`, Steam overlay works.
 
-## Installation roadmap (agent-orchestrated, entirely scriptable)
+2. **Sway** (i3-compatible Wayland)  
+   - **Config**: Plain-text `~/.config/sway/config`.  
+   - **Pros**: Stable, X11 via Xwayland, well-documented.
 
-Phase 0 – prepare host for agent  
-0.1 Boot latest Arch ISO (has `openssh` and `cloud-init`)  
-0.2 Start `sshd`, set a temporary password, let the LLM agent SSH in.
+3. **River** (Wayland, Zig-based)  
+   - **Config**: Lua scripts (LLM-friendly).  
+   - **Pros**: Minimal, tag-based workflow, compiles fast.
 
-Phase 1 – disk & base system  
-1.1 Scripted `gdisk` → create identical layout as requested (ESP, swap, XFS root).  
-1.2 `mkfs.xfs`, `mkswap`, `mount`, `swapon`.  
-1.3 Install `systemd-bootctl install` → `loader.conf` and `arch.conf` entries.  
-1.4 Pacstrap minimal set: `base linux linux-firmware sof-firmware neovim git openssh`.  
-1.5 Chroot in, set root password, create user with sudo.
+4. **XMonad** (Haskell, but declarative via `xmonad.hs`)  
+   - **Config**: Recompile on change (LLM can regenerate `xmonad.hs`).  
+   - **Cons**: X11; pair with `picom` for compositing.
 
-Phase 2 – pick the final distribution  
-Agent evaluates constraints again (compile-time, declarative, binary cache hit-rate).  
-If the agent chooses NixOS:  
-2a. `nixos-generate-config --root /mnt` → edit `/mnt/etc/nixos/configuration.nix` directly from the agent.  
-2b. Enable flakes, add `nixpkgs.config.allowUnfree = true;`, enable `steam`, `programs.wayland.wm.sway.enable = true`, GPU drivers (`hardware.nvidia.open = true` + `hardware.amdgpu.initrd = true`).  
-2c. `nixos-install --root /mnt`.
+5. **Qtile** (Python, Wayland/X11)  
+   - **Config**: Pure Python (`~/.config/qtile/config.py`).  
+   - **Pros**: Dynamic scripting, LLM can mutate configs live.
 
-If the agent sticks with Arch:  
-2d. Continue normal Arch install, then configure declarative dotfiles via `chezmoi` or `yadm` pulled from a git repo.
+---
 
-Phase 3 – graphical stack  
-3.1 Install GPU drivers:  
-   • AMD: `mesa`, `libva-mesa-driver`, `vulkan-radeon`.  
-   • Nvidia: `nvidia-dkms`, `egl-wayland`, `libva-nvidia-driver`.  
-3.2 Install chosen compositor (example: `sway`, `foot`, `bemenu`, `waybar`).  
-3.3 Systemd user services for `pipewire`, `wireplumber`, `xdg-desktop-portal-wlr`.
+### Installation Roadmap (LLM-Driven)
 
-Phase 4 – development & AI stack  
-4.1 `nix-shell -p python311 rustup nodejs_20 gcc clang glibc` (or `pacman -S …`).  
-4.2 Install `pyenv`, `rustup`, `nvm`, `ghcup` via user-level scripts.  
-4.3 Pull `ollama` or `ollama-nvidia` container for local LLM inference.  
-4.4 Configure `docker`, `podman`, `kind`, `kubectl`, `gcloud`, `aws-cli-v2` via declarative module (NixOS) or `yay` (Arch).  
-4.5 Steam + Proton-GE: `steam`, `proton-ge-custom-bin` (AUR) or `programs.steam.enable = true;` in NixOS.
+#### Phase 1: Bootstrap Base System
+1. **Download latest ISO** (NixOS unstable, Arch, or Tumbleweed).  
+2. **Boot** → **Wi-Fi connect** (`iwctl` or `nmtui`).  
+3. **Partition** (LVM-on-LUKS):  
+   ```
+   cryptsetup luksFormat /dev/nvme0n1p2
+   cryptsetup luksOpen /dev/nvme0n1p2 cryptlvm
+   pvcreate /dev/mapper/cryptlvm
+   vgcreate vg /dev/mapper/cryptlvm
+   lvcreate -L 100G -n root vg
+   lvcreate -l 100%FREE -n home vg
+   ```
+4. **Install**:  
+   - **NixOS**: `nixos-generate-config --root /mnt` → LLM edits `/mnt/etc/nixos/configuration.nix`.  
+   - **Arch**: `archinstall --config user_configuration.json` (JSON LLM-editable).  
+5. **Reboot into new system**.
 
-Phase 5 – music production  
-5.1 Install `pipewire-jack`, `carla`, `ardour`, `yabridge`, `lmms`.  
-5.2 Add user to `realtime` group, install `rtirq` (only if low-latency kernel needed).  
-5.3 All configs live in `~/.config` – versioned in the same dotfiles repo.
+#### Phase 2: LLM Agent Orchestration
+1. **Install Claude Code** (or preferred agent):  
+   ```bash
+   curl -o claude https://claude.ai/download/linux
+   chmod +x claude && sudo mv claude /usr/local/bin/
+   claude init
+   ```
+2. **Grant sudo** (NOPASSWD in `/etc/sudoers.d/claude`).  
+3. **Define system repo**:  
+   ```
+   mkdir ~/system-config && cd ~/system-config
+   git init
+   claude commit "Initial declarative config"
+   ```
 
-Phase 6 – LLM agent hooks  
-6.1 `systemctl --user enable agent-resume.service` that pulls latest dotfiles on boot.  
-6.2 Provide the agent a JSON schema of every editable config file (generated from `nixos-option`, `chezmoi data`, or `sway --get-socketpath`).  
-6.3 Add `inotifywait` triggers so the agent can auto-reload changed configs.
+#### Phase 3: Graphical Environment
+1. **Install Hyprland**:  
+   - **NixOS**: Add to `configuration.nix`:  
+     ```nix
+     services.xserver.enable = false;
+     programs.hyprland.enable = true;
+     ```
+   - **Arch**: `yay -S hyprland`  
+2. **LLM generates** `~/.config/hypr/hyprland.conf` from template.  
+3. **Display manager**: Use `greetd` (text-based) or `ly` (Wayland-ready).
 
-Phase 7 – snapshot & rollback  
-NixOS: every `nixos-rebuild switch` is automatically in the boot menu.  
-Arch: `snapper` on `/` + `grub-btrfs` for instant roll-back.
+#### Phase 4: Development Stack
+1. **Languages**:  
+   - **NixOS**: Add to `environment.systemPackages = with pkgs; [ python311 rust-bin cargo jdk17 nodejs_20 gcc ];`  
+   - **Arch**: `yay -S python rustup jdk17-openjdk nodejs gcc`  
+2. **ML Tooling**:  
+   - **PyTorch**: `pip install torch --index-url https://download.pytorch.org/whl/cu121` (or nixpkgs override).  
+   - **Ollama**: `services.ollama.enable = true;` (NixOS).  
+3. **Cloud CLIs**:  
+   ```
+   nix-shell -p google-cloud-sdk awscli2 azure-cli
+   ```
 
-Phase 8 – documentation artifact  
-After first successful boot, agent outputs a single markdown file containing:  
-• exact disk layout, LUKS keyfile location, kernel cmdline,  
-• flake URL and lockfile hash,  
-• systemd service list with `systemctl cat` output,  
-• declarative list of packages (`nix-store -q --requisites /run/current-system`).  
-Result: an LLM can reproduce the entire system with two commands (`nix flake clone` + `nixos-rebuild switch --flake .#hostname`).
+#### Phase 5: Gaming
+1. **Steam**: Enable `programs.steam.enable = true;` (NixOS).  
+2. **Proton-GE**:  
+   ```bash
+   mkdir -p ~/.steam/steam/compatibilitytools.d/
+   wget -qO- https://github.com/GloriousEggroll/proton-ge-custom/releases/download/GE-Proton8-25/proton-ge-8-25.tar.gz | tar -xzf - -C ~/.steam/steam/compatibilitytools.d/
+   ```
+3. **Wine**: Use `lutris` with custom WINE builds.
+
+#### Phase 6: Music (Low Priority)
+1. **PipeWire**: Already enabled (NixOS: `services.pipewire.enable = true;`).  
+2. **DAW**: `yay -S ardour` or `nix-shell -p ardour`.
+
+---
+
+### Final Notes
+- **Checkpoint**: After each phase, `git commit` via LLM.  
+- **Rollback**: NixOS `nixos-rebuild switch --rollback`; Arch use `snapper`.  
+- **Monitoring**: `htop`, `nvtop` (for iGPU), `iostat`.  
+
+If you hit compilation timeouts again, pivot to **NixOS binary cache** or **Arch + chaotic-aur** for prebuilt ML packages.
