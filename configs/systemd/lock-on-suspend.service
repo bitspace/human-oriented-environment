@@ -1,0 +1,13 @@
+[Unit]
+Description=Lock screen before suspend
+Before=sleep.target suspend.target hibernate.target hybrid-sleep.target suspend-then-hibernate.target
+
+[Service]
+User=chris
+Type=forking
+Environment=DISPLAY=:0
+ExecStart=/run/current-system/sw/bin/swaylock
+TimeoutSec=infinity
+
+[Install]
+WantedBy=sleep.target suspend.target hibernate.target hybrid-sleep.target suspend-then-hibernate.target

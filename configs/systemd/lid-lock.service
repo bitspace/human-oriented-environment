@@ -1,0 +1,12 @@
+[Unit]
+Description=Lock screen on lid close
+After=graphical-session.target
+
+[Service]
+Type=simple
+ExecStart=/bin/bash -c 'journalctl -f -u systemd-logind | while IFS= read -r line; do if echo "$line" | grep -q "Lid closed"; then /run/current-system/sw/bin/swaylock; fi; done'
+Restart=always
+RestartSec=1
+
+[Install]
+WantedBy=hyprland-session.target

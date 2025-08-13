@@ -1,5 +1,5 @@
-# Simple Working NixOS Configuration - Just Add Hyprland to Current System
-# Based on current working configuration with minimal additions
+# NixOS System Configuration - Clean system-wide setup
+# User configurations managed separately via Home Manager
 
 { config, pkgs, lib, ... }:
 
@@ -19,6 +19,19 @@
     shell = pkgs.bash;
   };
 
+  # Configure sudo permissions for nixos-rebuild
+  security.sudo.extraRules = [
+    {
+      users = [ "chris" ];
+      commands = [
+        {
+          command = "/run/current-system/sw/bin/nixos-rebuild";
+          options = [ "NOPASSWD" ];
+        }
+      ];
+    }
+  ];
+
   # Boot - keep current
   boot.loader = {
     systemd-boot.enable = true;
@@ -31,19 +44,27 @@
   networking.wireless.enable = false;
   networking.firewall.enable = true;
 
-  # Keep current packages (from your working system)
+  # System-level packages (keep minimal - user packages managed by Home Manager)
   environment.systemPackages = with pkgs; [
+    # Essential system tools only
     curl
-    git  
-    htop
     nodejs
     python3
-    tree
     
-    # Basic desktop applications
-    firefox
+    # Desktop essentials (needed system-wide)
     kitty      # Terminal emulator
     wofi       # Application launcher for Wayland
+    
+    # Screen locking (system-level services)
+    swaylock          # Screen locker for Wayland
+    swayidle          # Idle management daemon
+    acpi              # ACPI event monitoring for lid detection
+    
+    # Qt support for Qt applications
+    kdePackages.qtwayland       # Qt Wayland support
+    kdePackages.kio             # KIO for Dolphin
+    kdePackages.kio-extras      # Additional KIO protocols
+    kdePackages.polkit-kde-agent-1  # Qt-based polkit agent
   ];
 
   # Locale
@@ -66,7 +87,10 @@
     auto-optimise-store = true;
   };
 
-  nixpkgs.config.allowUnfree = true;
+  nixpkgs.config = {
+    allowUnfree = true;
+    allowUnfreePredicate = (_: true);  # Allow all unfree packages
+  };
 
   # Display manager - greetd with tuigreet
   services.greetd = {
@@ -106,9 +130,12 @@
     enable = true;
     extraPortals = with pkgs; [
       xdg-desktop-portal-hyprland
-      xdg-desktop-portal-gtk
+      kdePackages.xdg-desktop-portal-kde  # Qt/KDE portal for Qt apps
     ];
   };
+  
+  # Polkit for privilege escalation (non-GNOME)
+  security.polkit.enable = true;
 
   system.stateVersion = "25.05";
 }
