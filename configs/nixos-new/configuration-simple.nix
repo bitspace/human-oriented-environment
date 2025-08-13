@@ -39,6 +39,11 @@
     nodejs
     python3
     tree
+    
+    # Basic desktop applications
+    firefox
+    kitty      # Terminal emulator
+    wofi       # Application launcher for Wayland
   ];
 
   # Locale
@@ -63,10 +68,20 @@
 
   nixpkgs.config.allowUnfree = true;
 
-  # Now just add Hyprland to the working system
+  # Display manager - greetd with tuigreet
+  services.greetd = {
+    enable = true;
+    settings = {
+      default_session = {
+        command = "${pkgs.greetd.tuigreet}/bin/tuigreet --time --cmd Hyprland";
+        user = "greeter";
+      };
+    };
+  };
+
+  # Enable X11 services for compatibility
   services.xserver = {
     enable = true;
-    displayManager.gdm.enable = true;
     xkb.layout = "us";
   };
 
