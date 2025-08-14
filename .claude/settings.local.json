@@ -33,7 +33,12 @@
       "Bash(home-manager switch:*)",
       "Bash(echo \"$PATH\")",
       "Bash(rm:*)",
-      "Bash(true)"
+      "Bash(true)",
+      "Bash(export PATH=\"$HOME/.local/bin:$PATH\")",
+      "Bash(update-vscode-insiders)",
+      "Bash(/home/chris/.local/bin/update-vscode-insiders:*)",
+      "Bash(bash:*)",
+      "Bash(waybar)"
     ],
     "deny": []
   }

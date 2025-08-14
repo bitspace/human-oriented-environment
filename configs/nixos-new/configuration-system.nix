@@ -65,6 +65,9 @@
     kdePackages.kio             # KIO for Dolphin
     kdePackages.kio-extras      # Additional KIO protocols
     kdePackages.polkit-kde-agent-1  # Qt-based polkit agent
+    
+    # Keyboard remapping
+    keyd                        # Keyboard remapping daemon
   ];
 
   # Locale
@@ -78,6 +81,17 @@
         PasswordAuthentication = false;
         KbdInteractiveAuthentication = false;
       };
+    };
+  };
+
+  # Manual keyd systemd service
+  systemd.services.keyd-manual = {
+    description = "Keyd remapping daemon";
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      ExecStart = "${pkgs.keyd}/bin/keyd";
+      Restart = "always";
+      RestartSec = 1;
     };
   };
 
@@ -136,6 +150,15 @@
   
   # Polkit for privilege escalation (non-GNOME)
   security.polkit.enable = true;
+
+  # Manual keyd configuration
+  environment.etc."keyd/default.conf".text = ''
+[ids]
+*
+
+[main]
+capslock = overload(control, esc)
+  '';
 
   system.stateVersion = "25.05";
 }
