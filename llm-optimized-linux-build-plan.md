@@ -128,7 +128,7 @@ kubectl ansible
 ```bash
 # LLM serving and management [Gemini 2.5 Pro, Claude Opus 4.1, Mistral Le Chat]
 ollama  # AUR package
-llama-cpp-python  # pip install
+llama-cpp-python  # uv tool install
 text-generation-webui  # AUR package
 
 # AI CLI tools [7/12 models mentioned specific tools]
@@ -246,34 +246,87 @@ gnupg
    - XFS filesystem with 64GB swap partition
    - Configure user account and basic networking
 
-2. **Immediate AI Agent Setup**
+2. **Basic Package Setup**
    ```bash
-   # Install Node.js for AI CLI tools
-   sudo pacman -S nodejs npm
-   
-   # Install Claude Code (assuming it's available)
-   npm install -g claude-code
-   
-   # Install other AI CLI tools
-   npm install -g @google/ai-cli
-   pip install llm
+   # Install Node.js for later AI CLI tools
+   sudo pacman -S nodejs npm python python-pip
    ```
 
 ### Phase 2: Core Environment (45 minutes)
-3. **Display Server Setup**
+3. **Install AUR Helper (paru)**
    ```bash
-   # Install Hyprland and dependencies
-   sudo pacman -S hyprland xorg-xwayland
-   sudo pacman -S waybar wofi hyprpaper hyprlock hypridle
-   
-   # Audio system
-   sudo pacman -S pipewire pipewire-pulse pipewire-jack wireplumber
+   # Install paru AUR helper
+   sudo pacman -S --needed base-devel git
+   git clone https://aur.archlinux.org/paru.git /tmp/paru
+   cd /tmp/paru && makepkg -si --noconfirm
    ```
 
-4. **Development Foundations**
+4. **GPG and AI CLI Tools Setup**
+   ```bash
+   # Configure GPG for reliable keyserver access
+   mkdir -p ~/.gnupg
+   cat > ~/.gnupg/gpg.conf << EOF
+keyserver hkps://keys.openpgp.org
+keyserver-options auto-key-retrieve
+EOF
+   
+   # Install uv first for Python package management
+   curl -LsSf https://astral.sh/uv/install.sh | sh
+   source ~/.bashrc  # Reload PATH for uv
+   
+   # Configure npm for user-only global installations
+   mkdir -p ~/.npm-global
+   npm config set prefix '~/.npm-global'
+   echo 'export PATH="$HOME/.npm-global/bin:$HOME/.local/bin:$PATH"' >> ~/.bashrc
+   source ~/.bashrc
+   
+   # Install Claude Code locally (user-only)
+   npm install --global @anthropic-ai/claude-code
+   
+   # Install other AI CLI tools
+   npm install --global @google/gemini-cli @openai/codex
+   uv tool install llm
+   
+   # Install protonup for Proton management
+   uv tool install protonup
+   
+   # Import 1Password GPG key manually to avoid keyserver issues
+   curl -s https://downloads.1password.com/linux/keys/1password.asc | gpg --import
+   ```
+
+5. **Display Server Setup**
+   ```bash
+   # Install Hyprland and essential GUI tools
+   paru -S hyprland xorg-xwayland
+   paru -S waybar wofi hyprpaper hyprlock hypridle
+   paru -S kitty  # Terminal emulator
+   paru -S noto-fonts noto-fonts-emoji  # Fonts
+   paru -S papirus-icon-theme  # Icon theme for wofi
+   paru -S xcursor-vanilla-dmz  # Better cursor theme
+   
+   # Install greetd with tuigreet (minimal display manager)
+   paru -S greetd greetd-tuigreet
+   sudo systemctl enable greetd
+   
+   # Configure greetd to use tuigreet
+   sudo mkdir -p /etc/greetd
+   sudo tee /etc/greetd/config.toml << EOF
+[terminal]
+vt = 1
+
+[default_session]
+command = "tuigreet --time --cmd Hyprland"
+user = "greeter"
+EOF
+   
+   # Audio system
+   paru -S pipewire pipewire-pulse pipewire-jack wireplumber
+   ```
+
+6. **Development Foundations**
    ```bash
    # Version control and containers
-   sudo pacman -S git docker docker-compose
+   paru -S git docker docker-compose
    
    # Enable services
    sudo systemctl enable docker
@@ -281,40 +334,38 @@ gnupg
    ```
 
 ### Phase 3: Specialized Software (60 minutes)
-5. **Gaming Infrastructure**
+7. **Gaming Infrastructure**
    ```bash
    # Steam and gaming tools
-   sudo pacman -S steam gamemode mangohud
+   paru -S steam gamemode mangohud
    
    # Enable multilib repository for 32-bit support
    # Edit /etc/pacman.conf to uncomment [multilib]
-   sudo pacman -S lib32-mesa lib32-vulkan-intel
+   paru -S lib32-mesa lib32-vulkan-intel
    ```
 
-6. **Development Environment**
+8. **Development Environment**
    ```bash
    # AUR helper
-   sudo pacman -S --needed base-devel git
-   git clone https://aur.archlinux.org/yay.git
-   cd yay && makepkg -si
+   paru -S --needed base-devel git
+   # paru already installed in Phase 2
    
    # IDEs via AUR
-   yay -S visual-studio-code-insiders-bin jetbrains-toolbox
+   paru -S visual-studio-code-insiders-bin jetbrains-toolbox
    ```
 
 ### Phase 4: AI Integration (30 minutes)
-7. **Local LLM Setup**
+9. **Local LLM Setup**
    ```bash
-   # Ollama for local model serving
-   yay -S ollama
-   sudo systemctl enable ollama
+   # Ollama for local model serving (user service)
+   paru -S ollama
    
    # Model management
    mkdir -p /home/models
    ollama pull llama3.2:3b  # Lightweight model for testing
    ```
 
-8. **Configuration Automation**
+10. **Configuration Automation**
    ```bash
    # Create AI-parseable configs
    mkdir -p ~/.config/llm-laptop
@@ -325,10 +376,9 @@ gnupg
 
 ### Hyprland Configuration (`~/.config/hypr/hyprland.conf`)
 ```ini
-# AI-Optimized Hyprland Configuration
-# Socket location: /tmp/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket.sock
+# Standard Hyprland Configuration
 
-# Performance settings for ThinkPad P16 Gen 2
+# General settings
 general {
     gaps_in = 5
     gaps_out = 10
@@ -336,21 +386,25 @@ general {
     col.active_border = rgba(33ccffee) rgba(00ff99ee) 45deg
     col.inactive_border = rgba(595959aa)
     resize_on_border = false
-    allow_tearing = true  # Gaming optimization
+    allow_tearing = true
 }
 
-# Intel graphics optimization
+# Decoration settings
 decoration {
     rounding = 5
+    
     blur {
         enabled = true
         size = 8
         passes = 1
     }
-    drop_shadow = true
-    shadow_range = 4
-    shadow_render_power = 3
-    col.shadow = rgba(1a1a1aee)
+    
+    shadow {
+        enabled = true
+        range = 4
+        render_power = 3
+        color = rgba(1a1a1aee)
+    }
 }
 
 # Animation settings (optimized for performance)
@@ -365,10 +419,27 @@ animations {
     animation = workspaces, 1, 6, default
 }
 
-# AI agent control bindings
-bind = $mainMod, Q, exec, echo "quit" | socat - /tmp/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket.sock
+# Keybindings
+$mainMod = SUPER
+
+# Window management
+bind = $mainMod, Q, killactive
 bind = $mainMod, Return, exec, kitty
 bind = $mainMod, R, exec, wofi --show drun
+
+# Workspace bindings
+bind = $mainMod, 1, workspace, 1
+bind = $mainMod, 2, workspace, 2
+bind = $mainMod, 3, workspace, 3
+bind = $mainMod, 4, workspace, 4
+bind = $mainMod, 5, workspace, 5
+
+# Move windows to workspaces
+bind = $mainMod SHIFT, 1, movetoworkspace, 1
+bind = $mainMod SHIFT, 2, movetoworkspace, 2
+bind = $mainMod SHIFT, 3, movetoworkspace, 3
+bind = $mainMod SHIFT, 4, movetoworkspace, 4
+bind = $mainMod SHIFT, 5, movetoworkspace, 5
 
 # Gaming optimization
 misc {
@@ -376,29 +447,6 @@ misc {
     disable_hyprland_logo = true
     vrr = 1  # Variable refresh rate
 }
-```
-
-### AI Agent Integration Configuration
-```yaml
-# ~/.config/llm-laptop/ai-integration.yaml
-ai_agents:
-  socket_endpoints:
-    hyprland: "/tmp/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket.sock"
-    
-  command_interfaces:
-    package_manager: "pacman"
-    aur_helper: "yay"
-    system_control: "systemctl"
-    
-  config_locations:
-    hyprland: "~/.config/hypr/"
-    development: "~/.config/dev-env/"
-    gaming: "~/.config/gaming/"
-    
-  parseable_formats:
-    preferred: ["ini", "toml", "yaml"]
-    acceptable: ["json", "conf"]
-    avoid: ["binary", "xml"]
 ```
 
 ## Installation Scripts
@@ -414,11 +462,11 @@ set -euo pipefail
 # Phase 1: Enable multilib and update system
 echo "=== Phase 1: System Preparation ==="
 sudo sed -i '/\[multilib\]/,/Include.*multilib/ s/^#//' /etc/pacman.conf
-sudo pacman -Syu
+paru -Syu
 
 # Phase 2: Install core packages
 echo "=== Phase 2: Core System ==="
-sudo pacman -S --needed \
+paru -S --needed \
     hyprland xorg-xwayland \
     waybar wofi hyprpaper hyprlock hypridle \
     pipewire pipewire-pulse pipewire-jack wireplumber \
@@ -434,33 +482,29 @@ sudo usermod -aG docker $USER
 
 # Phase 4: AUR helper installation
 echo "=== Phase 4: AUR Setup ==="
-if ! command -v yay &> /dev/null; then
-    git clone https://aur.archlinux.org/yay.git /tmp/yay
-    cd /tmp/yay && makepkg -si --noconfirm
+# Install paru AUR helper
+if ! command -v paru &> /dev/null; then
+    git clone https://aur.archlinux.org/paru.git /tmp/paru
+    cd /tmp/paru && makepkg -si --noconfirm
 fi
 
-# Phase 5: AI CLI tools
-echo "=== Phase 5: AI Integration ==="
-npm install -g @google/ai-cli openai-cli
-pip install llm anthropic-cli
-
-# Phase 6: Development tools via AUR
-echo "=== Phase 6: Development Environment ==="
-yay -S --noconfirm \
+# Phase 5: Development tools via AUR
+echo "=== Phase 5: Development Environment ==="
+paru -S --noconfirm \
     visual-studio-code-insiders-bin \
     jetbrains-toolbox \
-    ollama-bin \
+    ollama \
     protonup-qt-bin \
     1password \
     1password-cli
 
-# Phase 7: Create configuration structure
-echo "=== Phase 7: Configuration Setup ==="
+# Phase 6: Create configuration structure
+echo "=== Phase 6: Configuration Setup ==="
 mkdir -p ~/.config/{llm-laptop,ai-agents,hypr}
 mkdir -p /home/models
 
 echo "Installation complete! Reboot to start Hyprland."
-echo "After reboot, run: systemctl --user enable ollama"
+echo "After reboot, run: systemctl --user enable --now ollama"
 ```
 
 ### Development Environment Setup (`setup-dev.sh`)
@@ -484,7 +528,7 @@ npm install -g typescript ts-node @types/node
 npm install -g eslint prettier
 
 # Cloud development
-yay -S --noconfirm aws-cli-v2-bin google-cloud-cli-bin
+paru -S --noconfirm aws-cli-v2-bin google-cloud-cli-bin
 ```
 
 ### Gaming Setup (`setup-gaming.sh`)
@@ -497,11 +541,11 @@ mkdir -p ~/.steam/steam/compatibilitytools.d/
 
 # Install Proton-GE
 echo "Installing latest Proton-GE..."
-pip install protonup
-yay -S --noconfirm protonup-qt-bin
+uv tool install protonup
+paru -S --noconfirm protonup-qt-bin
 
 # Gaming utilities
-yay -S --noconfirm lutris bottles goverlay
+paru -S --noconfirm lutris bottles goverlay
 
 # Gaming optimizations
 echo "Configuring gaming optimizations..."
@@ -539,7 +583,7 @@ sudo chmod +x /usr/local/bin/gaming-mode
     done
     
     echo "aur_updates:"
-    yay -Qua | while read package old new; do
+    paru -Qua | while read package old new; do
         echo "  - package: $package"
         echo "    old_version: $old"
         echo "    new_version: $new"
@@ -548,8 +592,8 @@ sudo chmod +x /usr/local/bin/gaming-mode
 
 # Apply updates if AI agent approves
 if [ "$AI_APPROVED" = "true" ]; then
-    sudo pacman -Syu --noconfirm
-    yay -Sua --noconfirm
+    paru -Syu --noconfirm
+    paru -Sua --noconfirm
 fi
 ```
 
@@ -711,8 +755,8 @@ except Exception as e:
 # weekly-maintenance.sh
 
 # System cleanup
-sudo pacman -Sc --noconfirm  # Clear package cache
-yay -Sc --noconfirm  # Clear AUR cache
+paru -Sc --noconfirm  # Clear package cache
+paru -Sc --noconfirm  # Clear AUR cache
 
 # Update local model cache
 ollama list | grep -v 'NAME' | awk '{print $1}' | xargs -I {} ollama pull {}
