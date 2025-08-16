@@ -236,6 +236,8 @@
     nodejs
     nodePackages.npm
     nvitop
+    _1password
+    _1password-gui
     ollama
     openjdk
     pciutils
@@ -250,6 +252,8 @@
     radeontop
     rustc
     slurp
+    swaylock-effects
+    swayidle
     tmux
     unzip
     usbutils
@@ -306,6 +310,13 @@
     automatic = true;
     dates = "weekly";
     options = "--delete-older-than 30d";
+  };
+
+  # 1Password service configuration
+  programs._1password.enable = true;
+  programs._1password-gui = {
+    enable = true;
+    polkitPolicyOwners = [ "chris" ];
   };
   
   # Optimize nix store periodically
@@ -412,6 +423,46 @@
       programs.direnv = {
         enable = true;
         enableBashIntegration = true;
+      };
+      
+      # Screen locker configuration
+      programs.swaylock = {
+        enable = true;
+        package = pkgs.swaylock-effects;
+        settings = {
+          color = "000000";
+          font-size = 24;
+          indicator-idle-visible = false;
+          indicator-radius = 100;
+          line-color = "ffffff";
+          show-failed-attempts = true;
+          # Blur background
+          effect-blur = "7x5";
+          effect-vignette = "0.5:0.5";
+          # Remove grace period - require password immediately
+          # Fade in time
+          fade-in = 0.2;
+        };
+      };
+      
+      # Idle management and auto-lock
+      services.swayidle = {
+        enable = true;
+        events = [
+          { event = "before-sleep"; command = "${pkgs.swaylock-effects}/bin/swaylock -f"; }
+          { event = "lock"; command = "${pkgs.swaylock-effects}/bin/swaylock -f"; }
+        ];
+        timeouts = [
+          {
+            timeout = 300; # 5 minutes
+            command = "${pkgs.swaylock-effects}/bin/swaylock -f";
+          }
+          {
+            timeout = 600; # 10 minutes  
+            command = "${pkgs.hyprland}/bin/hyprctl dispatch dpms off";
+            resumeCommand = "${pkgs.hyprland}/bin/hyprctl dispatch dpms on";
+          }
+        ];
       };
     };
   };
