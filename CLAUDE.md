@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-You are tasked with orchestrating the synthesis of multiple LLM responses to create an optimized Linux build plan for a Lenovo ThinkPad P16 Gen 2. This system should be optimized primarily for LLM integration, considering ways to leverage or create hooks for LLM processes and access through something like Model Context Protocol (MCP) into operating system and user interface functionality. Primary uses of this system are software development with heavy AI learning and research, gaming, writing, and music production. The system should prioritize configuration parseability by LLMs and automation capabilities with a strong configuration for a polyglot software engineer and architect.
+You are tasked with orchestrating the synthesis of multiple LLM responses to create an optimized Linux build plan for a Lenovo ThinkPad P16 Gen 2. This system should be optimized primarily for LLM integration and control, considering ways to leverage or create hooks for LLM processes and access through something like Model Context Protocol (MCP) into operating system and user interface functionality. Primary uses of this system are software development with heavy AI learning and research, gaming, technical and creative writing, and music production. The system should prioritize configuration parseability by LLMs and automation capabilities with a strong configuration for a polyglot software engineer and architect.
 
 ## Input Files to Process
 
@@ -14,23 +14,25 @@ The directory `llm-inputs` contains the various prompts and context information 
 4. `full-context-minus-specs.md` - A collation of `linux-sme-system-prompt.md` and `initial-llm-prompt.md`, intended for models that provide means to attach files but not to provide a system prompt or instruction
 5. `generic-chatbot-input.md` - A collation of `linux-sme-system-prompt.md`, `target-system-specifications.md`, and `initial-llm-prompt.md` created for input to models that do not present a UX control through which to provide a system prompt or to attach context information
 
-The directory `llm-responses` contains the responses from the different LLMs:
+The directory `llm-outputs` contains the responses from the different LLMs:
 
-1. `chatgpt5-thinking-deepresearch.md` - response from OpenAI's ChatGPT with the GPT-5 model with "Deep Research" enabled
+1. `chatgpt5-autothink-research.md` - response from OpenAI's ChatGPT with the GPT-5 model with "Auto" thinking mode and "Deep Research" enabled
 2. `claude-opus-4.1-research.md` - response from Anthropic's Claude Opus 4.1 with "Research" enabled
 3. `claude-sonnet-4-research.md` - response from Anthropic's Claude Sonnet 4 with "Research" enabled
-4. `cohere-command-a-03-2025.md` - response from Cohere's Command-A 03/2025
-5. `deepseek-r1-0528.md` - response from Deepseek R1 05/28
-6. `gemini-2.5-pro-deep-research.md` - response from Google's Gemini 2.5 Pro with Deep Research enabled. This model went above and beyond my request, and provided a really interesting approach idea for providing REST-like hooks into the operating system for access by LLM agents
+4. `cohere-command-a-03-2025.md` - response from Cohere's Command-A 03-2025
+5. `DeepSeek-R1-0528.md` - response from Deepseek R1 05/28
+6. `gemini-2.5-pro-research.md` - response from Google's Gemini 2.5 Pro with Deep Research enabled. This model went above and beyond my request, and provided a really interesting approach idea for providing REST-like hooks into the operating system for access by LLM agents
 7. `kimi-k2-instruct.md` - response from Kimi K2 Instruct
-8. `llama.md` - response from Meta's Llama 3.1 405B
-9. `mistral-le-chat-research.md` - response from Mistral's "Le Chat" with Research enabled
-10. `perplexity-research.md` - response from Perplexity's chat interface with Research enabled
-11. `qwen.md` - response from Qwen3 Coder 480B A35B Instruct
+8. `llama-3.1-405b-instruct.md` - response from Meta's Llama 3.1 405B
+9. `llama-4-maverick-instruct-basic.md` - response from Meta's Llama 4 Maveric Instruct (Basic)
+10. `mistral-le-chat-research.md` - response from Mistral's Le Chat with Research enabled
+10. `mixtral-moe-8x22b-instruct.md` - response from Mistral's Mixtral MoE 8x22b Instruct
+11. `perplexity-research.md` - response from Perplexity's chat interface with Research enabled
+12. `qwen3-235b-a22b-thinking-2507.md` - response from Qwen3 235B A22B Thinking 2507
 
 ## Primary Objectives
 
-1. **Ease of Automation and Parsability by LLM tools**: As much of the system and user interface configuration as possible should be open for automation, scripting, and ease of parsing by LLMs
+1. **Ease of Automation and Parsability by LLM tools**: As much of the system and user interface configuration as possible should be open for automation, scripting, and ease of parsing by LLMs and control by AI Agents
 2. **Development Environment** - Support for diverse programming languages and frameworks
 3. **AI/ML Development** - Tools and libraries for AI learning and development
 4. **Cloud Development** - Integration with GCP and AWS
@@ -46,13 +48,13 @@ When synthesizing conflicting recommendations:
 
 1. **Primary Authority**: Official best practices and documentation for the chosen distribution
 2. **Secondary Authority**: Community consensus and proven patterns
-3. **Hardware Constraint**: All decisions must be compatible with Lenovo ThinkPad specifications as specified in `llm-inputs\target-system-specifications.md`
+3. **Hardware Constraint**: All decisions must be compatible with Lenovo ThinkPad specifications as specified in `llm-inputs/target-system-specifications.md`
 4. **LLM Parseability**: Prefer text-based, declarative configurations over binary formats
 
 ## Key Design Principles
 
 ### 1. Configuration Parseability
-- Use declarative configuration formats (YAML/TOML/JSON)
+- Use declarative configuration formats (YAML/TOML/JSON/INI)
 - Avoid binary configuration files
 - Standardize configuration locations
 - Document all configuration options inline
@@ -75,7 +77,7 @@ When synthesizing conflicting recommendations:
 ## Synthesis Process
 
 ### Phase 1: Data Collection & Analysis
-- Parse each model's response from `llm-responses/`
+- Parse each model's response from `llm-outputs/`
 - Extract key recommendations from each model
 - Group recommendations by category (kernel config, packages, configuration, etc.)
 - Identify consensus patterns across models
@@ -148,6 +150,7 @@ Structure:
 - Frameworks (TensorFlow, PyTorch, etc.)
 - CUDA/ROCm setup
 - Development tools
+- Local LLM serving (ollama, llama.cpp, etc.) and utilities (Simon Willison's `llm`, Claude Code, Gemini CLI, OpenAI Codex CLI, Cursor CLI)
 - Model storage strategy
 - [Attribution for each]
 
@@ -277,7 +280,7 @@ Before finalizing:
 
 ## Getting Started
 1. Create `analysis/` directory for working files
-2. Parse LLM response files from `llm-responses/`
+2. Parse LLM response files from `llm-outputs/`
 3. Begin with consensus analysis
 4. Generate conflict resolution documentation
 5. Create initial build plan draft

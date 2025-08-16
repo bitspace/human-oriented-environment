@@ -79,7 +79,7 @@ The information in the section with the heading "Target System Specifications" i
 
 # Human Oriented Environment: A Customized Laptop Experience
 
-I am customizing a laptop computer. The device's hardware specifications are in the file `target-system-specifications.md`. I intend to optimize this system for ease of automation, scripting, and ease of parseability and management by large language models and AI agents. I plan to use various AI agent orchestration utilities such as Claude Code, Gemini CLI, OpenAI Codex CLI, and Cursor CLI to enable my interaction with the system to be as close to fully "natural language" as possible, both via CLI and via future input mechanisms such as voice.
+I am customizing a laptop computer. The device's hardware specifications are below the heading "Target System Specifications" above. I intend to optimize this system for ease of automation, scripting, and ease of parseability and management by large language models and AI agents. I plan to use various AI agent orchestration utilities such as Claude Code, Gemini CLI, OpenAI Codex CLI, and Cursor CLI to enable my interaction with the system to be as close to fully "natural language" as possible, both via CLI and via future input mechanisms such as voice.
 
 The design and build of the system should prioritize ease of LLM and AI agent integration over all alse.  
 
