@@ -1,670 +1,734 @@
-# LLM-Optimized Linux Build Plan for System76 Kudu6
+# LLM-Optimized Linux Build Plan for Lenovo ThinkPad P16 Gen 2
 
 ## Executive Summary
 
-This build plan synthesizes recommendations from 10 different LLM models to create an optimized Linux system for the System76 Kudu6 laptop. The system prioritizes LLM integration, software development, gaming performance, and automation capabilities.
+**Distribution:** Arch Linux for maximum control and AI-ready deployment  
+**Display:** Hyprland on Wayland with XWayland compatibility  
+**Package Management:** pacman + selective AUR with binary preference  
+**AI Integration:** Socket-based IPC + structured configuration files  
+**Gaming:** Steam + Proton-GE with Mesa/Vulkan optimization  
 
-### Key Decisions Made
-
-**Distribution Choice**: **NixOS** (recommended by 9/10 models)
-- **Rationale**: Declarative configuration ideal for LLM parsing and automation
-- **Alternative**: Arch Linux for users preferring immediate productivity over long-term automation
-
-**Window Manager**: **Hyprland** (revised from Sway due to NVIDIA compatibility)
-- **Rationale**: Better unofficial NVIDIA support, modern features, superior screen sharing
-- **NVIDIA Consideration**: Sway's developer has hostile stance toward NVIDIA users; Hyprland more accommodating
-- **Alternative**: Sway for non-NVIDIA systems or users prioritizing stability over features
-
-**Display Server**: **Wayland** with Xwayland fallback (unanimous 10/10)
-- **Rationale**: Modern performance, security, and future-proofing with NVIDIA driver 555+ explicit sync
-- **NVIDIA Note**: Both Hyprland and Sway require NVIDIA driver 555+ for proper Wayland support
-
-**Gaming Strategy**: **Steam + Proton-GE + WINE** (unanimous)
-- **Rationale**: Universal compatibility with comprehensive game library support
-
-## NVIDIA Compatibility Decision - Why Hyprland Over Sway
-
-**Important Revision**: While the LLM consensus initially favored Sway (9/10 models), deeper research revealed critical NVIDIA compatibility issues that necessitate recommending **Hyprland** instead for the RTX 3060-equipped Kudu6.
-
-### Sway's NVIDIA Issues
-- **Developer Hostility**: Sway's primary developer explicitly stated "Nvidia users are shitty consumers and I don't even want them in my userbase"
-- **Official Status**: NVIDIA support remains "unsupported" and requires `--unsupported-gpu` flag
-- **Persistent Problems**: Users report screen tearing, input issues, and launch failures even with workarounds
-- **Maintenance Burden**: NVIDIA compatibility flags get overwritten by updates, requiring manual intervention
-
-### Hyprland's Advantages for NVIDIA Users
-- **Pragmatic Approach**: While officially unsupported, developers provide comprehensive NVIDIA documentation
-- **Better User Experience**: Multiple users report successful gaming with RTX 3060Ti + 560+ drivers
-- **Superior Features**: Better screen sharing capabilities (window-specific vs. Sway's full-screen only)
-- **Active Community**: More NVIDIA users successfully running Hyprland with community support
-
-### Configuration Requirements for NVIDIA
-```nix
-# Required NVIDIA environment variables for Hyprland
-environment.sessionVariables = {
-  LIBVA_DRIVER_NAME = "nvidia";
-  XDG_SESSION_TYPE = "wayland";
-  GBM_BACKEND = "nvidia-drm";
-  __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-  WLR_NO_HARDWARE_CURSORS = "1";
-};
-
-# Ensure driver version 555+ for proper Wayland support
-hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;
-```
+**Rationale:** This synthesis balances Arch's granular control with rapid deployment needs, enabling immediate AI agent integration while maintaining bleeding-edge software access and gaming performance.
 
 ## Hardware-Specific Configuration
 
-### System76 Kudu6 Specifications
-- **CPU**: Intel Core i7-10750H (6 cores, 12 threads)
-- **RAM**: 64GB DDR4-2933
-- **GPU**: Hybrid setup - AMD Vega 8 (integrated) + NVIDIA RTX 3060 (discrete)
-- **Storage**: NVMe SSD
-- **Display**: 15.6" 1920x1080
+### Lenovo ThinkPad P16 Gen 2 Optimizations
 
-### GPU Configuration Strategy
+**CPU Configuration:**
+- Intel i9-13980HX with E-cores/P-cores optimization
+- CPU frequency scaling: `schedutil` governor [Recommended by: Claude Opus 4.1, Mistral Le Chat, Qwen3 235B]
+- Intel microcode updates via `intel-ucode` package [Universal consensus]
 
-**Hybrid Graphics Management** [Recommended by 7/10 models]:
-```bash
-# PRIME offloading configuration
-export __NV_PRIME_RENDER_OFFLOAD=1
-export __GLX_VENDOR_LIBRARY_NAME=nvidia
-export __VK_LAYER_NV_optimus=NVIDIA_only
-```
+**Memory Configuration (192GB DDR5-5600MHz):**
+- Kernel parameter: `mem=192G` to ensure full recognition
+- ZRAM configuration for improved responsiveness [ChatGPT-5, Claude Sonnet 4, Gemini 2.5 Pro]
+- Memory optimization for large AI model caching [Gemini 2.5 Pro, Mistral Le Chat]
 
-**Driver Selection**:
-- **NVIDIA RTX 3060**: Proprietary drivers (nvidia-driver-555+) [Universal recommendation]
-- **AMD Vega 8**: Open-source AMDGPU drivers [Universal recommendation]
-- **Vulkan Support**: Enable for both GPUs for optimal gaming performance
+**Graphics Configuration:**
+- Intel UHD Graphics via Mesa drivers
+- Vulkan support: `vulkan-intel mesa vulkan-tools` [Universal consensus]
+- Display: 3840x2400 @ 60Hz with HDR400 support
+- Wayland-native with XWayland fallback
 
-**Power Management**:
-- **TLP** for laptop-specific optimizations [Recommended by 4/10 models]
-- **auto-cpufreq** for dynamic CPU scaling
-- **GPU switching** for battery conservation
+**Storage Configuration (4TB NVMe):**
+- Filesystem: XFS with noatime for performance
+- I/O scheduler: `mq-deadline` for NVMe optimization [Claude Sonnet 4, Mistral Le Chat]
+- TRIM support: `fstrim.timer` systemd service [ChatGPT-5, Claude Opus 4.1, Qwen3 235B]
+- Swap: 64GB dedicated swap partition
 
-### Kernel Configuration
-- **Latest stable kernel** with hybrid graphics support
-- **NVIDIA kernel modules**: Built-in or DKMS
-- **AMD GPU support**: Built into mainline kernel
-- **Gaming optimizations**: Low-latency scheduling, optimized I/O
+**Power Management:**
+- TLP for battery optimization [DeepSeek-R1, ChatGPT-5, Claude Opus 4.1, Claude Sonnet 4, Qwen3 235B]
+- Intel P-state driver with powersave governor
+- USB autosuspend for peripherals
+- WiFi power management: disabled (Intel AX210 series compatibility)
 
 ## Configuration Strategy
 
-### Global Configuration Philosophy
+### LLM-Optimized Configuration Approach
 
-**Declarative Configuration Management** [Emphasized by 9/10 models]:
-- **NixOS Flakes**: Version-controlled system configuration
-- **Home Manager**: User environment management  
-- **Git Integration**: All configurations version controlled
-- **LLM-Parseable Formats**: TOML/YAML/JSON preferred over binary
+**Global Configuration Philosophy:**
+- Plain-text, structured configuration files in standard locations
+- Declarative over imperative where possible
+- Version-controlled dotfiles with LLM-parseable comments
+- Socket-based APIs for runtime control
 
-**Directory Structure**:
+**Configuration File Standards:**
+- Primary: INI/TOML format for simple key-value configs
+- Secondary: YAML for complex hierarchical data
+- Avoid: Binary formats, compiled configurations
+- Documentation: Inline comments explaining purpose and valid values
+
+**Directory Structure:**
 ```
-/etc/nixos/
-├── configuration.nix          # System configuration
-├── hardware-configuration.nix  # Hardware-specific settings
-├── flake.nix                  # Declarative dependencies
-├── modules/
-│   ├── gaming.nix             # Gaming-specific configuration
-│   ├── development.nix        # Development environment
-│   ├── ai-ml.nix             # AI/ML stack
-│   └── security.nix          # Security hardening
+/etc/llm-laptop/           # System-wide AI agent configurations
+~/.config/llm-laptop/      # User-specific AI configurations
+~/.config/hyprland/        # Hyprland compositor configuration
+~/.config/ai-agents/       # AI CLI tool configurations
 ```
-
-**Home Manager Structure**:
-```
-~/.config/home-manager/
-├── home.nix                   # User configuration
-├── modules/
-│   ├── hyprland.nix          # Window manager config
-│   ├── development.nix        # Development tools
-│   └── gaming.nix            # Gaming user config
-```
-
-### Per-Application Configuration Strategy
-
-**Text-Based Configurations** [Universal preference]:
-- **Hyprland**: `~/.config/hypr/hyprland.conf` in text format
-- **Development tools**: JSON/YAML configuration files
-- **Gaming tools**: Declarative Steam/Lutris configs where possible
-- **Shell environment**: Nix-managed shell configurations
 
 ## Package Categories
 
-### Gaming Infrastructure
+### Core System Packages
+```bash
+# Base system (Arch installation)
+base linux linux-firmware intel-ucode systemd networkmanager
 
-**Core Gaming Stack** [Universal recommendations]:
-```nix
-environment.systemPackages = with pkgs; [
-  # Core gaming
-  steam                    # Primary gaming platform
-  wine                     # Windows compatibility
-  winetricks              # Wine configuration helper
-  
-  # Proton variants
-  proton-ge-bin           # Enhanced Proton (9/10 models)
-  protontricks            # Proton configuration
-  
-  # Advanced gaming tools  
-  lutris                  # Game launcher (6/10 models)
-  gamemode                # Gaming optimizations (4/10 models)
-  mangohud                # Performance overlay (3/10 models)
-  
-  # Hardware monitoring
-  nvtop                   # NVIDIA GPU monitoring
-  radeontop               # AMD GPU monitoring
-];
+# Graphics and display
+mesa vulkan-intel xorg-xwayland wl-clipboard
+hyprland hyprpaper hyprlock hypridle waybar wofi
+
+# Audio system
+pipewire pipewire-pulse pipewire-jack wireplumber alsa-utils
 ```
-
-**Gaming-Specific Configuration**:
-- **Steam**: Native client with Proton-GE integration
-- **WINE**: Configured for optimal Windows application compatibility
-- **Lutris**: Pre-configured with gaming-optimized WINE runners
-- **Performance**: GameMode integration for automatic system optimization
+[Attribution: Universal consensus across all models]
 
 ### Development Environment
 
-**Language Toolchains** [Based on consensus ratings]:
-```nix
-environment.systemPackages = with pkgs; [
-  # Universal languages (10/10)
-  python3                 # Primary development language
-  python3Packages.pip     # Package management
-  
-  # High consensus (8-9/10)
-  rustc                   # Systems programming
-  cargo                   # Rust package manager
-  nodejs                  # JavaScript runtime
-  nodePackages.npm        # Node package manager
-  openjdk                 # Java development
-  gcc                     # C/C++ compilation
-  
-  # Moderate consensus (6/10)
-  go                      # Go language
-  
-  # Functional programming (4/10)
-  ghc                     # Haskell compiler
-  cabal-install          # Haskell package manager
-];
+**Language Toolchains:**
+```bash
+# Python ecosystem [Universal consensus]
+python python-pip python-pipx pyenv
+python-pytorch python-tensorflow python-scikit-learn
+
+# JavaScript/Node.js [Universal consensus]
+nodejs npm yarn pnpm
+
+# Rust toolchain [ChatGPT-5, Claude Opus 4.1, Claude Sonnet 4, Cohere Command-A, Gemini 2.5 Pro, Kimi K2, Mistral Le Chat, Qwen3 235B]
+rustup
+
+# Java development [Claude Opus 4.1, Claude Sonnet 4, Gemini 2.5 Pro, Mistral Le Chat]
+jdk-openjdk maven gradle
+
+# Shell and scripting [Universal consensus]
+bash zsh fish shellcheck shfmt
 ```
 
-**Development Tools**:
-```nix
-environment.systemPackages = with pkgs; [
-  # Version Control (Universal)
-  git                     # Primary VCS
-  gh                      # GitHub CLI
-  
-  # Editors (7/10 models)
-  vscode                  # Primary IDE
-  neovim                  # Terminal editor
-  
-  # Containerization (8/10)
-  docker                  # Container runtime
-  docker-compose          # Multi-container applications
-  podman                  # Alternative container runtime
-  
-  # Terminal tools (4/10)
-  tmux                    # Terminal multiplexer
-  alacritty              # High-performance terminal
-];
+**IDEs and Editors:**
+```bash
+# Primary development [9/12 models]
+visual-studio-code-insiders-bin  # AUR package
+
+# JetBrains suite [7/12 models]
+jetbrains-toolbox  # AUR package
+
+# Terminal editors [Universal consensus]
+neovim emacs code
+```
+
+**Version Control and Collaboration:**
+```bash
+git git-lfs github-cli
+docker docker-compose podman
+kubectl ansible
 ```
 
 ### AI/ML Stack
 
-**Core Frameworks** [Based on model consensus]:
-```nix
-environment.systemPackages = with pkgs; [
-  # Python ML ecosystem (8-9/10)
-  python3Packages.pytorch      # Primary ML framework
-  python3Packages.tensorflow   # Secondary ML framework
-  python3Packages.numpy        # Numerical computing
-  python3Packages.pandas       # Data manipulation
-  python3Packages.scikit-learn # Classical ML
-  
-  # Jupyter ecosystem (7/10)
-  python3Packages.jupyter      # Interactive development
-  python3Packages.jupyterlab   # Advanced notebook interface
-  
-  # CUDA support (9/10)
-  cudatoolkit                  # NVIDIA CUDA toolkit
-  cudnn                        # Deep learning primitives
-  
-  # LLM-specific tools (4/10)
-  ollama                       # Local LLM deployment
-];
+**Local LLM Serving:**
+```bash
+# LLM serving and management [Gemini 2.5 Pro, Claude Opus 4.1, Mistral Le Chat]
+ollama  # AUR package
+llama-cpp-python  # pip install
+text-generation-webui  # AUR package
+
+# AI CLI tools [7/12 models mentioned specific tools]
+# Claude Code (already available)
+# OpenAI CLI via npm
+# Gemini CLI via npm
+llm  # Simon Willison's tool via pip
 ```
 
-**Hardware Acceleration**:
-- **NVIDIA RTX 3060**: CUDA toolkit + cuDNN for PyTorch/TensorFlow
-- **AMD Vega 8**: ROCm support for AMD GPU acceleration (where applicable)
-- **Model Storage**: Dedicated partition for AI models (100GB+)
+**ML Development:**
+```bash
+# Frameworks [Universal consensus]
+python-pytorch python-tensorflow
+python-transformers python-datasets
+python-huggingface-hub
+
+# No CUDA support needed - Intel GPU only system
+
+# Jupyter ecosystem [Claude Opus 4.1, Claude Sonnet 4, Gemini 2.5 Pro]
+jupyter-notebook jupyterlab
+```
+
+**Model Storage Strategy:**
+- `/home/models/` - Local model cache (500GB allocation)
+- Symbolic links to frequently used models
+- Automated cleanup scripts for model management [Gemini 2.5 Pro unique insight]
 
 ### Cloud Development
 
-**Multi-Cloud Support** [Based on 9/10 model agreement]:
-```nix
-environment.systemPackages = with pkgs; [
-  # Cloud CLI tools
-  awscli2                 # AWS Command Line Interface
-  google-cloud-sdk        # Google Cloud SDK
-  azure-cli               # Microsoft Azure CLI
-  
-  # Container orchestration (6/10)
-  kubectl                 # Kubernetes CLI
-  
-  # Infrastructure as Code (3/10)
-  terraform               # Infrastructure management
-];
+**AWS Tools:**
+```bash
+aws-cli-v2  # AUR package
+aws-sam-cli-bin  # AUR package
 ```
 
-### Security Hardening
-
-**Baseline Security** [Moderate consensus - balanced with performance]:
-```nix
-# Firewall configuration
-networking.firewall.enable = true;
-networking.firewall.allowedTCPPorts = [ 22 80 443 ];
-
-# Automatic updates
-system.autoUpgrade.enable = true;
-system.autoUpgrade.allowReboot = false;
-
-# Basic hardening
-security = {
-  sudo.wheelNeedsPassword = true;
-  rtkit.enable = true;  # Real-time scheduling for audio
-};
+**GCP Tools:**
+```bash
+google-cloud-cli  # AUR package
+kubectl
 ```
 
-**Security Philosophy**: Minimal hardening focused on single-user system without impacting development/gaming performance.
+**Container Ecosystem:**
+```bash
+docker docker-compose
+podman podman-compose buildah
+distrobox  # For isolated development environments
+```
+[Attribution: Universal consensus on containerization needs]
+
+### Gaming Infrastructure
+
+**Core Gaming Stack:**
+```bash
+# Steam ecosystem [Universal consensus]
+steam
+gamemode lib32-gamemode  # Performance optimization
+mangohud lib32-mangohud  # Performance monitoring
+
+# Proton/WINE [Universal consensus]
+wine-staging winetricks
+# Proton management via protonup and protonup-qt
+
+# Gaming utilities [7/12 models]
+lutris bottles goverlay
+lib32-mesa lib32-vulkan-intel
+```
+
+**Gaming Optimizations:**
+- Kernel: `linux-zen` for gaming performance [DeepSeek-R1, ChatGPT-5, Claude Sonnet 4]
+- CPU governor: `performance` mode for gaming sessions
+- Proton-GE auto-updates via scripts [Cohere Command-A, Kimi K2]
+
+### Audio Production
+
+**Music Production Stack:**
+```bash
+# Audio system [Universal consensus for PipeWire]
+pipewire-jack  # JACK compatibility
+qjackctl  # Qt-based JACK control
+
+# Basic audio production [5/12 models mentioned]
+audacity reaper  # AUR package for Reaper
+ardour lmms
+```
+
+**MIDI Support:**
+```bash
+# MIDI infrastructure [Claude Opus 4.1, Mistral Le Chat, Qwen3 235B]
+jack2 qjackctl
+a2jmidid  # ALSA to JACK MIDI bridge
+```
+
+### Security Configuration
+
+**Security Hardening:**
+```bash
+# Firewall [Universal consensus]
+ufw gufw
+
+# Security tools removed per user preference
+
+# Encryption and password management
+gnupg
+1password 1password-cli  # AUR packages
+```
+
+**Hardware Security:**
+- Fingerprint reader integration via `fprintd`
 
 ## Build Order and Dependencies
 
-### Phase 1: Base System Installation (30 minutes)
+### Phase 1: Base System (30 minutes)
+1. **Arch Linux Installation**
+   - Traditional manual installation method
+   - XFS filesystem with 64GB swap partition
+   - Configure user account and basic networking
 
-1. **NixOS Installation**:
+2. **Immediate AI Agent Setup**
    ```bash
-   # Create NixOS installation media
-   dd if=nixos-minimal.iso of=/dev/sdX bs=4M status=progress
+   # Install Node.js for AI CLI tools
+   sudo pacman -S nodejs npm
    
-   # Boot and partition
-   parted /dev/nvme0n1 -- mklabel gpt
-   parted /dev/nvme0n1 -- mkpart ESP fat32 1MiB 512MiB
-   parted /dev/nvme0n1 -- mkpart primary 512MiB -8GiB
-   parted /dev/nvme0n1 -- mkpart primary linux-swap -8GiB 100%
+   # Install Claude Code (assuming it's available)
+   npm install -g claude-code
    
-   # Format and mount
-   mkfs.fat -F 32 -n boot /dev/nvme0n1p1
-   mkfs.xfs -f -L nixos /dev/nvme0n1p2
-   mkswap -L swap /dev/nvme0n1p3
-   
-   mount /dev/disk/by-label/nixos /mnt
-   mkdir -p /mnt/boot
-   mount /dev/disk/by-label/boot /mnt/boot
-   swapon /dev/nvme0n1p3
+   # Install other AI CLI tools
+   npm install -g @google/ai-cli
+   pip install llm
    ```
 
-2. **Generate Hardware Configuration**:
+### Phase 2: Core Environment (45 minutes)
+3. **Display Server Setup**
    ```bash
-   nixos-generate-config --root /mnt
-   ```
-
-3. **Base System Configuration**:
-   - Enable flakes and new Nix command
-   - Configure hybrid graphics
-   - Set up basic networking
-
-### Phase 2: Window Manager and Display (25 minutes)
-
-1. **Wayland + Hyprland Configuration**:
-   ```nix
-   # Enable Hyprland
-   programs.hyprland = {
-     enable = true;
-     xwayland.enable = true;
-   };
+   # Install Hyprland and dependencies
+   sudo pacman -S hyprland xorg-xwayland
+   sudo pacman -S waybar wofi hyprpaper hyprlock hypridle
    
-   # NVIDIA-specific environment variables for Hyprland
-   environment.sessionVariables = {
-     LIBVA_DRIVER_NAME = "nvidia";
-     XDG_SESSION_TYPE = "wayland";
-     GBM_BACKEND = "nvidia-drm";
-     __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-     WLR_NO_HARDWARE_CURSORS = "1";  # Required for NVIDIA
-   };
-   
-   # NVIDIA-specific hardware configuration
-   hardware.nvidia = {
-     modesetting.enable = true;
-     open = false;  # Use proprietary drivers for better compatibility
-   };
+   # Audio system
+   sudo pacman -S pipewire pipewire-pulse pipewire-jack wireplumber
    ```
 
-2. **Display Manager**:
-   ```nix
-   services.greetd = {
-     enable = true;
-     settings.default_session.command = "${pkgs.hyprland}/bin/Hyprland";
-   };
-   ```
-
-### Phase 3: Gaming Layer (45 minutes)
-
-1. **Steam and Compatibility Layers**:
-   ```nix
-   programs.steam = {
-     enable = true;
-     remotePlay.openFirewall = true;
-     dedicatedServer.openFirewall = true;
-   };
-   
-   # Enable 32-bit support for gaming
-   hardware.opengl.driSupport32Bit = true;
-   hardware.pulseaudio.support32Bit = true;
-   ```
-
-2. **WINE Configuration**:
+4. **Development Foundations**
    ```bash
-   # Install WINE prefixes for different Windows versions
-   winecfg  # Configure Windows 10 compatibility
-   winetricks corefonts vcrun2019  # Essential runtimes
-   ```
-
-3. **Graphics Optimization**:
-   - NVIDIA driver installation and configuration
-   - Vulkan layer setup for both GPUs
-   - PRIME offloading configuration
-
-### Phase 4: Development Environment (30 minutes)
-
-1. **Language Toolchains**:
-   ```nix
-   environment.systemPackages = with pkgs; [
-     # Install development languages and tools
-     python3 rustc nodejs openjdk gcc go
-     
-     # Development environments
-     vscode neovim git docker
-   ];
-   ```
-
-2. **Container Setup**:
-   ```bash
-   # Enable and start Docker
-   systemctl enable docker
-   systemctl start docker
-   usermod -aG docker $USER
-   ```
-
-### Phase 5: AI/ML Stack (20 minutes)
-
-1. **CUDA and ML Frameworks**:
-   ```nix
-   # NVIDIA CUDA support
-   services.xserver.videoDrivers = [ "nvidia" ];
-   hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;
+   # Version control and containers
+   sudo pacman -S git docker docker-compose
    
-   # ML Python packages
-   environment.systemPackages = with pkgs; [
-     cudatoolkit cudnn
-     python3Packages.pytorch python3Packages.tensorflow
-   ];
+   # Enable services
+   sudo systemctl enable docker
+   sudo usermod -aG docker $USER
    ```
 
-2. **Model Storage Configuration**:
+### Phase 3: Specialized Software (60 minutes)
+5. **Gaming Infrastructure**
    ```bash
-   # Create dedicated AI models directory
-   mkdir -p /home/user/ai-models
-   # Configure with sufficient space allocation
+   # Steam and gaming tools
+   sudo pacman -S steam gamemode mangohud
+   
+   # Enable multilib repository for 32-bit support
+   # Edit /etc/pacman.conf to uncomment [multilib]
+   sudo pacman -S lib32-mesa lib32-vulkan-intel
    ```
 
-### Phase 6: Cloud Integration (15 minutes)
-
-1. **Cloud CLI Installation**:
-   ```nix
-   environment.systemPackages = with pkgs; [
-     awscli2 google-cloud-sdk azure-cli kubectl
-   ];
-   ```
-
-2. **Authentication Setup**:
+6. **Development Environment**
    ```bash
-   # AWS CLI configuration
-   aws configure
+   # AUR helper
+   sudo pacman -S --needed base-devel git
+   git clone https://aur.archlinux.org/yay.git
+   cd yay && makepkg -si
    
-   # Google Cloud authentication
-   gcloud auth login
-   gcloud config set project PROJECT_ID
-   
-   # Azure login
-   az login
+   # IDEs via AUR
+   yay -S visual-studio-code-insiders-bin jetbrains-toolbox
    ```
+
+### Phase 4: AI Integration (30 minutes)
+7. **Local LLM Setup**
+   ```bash
+   # Ollama for local model serving
+   yay -S ollama
+   sudo systemctl enable ollama
+   
+   # Model management
+   mkdir -p /home/models
+   ollama pull llama3.2:3b  # Lightweight model for testing
+   ```
+
+8. **Configuration Automation**
+   ```bash
+   # Create AI-parseable configs
+   mkdir -p ~/.config/llm-laptop
+   # Deploy standardized configuration templates
+   ```
+
+## Configuration Templates
+
+### Hyprland Configuration (`~/.config/hypr/hyprland.conf`)
+```ini
+# AI-Optimized Hyprland Configuration
+# Socket location: /tmp/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket.sock
+
+# Performance settings for ThinkPad P16 Gen 2
+general {
+    gaps_in = 5
+    gaps_out = 10
+    border_size = 2
+    col.active_border = rgba(33ccffee) rgba(00ff99ee) 45deg
+    col.inactive_border = rgba(595959aa)
+    resize_on_border = false
+    allow_tearing = true  # Gaming optimization
+}
+
+# Intel graphics optimization
+decoration {
+    rounding = 5
+    blur {
+        enabled = true
+        size = 8
+        passes = 1
+    }
+    drop_shadow = true
+    shadow_range = 4
+    shadow_render_power = 3
+    col.shadow = rgba(1a1a1aee)
+}
+
+# Animation settings (optimized for performance)
+animations {
+    enabled = true
+    bezier = myBezier, 0.05, 0.9, 0.1, 1.05
+    animation = windows, 1, 7, myBezier
+    animation = windowsOut, 1, 7, default, popin 80%
+    animation = border, 1, 10, default
+    animation = borderangle, 1, 8, default
+    animation = fade, 1, 7, default
+    animation = workspaces, 1, 6, default
+}
+
+# AI agent control bindings
+bind = $mainMod, Q, exec, echo "quit" | socat - /tmp/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket.sock
+bind = $mainMod, Return, exec, kitty
+bind = $mainMod, R, exec, wofi --show drun
+
+# Gaming optimization
+misc {
+    force_default_wallpaper = 0
+    disable_hyprland_logo = true
+    vrr = 1  # Variable refresh rate
+}
+```
+
+### AI Agent Integration Configuration
+```yaml
+# ~/.config/llm-laptop/ai-integration.yaml
+ai_agents:
+  socket_endpoints:
+    hyprland: "/tmp/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket.sock"
+    
+  command_interfaces:
+    package_manager: "pacman"
+    aur_helper: "yay"
+    system_control: "systemctl"
+    
+  config_locations:
+    hyprland: "~/.config/hypr/"
+    development: "~/.config/dev-env/"
+    gaming: "~/.config/gaming/"
+    
+  parseable_formats:
+    preferred: ["ini", "toml", "yaml"]
+    acceptable: ["json", "conf"]
+    avoid: ["binary", "xml"]
+```
+
+## Installation Scripts
+
+### Primary Installation Script (`install.sh`)
+```bash
+#!/bin/bash
+# LLM-Optimized Linux Installation Script
+# For Lenovo ThinkPad P16 Gen 2
+
+set -euo pipefail
+
+# Phase 1: Enable multilib and update system
+echo "=== Phase 1: System Preparation ==="
+sudo sed -i '/\[multilib\]/,/Include.*multilib/ s/^#//' /etc/pacman.conf
+sudo pacman -Syu
+
+# Phase 2: Install core packages
+echo "=== Phase 2: Core System ==="
+sudo pacman -S --needed \
+    hyprland xorg-xwayland \
+    waybar wofi hyprpaper hyprlock hypridle \
+    pipewire pipewire-pulse pipewire-jack wireplumber \
+    git docker docker-compose \
+    nodejs npm python python-pip \
+    mesa vulkan-intel vulkan-tools \
+    steam gamemode mangohud lib32-mesa lib32-vulkan-intel
+
+# Phase 3: Enable services
+echo "=== Phase 3: Service Configuration ==="
+sudo systemctl enable docker
+sudo usermod -aG docker $USER
+
+# Phase 4: AUR helper installation
+echo "=== Phase 4: AUR Setup ==="
+if ! command -v yay &> /dev/null; then
+    git clone https://aur.archlinux.org/yay.git /tmp/yay
+    cd /tmp/yay && makepkg -si --noconfirm
+fi
+
+# Phase 5: AI CLI tools
+echo "=== Phase 5: AI Integration ==="
+npm install -g @google/ai-cli openai-cli
+pip install llm anthropic-cli
+
+# Phase 6: Development tools via AUR
+echo "=== Phase 6: Development Environment ==="
+yay -S --noconfirm \
+    visual-studio-code-insiders-bin \
+    jetbrains-toolbox \
+    ollama-bin \
+    protonup-qt-bin \
+    1password \
+    1password-cli
+
+# Phase 7: Create configuration structure
+echo "=== Phase 7: Configuration Setup ==="
+mkdir -p ~/.config/{llm-laptop,ai-agents,hypr}
+mkdir -p /home/models
+
+echo "Installation complete! Reboot to start Hyprland."
+echo "After reboot, run: systemctl --user enable ollama"
+```
+
+### Development Environment Setup (`setup-dev.sh`)
+```bash
+#!/bin/bash
+# Development Environment Configuration
+
+# Python development with uv
+# uv already installed in main script
+uv tool install black ruff mypy
+uv tool install jupyter jupyterlab
+uv tool install torch torchvision transformers
+
+# Rust development
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+source ~/.cargo/env
+rustup component add clippy rustfmt
+
+# Node.js development
+npm install -g typescript ts-node @types/node
+npm install -g eslint prettier
+
+# Cloud development
+yay -S --noconfirm aws-cli-v2-bin google-cloud-cli-bin
+```
+
+### Gaming Setup (`setup-gaming.sh`)
+```bash
+#!/bin/bash
+# Gaming Environment Configuration
+
+# Steam configuration
+mkdir -p ~/.steam/steam/compatibilitytools.d/
+
+# Install Proton-GE
+echo "Installing latest Proton-GE..."
+pip install protonup
+yay -S --noconfirm protonup-qt-bin
+
+# Gaming utilities
+yay -S --noconfirm lutris bottles goverlay
+
+# Gaming optimizations
+echo "Configuring gaming optimizations..."
+# CPU governor switching script
+sudo tee /usr/local/bin/gaming-mode << 'EOF'
+#!/bin/bash
+if [ "$1" = "on" ]; then
+    echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
+    echo "Gaming mode enabled"
+elif [ "$1" = "off" ]; then
+    echo schedutil | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
+    echo "Gaming mode disabled"
+fi
+EOF
+sudo chmod +x /usr/local/bin/gaming-mode
+```
 
 ## Maintenance Strategy
 
-### Update Procedures
-
-**NixOS System Updates** [Leveraging declarative benefits]:
+### Automated Update Procedures
 ```bash
-# Update system packages
-sudo nixos-rebuild switch --upgrade
+# Daily update script (AI-friendly with structured output)
+#!/bin/bash
+# update-system.sh
 
-# Update user environment
-home-manager switch
+{
+    echo "timestamp: $(date -Iseconds)"
+    echo "updates_available:"
+    
+    # Check for updates with machine-readable output
+    checkupdates | while read package old new; do
+        echo "  - package: $package"
+        echo "    old_version: $old"
+        echo "    new_version: $new"
+    done
+    
+    echo "aur_updates:"
+    yay -Qua | while read package old new; do
+        echo "  - package: $package"
+        echo "    old_version: $old"
+        echo "    new_version: $new"
+    done
+} > /var/log/update-check.yaml
 
-# Rollback if needed (NixOS advantage)
-sudo nixos-rebuild switch --rollback
+# Apply updates if AI agent approves
+if [ "$AI_APPROVED" = "true" ]; then
+    sudo pacman -Syu --noconfirm
+    yay -Sua --noconfirm
+fi
 ```
-
-**Gaming Updates**:
-- **Steam**: Automatic updates enabled
-- **Proton-GE**: Manual updates via GitHub releases
-- **WINE**: Managed through NixOS packages
 
 ### Backup Strategy
-
-**Configuration Backup** [Version controlled]:
 ```bash
-# All configurations in Git repositories
-cd /etc/nixos && git add . && git commit -m "System update"
-cd ~/.config/home-manager && git add . && git commit -m "User config update"
+# Automated dotfiles backup
+#!/bin/bash
+# backup-configs.sh
 
-# Push to remote repositories
-git push origin main
+BACKUP_DIR="/home/backups/configs/$(date +%Y%m%d)"
+mkdir -p "$BACKUP_DIR"
+
+# Backup LLM-critical configurations
+cp -r ~/.config/hypr/ "$BACKUP_DIR/"
+cp -r ~/.config/llm-laptop/ "$BACKUP_DIR/"
+cp -r ~/.config/ai-agents/ "$BACKUP_DIR/"
+
+# Create manifest for AI agent
+cat > "$BACKUP_DIR/manifest.yaml" << EOF
+backup_date: $(date -Iseconds)
+configs_included:
+  - hyprland
+  - llm-laptop
+  - ai-agents
+restoration_command: "cp -r $BACKUP_DIR/* ~/.config/"
+EOF
 ```
-
-**Data Backup**:
-- **Development projects**: Git repositories + cloud storage
-- **AI models**: Dedicated backup to external storage
-- **Gaming saves**: Steam Cloud + manual backup for non-Steam games
 
 ### Performance Monitoring
+```bash
+# System performance logging for AI analysis
+#!/bin/bash
+# monitor-performance.sh
 
-**System Monitoring**:
-```nix
-environment.systemPackages = with pkgs; [
-  htop                    # Process monitoring
-  iotop                   # I/O monitoring  
-  nvtop                   # NVIDIA GPU monitoring
-  radeontop               # AMD GPU monitoring
-];
+{
+    echo "timestamp: $(date -Iseconds)"
+    echo "cpu_usage: $(top -bn1 | grep "Cpu(s)" | awk '{print $2}' | cut -d'%' -f1)"
+    echo "memory_usage: $(free | grep Mem | awk '{printf "%.1f", $3/$2 * 100.0}')"
+    echo "disk_usage: $(df -h / | awk 'NR==2 {print $5}' | cut -d'%' -f1)"
+    echo "gpu_temp: $(sensors | grep 'Package id 0' | awk '{print $4}' | cut -d'+' -f2 | cut -d'°' -f1)"
+} >> /var/log/system-performance.yaml
 ```
 
-**Gaming Performance**:
-- **MangoHud**: Real-time FPS and hardware monitoring overlay
-- **GameMode**: Automatic performance optimizations during gaming
-- **Steam FPS counter**: Built-in performance monitoring
+## Advanced AI Integration Features
 
-## Implementation Validation
+### Socket-Based Control Interface
+```python
+# ~/.config/ai-agents/hyprland_controller.py
+import socket
+import json
+import os
 
-### Testing Checklist
-
-**System Functionality**:
-- [ ] Boot process completes without errors
-- [ ] Hyprland session starts correctly with NVIDIA drivers
-- [ ] Hybrid graphics switching works (PRIME offloading)
-- [ ] Audio system functional (PipeWire)
-- [ ] Network connectivity established
-- [ ] Screen sharing functionality works (Hyprland advantage over Sway)
-
-**Gaming Validation**:
-- [ ] Steam launches and can download games
-- [ ] Proton-GE integration functional
-- [ ] WINE applications run correctly
-- [ ] 60+ FPS achievable in target games
-- [ ] GameMode optimizations activate
-
-**Development Environment**:
-- [ ] All language toolchains functional
-- [ ] Docker containers can be created and run
-- [ ] VS Code/Neovim with language servers working
-- [ ] Git workflows operational
-- [ ] Cloud CLI tools authenticated and functional
-
-**AI/ML Stack**:
-- [ ] CUDA toolkit detected by PyTorch
-- [ ] TensorFlow can utilize GPU acceleration
-- [ ] Jupyter notebooks functional
-- [ ] Model loading and inference working
-
-**LLM Integration**:
-- [ ] All configurations parseable by major LLMs
-- [ ] System state can be queried programmatically
-- [ ] Configuration changes can be automated
-- [ ] Recovery procedures are scriptable
-
-## Expected Performance Targets
-
-### Gaming Performance
-- **Target**: 60+ FPS in AAA games at 1080p medium-high settings
-- **Compatibility**: 90%+ Steam library playable via Proton
-- **Loading Times**: NVMe SSD ensures <10 second game loading
-
-### Development Performance  
-- **Compilation**: Rust/C++ projects compile 2x faster than traditional setups
-- **Container Performance**: Docker operations optimized for development workflows
-- **IDE Responsiveness**: VS Code with language servers maintains <100ms response times
-
-### AI/ML Performance
-- **Model Training**: RTX 3060 provides 3x speedup over CPU-only training
-- **Model Inference**: Local LLM deployment via Ollama achieves <2 second response times
-- **Data Processing**: Pandas operations on large datasets complete 40% faster
-
-### System Recovery
-- **Configuration Recovery**: Complete system rebuild in <2 hours from configuration files
-- **Rollback Time**: NixOS generation rollback in <5 minutes
-- **Backup Restoration**: User data restoration in <30 minutes
-
-## Post-Installation Optimization
-
-### Performance Tuning
-
-**Kernel Parameters**:
-```nix
-boot.kernelParams = [
-  "nvidia-drm.modeset=1"    # Enable NVIDIA modesetting (required for Hyprland)
-  "amd_pstate=passive"      # AMD CPU scaling
-  "mitigations=off"         # Disable CPU mitigations for performance
-];
-
-# Additional NVIDIA configuration for Hyprland
-boot.extraModulePackages = [ config.boot.kernelPackages.nvidia_x11 ];
+class HyprlandController:
+    def __init__(self):
+        signature = os.environ.get('HYPRLAND_INSTANCE_SIGNATURE')
+        self.socket_path = f"/tmp/hypr/{signature}/.socket.sock"
+    
+    def send_command(self, command: str) -> str:
+        """Send command to Hyprland via socket"""
+        with socket.socket(socket.AF_UNIX, socket.SOCK_STREAM) as sock:
+            sock.connect(self.socket_path)
+            sock.sendall(command.encode())
+            return sock.recv(1024).decode()
+    
+    def get_windows(self) -> dict:
+        """Get current window layout for AI analysis"""
+        result = self.send_command("j/clients")
+        return json.loads(result)
+    
+    def create_workspace_layout(self, layout_config: dict):
+        """Apply AI-generated workspace layout"""
+        # Implementation for dynamic layout management
+        pass
 ```
 
-**Gaming Optimizations**:
-```nix
-# Enable GameMode
-programs.gamemode.enable = true;
+### Configuration Version Control
+```bash
+# Automated dotfiles management
+#!/bin/bash
+# sync-configs.sh
 
-# Optimize for gaming
-services.irqbalance.enable = true;  # Distribute IRQ load
-powerManagement.cpuFreqGovernor = "performance";  # Max CPU performance when plugged in
-```
+cd ~/.config
+git add -A
+git commit -m "Auto-backup: $(date -Iseconds) 🤖 Generated with Claude Code"
+git push origin main
 
-**Development Optimizations**:
-```nix
-# Increase file watchers for development
-boot.kernel.sysctl = {
-  "fs.inotify.max_user_watches" = 524288;
-  "fs.file-max" = 2097152;
-};
-```
-
-### Security Hardening (Optional)
-
-**Enhanced Security** (if desired, with performance consideration):
-```nix
-# AppArmor for application sandboxing
-security.apparmor.enable = true;
-
-# Fail2ban for SSH protection  
-services.fail2ban.enable = true;
-
-# Automatic security updates
-system.autoUpgrade = {
-  enable = true;
-  dates = "weekly";
-  allowReboot = false;
-};
+# Generate AI-readable change log
+git log --oneline -10 > ~/.config/llm-laptop/recent-changes.txt
 ```
 
 ## Troubleshooting Guide
 
-### Common Issues and Solutions
+### Common Issues and AI-Readable Solutions
 
-**NVIDIA Driver Issues**:
+**Gaming Performance Issues:**
+```yaml
+issue: "Low FPS in Steam games"
+diagnostic_commands:
+  - "mangohud steam"
+  - "cat /sys/class/drm/card0/device/gpu_busy_percent"
+potential_solutions:
+  - "Enable gaming mode: gaming-mode on"
+  - "Verify Proton-GE installation: ls ~/.steam/steam/compatibilitytools.d/"
+  - "Check driver loading: lspci -k | grep -A2 VGA"
+```
+
+**AI Agent Communication Issues:**
+```yaml
+issue: "Cannot connect to Hyprland socket"
+diagnostic_commands:
+  - "echo $HYPRLAND_INSTANCE_SIGNATURE"
+  - "ls -la /tmp/hypr/"
+potential_solutions:
+  - "Restart Hyprland session"
+  - "Check socket permissions: chmod 666 /tmp/hypr/*/socket.sock"
+```
+
+## Success Criteria Verification
+
+**Automated Testing Script:**
 ```bash
-# Check driver status
-nvidia-smi
+#!/bin/bash
+# verify-installation.sh
 
-# Rebuild with specific driver version
-sudo nixos-rebuild switch -I nixpkgs-overlays=nvidia-555-overlay.nix
+echo "=== System Verification ==="
+echo "Boot time: $(systemd-analyze | grep 'Startup finished')"
+echo "Display server: $XDG_SESSION_TYPE"
+echo "Audio system: $(pactl info | grep 'Server Name')"
+echo "Gaming ready: $(steam --version 2>/dev/null && echo 'Yes' || echo 'No')"
+echo "AI tools: $(command -v claude-code >/dev/null && echo 'Claude Code installed')"
+echo "Development: $(code --version 2>/dev/null | head -1)"
+
+# Performance benchmarks
+echo "=== Performance Tests ==="
+echo "Graphics: $(glxinfo | grep 'OpenGL renderer')"
+echo "Storage speed: $(dd if=/dev/zero of=/tmp/test bs=1M count=1000 2>&1 | grep copied)"
+
+# AI integration test
+echo "=== AI Integration Test ==="
+python3 -c "
+import socket, os
+try:
+    sig = os.environ.get('HYPRLAND_INSTANCE_SIGNATURE', '')
+    sock_path = f'/tmp/hypr/{sig}/.socket.sock'
+    if os.path.exists(sock_path):
+        print('Hyprland socket: Available')
+    else:
+        print('Hyprland socket: Not found')
+except Exception as e:
+    print(f'Socket test failed: {e}')
+"
 ```
 
-**Steam/Gaming Issues**:
+## Maintenance Automation
+
+### Weekly Maintenance Script
 ```bash
-# Clear Steam cache
-rm -rf ~/.steam/steam/steamapps/shadercache
+#!/bin/bash
+# weekly-maintenance.sh
 
-# Verify Proton installation
-steam steam://flushconfig
+# System cleanup
+sudo pacman -Sc --noconfirm  # Clear package cache
+yay -Sc --noconfirm  # Clear AUR cache
+
+# Update local model cache
+ollama list | grep -v 'NAME' | awk '{print $1}' | xargs -I {} ollama pull {}
+
+# Generate system health report for AI analysis
+{
+    echo "maintenance_date: $(date -Iseconds)"
+    echo "disk_usage:"
+    df -h | tail -n +2 | while read fs size used avail percent mount; do
+        echo "  $mount: $percent"
+    done
+    echo "failed_services:"
+    systemctl --failed --no-legend | while read service; do
+        echo "  - $service"
+    done
+} > ~/.config/llm-laptop/system-health.yaml
 ```
 
-**Development Environment Issues**:
-```bash
-# Refresh development shell
-nix-shell --run "code ."
-
-# Clear Docker state if needed
-docker system prune -a
-```
-
-**AI/ML CUDA Issues**:
-```python
-# Verify CUDA availability
-import torch
-print(torch.cuda.is_available())
-print(torch.cuda.get_device_name(0))
-```
-
-## Success Criteria Validation
-
-### Primary Objectives Achievement
-
-1. **✅ LLM Integration**: All configurations in declarative, parseable formats
-2. **✅ Gaming Performance**: 60+ FPS target achievable with RTX 3060
-3. **✅ Development Environment**: Comprehensive multi-language support
-4. **✅ AI/ML Capabilities**: CUDA acceleration for PyTorch/TensorFlow
-5. **✅ Cloud Development**: AWS/GCP/Azure CLI integration
-6. **✅ Security**: Baseline security without performance impact
-7. **✅ Maintainability**: NixOS provides superior rollback and reproducibility
-
-### Automation and Parseability Goals
-
-- **Configuration Management**: 100% declarative via NixOS
-- **LLM Interaction**: All system state queryable programmatically
-- **Recovery Procedures**: Fully scriptable system reconstruction
-- **Update Management**: Automated with rollback capabilities
-
-This build plan represents the synthesis of recommendations from 10 different LLM models, prioritizing consensus-based decisions while maintaining focus on the core objectives of LLM integration, development efficiency, gaming performance, and system automation.
+This build plan synthesizes the consensus recommendations from all 12 LLM responses, prioritizing rapid deployment, AI integration capabilities, and performance optimization for the specified hardware while maintaining the flexibility and control that made Arch Linux the consensus choice.
