@@ -28,6 +28,21 @@
 
 - 4 TB SSD M.2 2280 PCIe Gen4 Performance TLC Opal
 
+```
+Disk /dev/nvme0n1: 3.73 TiB, 4096805658624 bytes, 8001573552 sectors
+Disk model: KXG8AZN84T09 LA KIOXIA                  
+Units: sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disklabel type: gpt
+Disk identifier: 018F6979-9880-45D8-AABC-AFD09C7EC822
+
+Device              Start        End    Sectors  Size Type
+/dev/nvme0n1p1       2048    2097151    2095104 1023M EFI System
+/dev/nvme0n1p2    2097152 7867355823 7865258672  3.7T Linux filesystem
+/dev/nvme0n1p3 7867355824 8001573518  134217695   64G Linux swap
+```
+
 ### Networking
 
 - Wireless: Intel® Wi-Fi 6E AX211 2x2 AX vPro® & Bluetooth® 5.3
