@@ -60,7 +60,6 @@
 
 **Directory Structure:**
 ```
-/etc/llm-laptop/           # System-wide AI agent configurations
 ~/.config/llm-laptop/      # User-specific AI configurations
 ~/.config/hyprland/        # Hyprland compositor configuration
 ~/.config/ai-agents/       # AI CLI tool configurations
@@ -262,37 +261,49 @@ gnupg
    ```
 
 4. **GPG and AI CLI Tools Setup**
-   ```bash
-   # Configure GPG for reliable keyserver access
-   mkdir -p ~/.gnupg
-   cat > ~/.gnupg/gpg.conf << EOF
-keyserver hkps://keys.openpgp.org
-keyserver-options auto-key-retrieve
-EOF
+    ```bash
+    # Configure GPG for reliable keyserver access
+    mkdir -p ~/.gnupg
+    cat > ~/.gnupg/gpg.conf << EOF
+    keyserver hkps://keys.openpgp.org
+    keyserver-options auto-key-retrieve
+    EOF
+    ```
    
 5. **Install uv first for Python package management**
+   ```bash
    curl -LsSf https://astral.sh/uv/install.sh | sh
    source ~/.bashrc  # Reload PATH for uv
+   ```
    
 6. **Configure npm for user-only global installations**
+   ```bash
    mkdir -p ~/.npm-global
    npm config set prefix '~/.npm-global'
    echo 'export PATH="$HOME/.npm-global/bin:$HOME/.local/bin:$PATH"' >> ~/.bashrc
    source ~/.bashrc
-   
+   ```
+
 7. **Install Claude Code locally (user-only)**
+   ```bash
    npm install --global @anthropic-ai/claude-code
-   
+   ```
+
 8. **Install other AI CLI tools**
+   ```bash
    npm install --global @google/gemini-cli @openai/codex
    uv tool install llm
-   
-9. **Install protonup for Proton management**
-   uv tool install protonup
-   
-10. **Import 1Password GPG key manually to avoid keyserver issues**
-   curl -s https://downloads.1password.com/linux/keys/1password.asc | gpg --import
    ```
+
+9.  **Install protonup for Proton management**
+    ```bash
+    uv tool install protonup
+    ```
+
+10. **Import 1Password GPG key manually to avoid keyserver issues**
+    ```bash
+    curl -s https://downloads.1password.com/linux/keys/1password.asc | gpg --import
+    ```
 
 11. **Display Server Setup**
    ```bash
@@ -311,17 +322,19 @@ EOF
    # Configure greetd to use tuigreet
    sudo mkdir -p /etc/greetd
    sudo tee /etc/greetd/config.toml << EOF
-[terminal]
-vt = 1
+    [terminal]
+    vt = 1
 
-[default_session]
-command = "tuigreet --time --cmd Hyprland"
-user = "greeter"
-EOF
-   
-12. **Audio system**
-   paru -S pipewire pipewire-pulse pipewire-jack wireplumber
+    [default_session]
+    command = "tuigreet --time --cmd Hyprland"
+    user = "greeter"
+    EOF
    ```
+
+12. **Audio system**
+    ```bash
+    paru -S pipewire pipewire-pulse pipewire-jack wireplumber
+    ```
 
 13. **Development Foundations**
    ```bash
