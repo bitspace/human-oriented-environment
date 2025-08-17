@@ -270,31 +270,31 @@ keyserver hkps://keys.openpgp.org
 keyserver-options auto-key-retrieve
 EOF
    
-   # Install uv first for Python package management
+5. **Install uv first for Python package management**
    curl -LsSf https://astral.sh/uv/install.sh | sh
    source ~/.bashrc  # Reload PATH for uv
    
-   # Configure npm for user-only global installations
+6. **Configure npm for user-only global installations**
    mkdir -p ~/.npm-global
    npm config set prefix '~/.npm-global'
    echo 'export PATH="$HOME/.npm-global/bin:$HOME/.local/bin:$PATH"' >> ~/.bashrc
    source ~/.bashrc
    
-   # Install Claude Code locally (user-only)
+7. **Install Claude Code locally (user-only)**
    npm install --global @anthropic-ai/claude-code
    
-   # Install other AI CLI tools
+8. **Install other AI CLI tools**
    npm install --global @google/gemini-cli @openai/codex
    uv tool install llm
    
-   # Install protonup for Proton management
+9. **Install protonup for Proton management**
    uv tool install protonup
    
-   # Import 1Password GPG key manually to avoid keyserver issues
+10. **Import 1Password GPG key manually to avoid keyserver issues**
    curl -s https://downloads.1password.com/linux/keys/1password.asc | gpg --import
    ```
 
-5. **Display Server Setup**
+11. **Display Server Setup**
    ```bash
    # Install Hyprland and essential GUI tools
    paru -S hyprland xorg-xwayland
@@ -319,11 +319,11 @@ command = "tuigreet --time --cmd Hyprland"
 user = "greeter"
 EOF
    
-   # Audio system
+12. **Audio system**
    paru -S pipewire pipewire-pulse pipewire-jack wireplumber
    ```
 
-6. **Development Foundations**
+13. **Development Foundations**
    ```bash
    # Version control and containers
    paru -S git docker docker-compose
@@ -334,7 +334,7 @@ EOF
    ```
 
 ### Phase 3: Specialized Software (60 minutes)
-7. **Gaming Infrastructure**
+14. **Gaming Infrastructure**
    ```bash
    # Steam and gaming tools
    paru -S steam gamemode mangohud
@@ -344,7 +344,7 @@ EOF
    paru -S lib32-mesa lib32-vulkan-intel
    ```
 
-8. **Development Environment**
+15. **Development Environment**
    ```bash
    # AUR helper
    paru -S --needed base-devel git
@@ -355,7 +355,7 @@ EOF
    ```
 
 ### Phase 4: AI Integration (30 minutes)
-9. **Local LLM Setup**
+16. **Local LLM Setup**
    ```bash
    # Ollama for local model serving (user service)
    paru -S ollama
@@ -365,7 +365,7 @@ EOF
    ollama pull llama3.2:3b  # Lightweight model for testing
    ```
 
-10. **Configuration Automation**
+17. **Configuration Automation**
    ```bash
    # Create AI-parseable configs
    mkdir -p ~/.config/llm-laptop
