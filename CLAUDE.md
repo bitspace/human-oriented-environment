@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-You are tasked with orchestrating the synthesis of multiple LLM responses to create an optimized Linux build plan for a Lenovo ThinkPad P16 Gen 2. This system should be optimized primarily for LLM integration and control, considering ways to leverage or create hooks for LLM processes and access through something like Model Context Protocol (MCP) into operating system and user interface functionality. Primary uses of this system are software development with heavy AI learning and research, gaming, technical and creative writing, and music production. The system should prioritize configuration parseability by LLMs and automation capabilities with a strong configuration for a polyglot software engineer and architect.
+You are tasked with orchestrating the synthesis of multiple LLM responses to create an optimized Linux build plan for a System76 Kudu (kudu6). This system should be optimized primarily for LLM integration and control, considering ways to leverage or create hooks for LLM processes and access through something like Model Context Protocol (MCP) into operating system and user interface functionality. Primary uses of this system are software development with heavy AI learning and research, gaming, technical and creative writing, and music production. The system should prioritize configuration parseability by LLMs and automation capabilities with a strong configuration for a polyglot software engineer and architect.
 
 ## Input Files to Process
 
@@ -10,18 +10,18 @@ The directory `llm-inputs` contains the various prompts and context information 
 
 1. `linux-sme-system-prompt.md` - System prompt for Linux expertise context
 2. `initial-llm-prompt.md` - The original prompt sent to all models
-3. `target-system-specifications.md` - System specifications for the Lenovo ThinkPad
+3. `target-system-specifications.md` - System specifications for the System76 Kudu
 4. `full-context-minus-specs.md` - A collation of `linux-sme-system-prompt.md` and `initial-llm-prompt.md`, intended for models that provide means to attach files but not to provide a system prompt or instruction
 5. `generic-chatbot-input.md` - A collation of `linux-sme-system-prompt.md`, `target-system-specifications.md`, and `initial-llm-prompt.md` created for input to models that do not present a UX control through which to provide a system prompt or to attach context information
 
 The directory `llm-outputs` contains the responses from the different LLMs:
 
-1. `chatgpt5-autothink-research.md` - response from OpenAI's ChatGPT with the GPT-5 model with "Auto" thinking mode and "Deep Research" enabled
+1. `chatgpt-5-autothink-research.md` - response from OpenAI's ChatGPT with the GPT-5 model with "Auto" thinking mode and "Deep Research" enabled
 2. `claude-opus-4.1-research.md` - response from Anthropic's Claude Opus 4.1 with "Research" enabled
 3. `claude-sonnet-4-research.md` - response from Anthropic's Claude Sonnet 4 with "Research" enabled
 4. `cohere-command-a-03-2025.md` - response from Cohere's Command-A 03-2025
 5. `DeepSeek-R1-0528.md` - response from Deepseek R1 05/28
-6. `gemini-2.5-pro-research.md` - response from Google's Gemini 2.5 Pro with Deep Research enabled. This model went above and beyond my request, and provided a really interesting approach idea for providing REST-like hooks into the operating system for access by LLM agents
+6. `gemini-2.5-pro-deep-research.md` - response from Google's Gemini 2.5 Pro with Deep Research enabled. This model went above and beyond my request, and provided a really interesting approach idea for providing REST-like hooks into the operating system for access by LLM agents
 7. `kimi-k2-instruct.md` - response from Kimi K2 Instruct
 8. `llama-3.1-405b-instruct.md` - response from Meta's Llama 3.1 405B
 9. `llama-4-maverick-instruct-basic.md` - response from Meta's Llama 4 Maveric Instruct (Basic)
@@ -32,12 +32,12 @@ The directory `llm-outputs` contains the responses from the different LLMs:
 
 ## Primary Objectives
 
-1. **Ease of Automation and Parsability by LLM tools**: As much of the system and user interface configuration as possible should be open for automation, scripting, and ease of parsing by LLMs and control by AI Agents
-2. **Development Environment** - Support for diverse programming languages and frameworks
-3. **AI/ML Development** - Tools and libraries for AI learning and development
-4. **Cloud Development** - Integration with GCP and AWS
-5. **Writing** - Basic tools and capabilities for creative writing, technical documentation, and general research and study notes
-6. **Gaming Performance** - Optimize for WINE, Proton, Steam, and other gaming platforms
+1. **Gaming Performance** - Optimize for WINE, Proton, Steam, and other gaming platforms
+2. **Ease of Automation and Parsability by LLM tools**: As much of the system and user interface configuration as possible should be open for automation, scripting, and ease of parsing by LLMs and control by AI Agents
+3. **Development Environment** - Support for diverse programming languages and frameworks
+4. **AI/ML Development** - Tools and libraries for AI learning and development
+5. **Cloud Development** - Integration with GCP and AWS
+6. **Writing** - Basic tools and capabilities for creative writing, technical documentation, and general research and study notes
 7. **Music Production** - Provide some music production abilities and applications for manipulating audio with MIDI
 8. **Security** - Strong security for a single-user system on private network
 9. **Maintainability** - Consider ease of maintenance (secondary to performance)
@@ -48,7 +48,7 @@ When synthesizing conflicting recommendations:
 
 1. **Primary Authority**: Official best practices and documentation for the chosen distribution
 2. **Secondary Authority**: Community consensus and proven patterns
-3. **Hardware Constraint**: All decisions must be compatible with Lenovo ThinkPad specifications as specified in `llm-inputs/target-system-specifications.md`
+3. **Hardware Constraint**: All decisions must be compatible with System76 Kudu specifications as specified in `llm-inputs/target-system-specifications.md`
 4. **LLM Parseability**: Prefer text-based, declarative configurations over binary formats
 
 ## Key Design Principles
@@ -118,7 +118,7 @@ Create detailed plans for:
 ### 2. Optimized Build Plan (`llm-optimized-linux-build-plan.md`)
 Structure:
 ```markdown
-# Optimized Build Plan for Lenovo ThinkPad
+# Optimized Build Plan for System76 Kudu
 
 ## Executive Summary
 - Key decisions made
@@ -127,10 +127,10 @@ Structure:
 - DE/WM recommendation with rationale
 
 ## Hardware-Specific Configuration
-- Kernel configuration for ThinkPad
+- Kernel configuration for Kudu
 - Driver requirements
 - Power management
-- GPU configuration (Integrated Intel options)
+- GPU configuration (discrete NVIDIA and integrated AMD options)
 
 ## Configuration Strategy
 - Global configuration approach
@@ -246,7 +246,7 @@ When models disagree, document as:
 ## Validation Checklist
 
 Before finalizing:
-- [ ] All recommendations tested against Lenovo ThinkPad hardware specs
+- [ ] All recommendations tested against System76 Kudu hardware specs
 - [ ] Package conflicts resolved
 - [ ] Development toolchain completeness checked
 - [ ] AI/ML storage requirements planned
@@ -272,7 +272,8 @@ Before finalizing:
    - Plan for AI model storage requirements
 
 2. **GPU Configuration**:
-   - Research Intel GPU options per ThinkPad specs
+   - Research Nvidia GPU options per Kudu specs
+   - Research AMD GPU options per Kudu specs
 
 3. **Storage Strategy**:
    - Plan for large AI model storage

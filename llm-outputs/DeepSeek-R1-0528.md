@@ -1,198 +1,181 @@
 ### Top 5 Distributions
 1. **Arch Linux**  
-   - *Why*: Bleeding-edge rolling release, extensive documentation, AUR access (60k+ packages), simple text-based configuration (`/etc/` files, PKGBUILDs)
-   - *LLM Advantage*: Human-readable package definitions (AUR PKGBUILDs), declarative configs via `pacman.conf`
+   - **Why**: Pure rolling-release, pacman/AUR ecosystem, minimal base ideal for AI-driven setup
+   - **Parseability**: Simple text configs in `/etc/`, AUR packages defined as PKGBUILD scripts
+   - **AI Advantage**: Extensive Arch Wiki for agent reference, declarative package management
 
 2. **openSUSE Tumbleweed**  
-   - *Why*: True rolling release with automated QA (`openQA`), `zypper` (RPM-based) with dependency resolution, `snapper` for automatic snapshots
-   - *LLM Advantage*: YAML-based configuration (`yast2` modules) and XML schemas for system settings
+   - **Why**: True rolling-release with enterprise-grade stability (openQA tested)
+   - **Package Mgmt**: `zypper` (RPM-based) with human-readable `*.service` systemd units
+   - **Parseability**: YAML configuration for Salt (built-in) supports AI automation
 
-3. **Fedora Rawhide**  
-   - *Why*: Bleeding-edge RPM with latest kernels, `dnf` package manager, strong Wayland support
-   - *LLM Advantage*: `rpm-ostree` for atomic updates, INI-style configs (`/etc/dnf/dnf.conf`)
+3. **Void Linux**  
+   - **Why**: Independent rolling release, `xbps` package manager designed for simplicity
+   - **Parseability**: Clean POSIX-style init scripts, lightweight config structure
+   - **Note**: Uses runit by default but full systemd support available
 
-4. **Void Linux**  
-   - *Why*: Independent rolling release, `xbps` package manager, runit init (compatible with systemd via `elogind`)
-   - *LLM Advantage*: Simple plain-text service configs (`/etc/sv/`), lightweight base
+4. **Artix Linux** (systemd branch)  
+   - **Why**: Arch-based without snapshots, avoids Ubuntuisms
+   - **Parseability**: Arch-compatible structure with additional runit/OpenRC options
 
-5. **Solus**  
-   - *Why*: Curated rolling release, `eopkg` manager, optimized desktop performance
-   - *LLM Advantage*: Declarative package manifests (`pspec.xml`), clean `/etc` structure
+5. **Debian Testing**  
+   - **Why**: Rolling base with Debian stability, massive package repository
+   - **Parseability**: Well-documented `apt` ecosystem, `debconf` for config automation
+   - **Caveat**: Less current than Arch/Tumbleweed
 
-**Arch Linux is the top recommendation** due to its balance of bleeding-edge packages, AUR flexibility, and transparent text-based configuration. Tumbleweed is a close second for enterprise-grade stability.
+**Eliminated**:  
+- Fedora Rawhide (too unstable), Solus (limited packages), Gentoo/NixOS (excluded)
 
-### Top 5 Graphical Environments
-1. **Hyprland (Wayland)**  
-   - *Why*: Dynamic tiling compositor with declarative config (`hyprland.conf`), Qt theming support, vibrant animations
-   - *LLM Advantage*: Simple key-value config format, automated workspace layouts
+### Top 5 Window Managers
+1. **Hyprland** (Wayland)  
+   - **Why**: Modern GPU-accelerated compositor with declarative config (hyprland.conf)
+   - **AI Advantage**: Simple key/value config, active development, Qt compatibility
+   - **Aesthetics**: Built-in animations/effects, easy theming
 
-2. **Qtile (X11/Wayland)**  
-   - *Why*: Python-configured tiling WM, hot-reload configs, Qt integration
-   - *LLM Advantage*: Configs are executable Python scripts (`config.py`), ideal for AI generation
+2. **Qtile** (X11/Wayland)  
+   - **Why**: Python-configured tiling WM, native Qt integration
+   - **AI Advantage**: Config is literal Python code - perfect for LLM manipulation
+   - **Extensibility**: Direct API access for custom behaviors
 
-3. **Sway (Wayland)**  
-   - *Why*: i3-compatible tiler, minimal config (`sway/config`), explicit XWayland support
-   - *LLM Advantage*: Self-documenting config syntax, IPC via `swaymsg`
+3. **River** (Wayland)  
+   - **Why**: Dynamic tiler with explicit UNIX philosophy
+   - **Parseability**: Configuration via shell commands (ideal for AI orchestration)
+   - **Simplicity**: <3000 LOC base, IPC through `rivertile`
 
-4. **LXQt (X11)**  
-   - *Why*: Lightweight Qt desktop, modular components, low resource use
-   - *LLM Advantage*: INI-style configs (`lxqt/*.conf`), scriptable via `lxqt-config`
+4. **LXQt** (X11/Wayland-preview)  
+   - **Why**: Lightweight Qt desktop (not KDE), modular components
+   - **Parseability**: INI-style configs in `~/.config/lxqt`
+   - **Advantage**: Traditional desktop paradigm for non-tiling workflows
 
-5. **River (Wayland)**  
-   - *Why*: Dynamic Wayland compositor with declarative layout rules, tag-based workflow
-   - *LLM Advantage*: Simple config file (`rivercfg`), Unix socket control protocol
+5. **Labwc** (Wayland)  
+   - **Why**: Stacking compositor with Openbox compatibility
+   - **Parseability**: XML configs (openbox.xml, rc.xml)
+   - **Strength**: Familiar paradigm for X11 migrants
 
-**Hyprland is the top WM recommendation** due to its modern Wayland implementation, visual polish, and straightforward config format ideal for LLM parsing.
+### Installation Plan
+**Phase 1: Minimal Base System**
+```bash
+# Partitioning (adjust sizes):
+parted /dev/nvme0n1 mklabel gpt
+parted /dev/nvme0n1 mkpart ESP fat32 1MiB 1GiB
+parted /dev/nvme0n1 mkpart primary btrfs 1GiB 100%
 
----
+# Formatting:
+mkfs.fat -F32 /dev/nvme0n1p1
+mkfs.btrfs -f /dev/nvme0n1p2
+mount /dev/nvme0n1p2 /mnt
+btrfs subvolume create /mnt/@
+btrfs subvolume create /mnt/@home
+umount /mnt
 
-### Installation Plan (Arch Linux + Hyprland)
+# Mount with zstd compression:
+mount -o compress=zstd,subvol=@ /dev/nvme0n1p2 /mnt
+mkdir /mnt/{boot,home}
+mount /dev/nvme0n1p1 /mnt/boot
+mount -o compress=zstd,subvol=@home /dev/nvme0n1p2 /mnt/home
 
-#### Phase 1: Minimal Base System
-1. **Boot Arch ISO**  
+# Install base system (Arch example):
+pacstrap /mnt base linux linux-firmware networkmanager nano
+genfstab -U /mnt >> /mnt/etc/fstab
+arch-chroot /mnt
+
+# Post-chroot:
+ln -sf /usr/share/zoneinfo/Region/City /etc/localtime
+hwclock --systohc
+echo "LANG=en_US.UTF-8" > /etc/locale.conf
+passwd  # Set root password
+
+# Bootloader (systemd-boot):
+bootctl install
+echo "options root=UUID=$(blkid -s UUID -o value /dev/nvme0n1p2) rw" >> /boot/loader/entries/arch.conf
+
+# Reboot
+exit
+umount -R /mnt
+reboot
+```
+
+**Phase 2: AI Agent Integration**
+1. Post-reboot, install minimal CLI tools:
    ```bash
-   iwctl # Configure WiFi if needed
-   timedatectl set-ntp true
+   pacman -S git python-pip nodejs
    ```
-
-2. **Partitioning** (Match hardware specs):  
-   - EFI: 1GB (FAT32)  
-   - Root: 3.5TB (Btrfs with `@` and `@home` subvolumes)  
-   - Swap: 64GB (for hibernation support)  
+2. Install agent framework:
    ```bash
-   mkfs.fat -F32 /dev/nvme0n1p1
-   mkswap /dev/nvme0n1p2
-   mkfs.btrfs -L ROOT /dev/nvme0n1p3
+   pip install griptape
+   # or 
+   npm install -g @anthropic/cli
    ```
+3. Feed this prompt to your agent:  
+   *"Configure Arch system per these specs:  
+   - Wayland/Hyprland with Qt theming  
+   - Dev tools: VSCode, JetBrains, Python, Java, Rust, Node, Docker  
+   - Cloud CLIs: AWS, GCP  
+   - Gaming: Steam+Proton-GE (via AUR)  
+   - Audio: PipeWire with low-latency tuning  
+   - Parseable configs in ~/.config with documented structure  
+   Implement via idempotent scripts with error handling."*
 
-3. **Install Base System**  
-   ```bash
-   pacstrap /mnt base base-devel linux linux-firmware \
-     intel-ucode btrfs-progs neovim openssh
-   ```
-
-4. **Configure System**  
-   ```bash
-   genfstab -U /mnt >> /mnt/etc/fstab
-   arch-chroot /mnt
-   ln -sf /usr/share/zoneinfo/Region/City /etc/localtime
-   echo "LANG=en_US.UTF-8" > /etc/locale.conf
-   echo "thinkpad-p16" > /etc/hostname
-   ```
-
-5. **Initramfs & Bootloader**  
-   ```bash
-   pacman -S grub efibootmgr
-   grub-install --target=x86_64-efi --efi-directory=/boot
-   grub-mkconfig -o /boot/grub/grub.cfg
-   ```
-
-#### Phase 2: AI Agent Integration
-6. **Install LLM Orchestrator**  
-   ```bash
-   pacman -S python-pip nodejs
-   pip install openai-cli # Or Claude/Gemini equivalent
-   ```
-
-7. **Configure Agent Environment**  
-   Create `~/.agentrc` with API keys and context:  
+**Phase 3: AI-Driven Configuration**
+Agent should:
+1. Configure Hyprland:
    ```ini
-   [core]
-   llm_backend = openai
-   model = gpt-4-turbo
-   system_prompt = "You are an expert sysadmin..."
+   # ~/.config/hypr/hyprland.conf
+   exec = qt5ct # Qt theming
+   env = QT_QPA_PLATFORM,wayland
+   env = QT_WAYLAND_DISABLE_WINDOWDECORATION,1
    ```
-
-#### Phase 3: Automated System Build
-8. **Generate AI Build Script**  
-   Use agent to create `deploy.py`:  
-   ```python
-   #!/usr/bin/env python
-   from ai_agent import deploy
-
-   deploy.packages([
-       'hyprland', 'kitty', 'wofi', 'pipewire',
-       'visual-studio-code-bin', 'intellij-idea-ultimate-edition',
-       'steam', 'wine-staging', 'proton-ge-custom'
-   ])
-
-   deploy.config_template(
-       source='hyprland.conf.j2',
-       dest='~/.config/hypr/hyprland.conf'
-   )
-   ```
-
-9. **Run Agent-Guided Setup**  
+2. Install toolchain:
    ```bash
-   openai-cli --execute deploy.py
+   # AUR helper for AI access
+   git clone https://aur.archlinux.org/paru.git
+   cd paru && makepkg -si
+
+   paru -S visual-studio-code-bin jetbrains-toolbox \
+        python java-rust go nodejs npm \
+        aws-cli google-cloud-cli \
+        steam proton-ge-custom-bin
+   ```
+3. Tune Proton gaming:
+   ```bash
+   echo "PROTON_ENABLE_NVAPI=1" >> ~/.steamrc
+   ```
+4. Configure audio:
+   ```bash
+   paru -S pipewire pipewire-pulse pipewire-jack
+   echo "default.clock.quantum = 64" >> /etc/pipewire/pipewire.conf
    ```
 
-#### Phase 4: Specialized Configuration
-10. **Hardware Optimization**  
-    - **ThinkPad Features**:  
-      ```bash
-      pacman -S tlp acpi_call power-profiles-daemon
-      systemctl enable tlp
-      ```
-    - **Fingerprint**:  
-      ```bash
-      pacman -S fprintd
-      fprintd-enroll
-      ```
-
-11. **Gaming/Audio Stack**  
-    ```bash
-    # Proton-GE (via AUR)
-    paru -S proton-ge-custom
-
-    # Low-latency audio
-    pacman -S pipewire-jack qpwgraph ardour
-    ```
-
-12. **Qt Application Defaults**  
-    Create `~/.config/qt5ct/qt5ct.conf`:  
-    ```ini
-   [Appearance]
-   style=kvantum-dark
-   custom_palette=true
+**Key Hardware Optimization**  
+For your ThinkPad P16:
+1. Enable hardware video decoding:
+   ```bash
+   paru -S intel-media-driver libva-intel-driver
+   ```
+2. Tune power management:
+   ```bash
+   echo 'options snd_hda_intel power_save=1' > /etc/modprobe.d/audio_powersave.conf
    ```
 
-#### Phase 5: Maintenance Setup
-13. **Automated Updates**  
-    Create `/etc/systemd/system/ai-update.service`:  
-    ```ini
-   [Unit]
-   Description=AI System Updater
-   OnCalendar=*-*-* 03:00:00
-
-   [Service]
-   ExecStart=/usr/bin/openai-cli --update-system
+### Maintenance Strategy
+1. Implement **declarative updates** via AI cron:
+   ```bash
+   # /etc/agent-update.sh
+   paru -Syu --noconfirm 2>&1 | systemd-cat -t agent-update
+   ```
+2. Use **Btrfs snapshots** for recovery:
+   ```bash
+   btrfs subvolume snapshot / /.snapshots/$(date +%Y%m%d)
    ```
 
-14. **Backup Solution**  
-    ```bash
-   paru -S btrbk
-   echo "timestamp_format long-iso" > /etc/btrbk/btrbk.conf
-   ```
+**Why this works**:  
+- Arch provides minimal base for AI customization
+- Hyprland's config format is LLM-friendly while visually competitive
+- PipeWire unifies gaming/audio needs without conflicts
+- AUR handles bleeding-edge packages (Proton-GE, VSCode-insiders)
+- Btrfs enables low-cost rollbacks during AI experimentation
 
-### Key Advantages
-1. **LLM-Parsable Structure**:  
-   - Package Mgmt: AUR PKGBUILDs (declarative build scripts)  
-   - Configs: Hyprland (key=value), Qtile (Python), systemd (INI-style units)  
-   - Version Control: All configs tracked in `/etc`  
-
-2. **Hardware Support**:  
-   - Intel GPU: `mesa` + `vulkan-intel`  
-   - HiDPI: Hyprland auto-scaling  
-   - Battery: TLP profiles via `power-profiles-daemon`  
-
-3. **Dev Environment**:  
-   - **VSCode Server**: Pre-configured for SSH-based AI access  
-   - **Dev Containers**: Podman pre-installed for OCI development  
-
-### Troubleshooting Notes
-- **Wayland Issues**: Fallback to X11 via `Xwayland`  
-- **Proton Optimizations**: Use `PROTON_ENABLE_NVAPI=1` in Steam launch options  
-- **Audio Conflicts**: Switch between `pipewire`/`pipewire-jack` via `pw-cli`
-
-This setup provides a bleeding-edge, AI-agent-friendly environment optimized for development while maintaining gaming/audio capabilities. The Arch/Hyprland combination offers maximal configurability with LLM-parseable text-based interfaces throughout the stack.
+**Risks**:  
+- AUR packages require trust verification (agent should validate checksums)
+- Proton gaming may require manual Vulkan driver tuning
+- PipeWire may need additional qpwgraph configuration for complex audio routing
