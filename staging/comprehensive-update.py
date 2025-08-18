@@ -276,13 +276,34 @@ class UpdateManager:
             "Clean package cache"
         )
         
-        # Remove orphaned packages
-        success2, stdout, stderr = self.run_command(
-            ["paru", "-Rns", "$(paru -Qtdq)", "--noconfirm"],
-            "Remove orphaned packages"
+        # Check for orphaned packages first
+        check_orphans, stdout, stderr = self.run_command(
+            ["paru", "-Qtdq"],
+            "Check for orphaned packages"
         )
         
-        return success1  # success2 might fail if no orphans exist
+        # Remove orphaned packages if any exist
+        success2 = True
+        if check_orphans and stdout.strip() and not stdout.startswith("DRY RUN"):
+            # Parse the orphaned package list
+            orphans = stdout.strip().split('\n')
+            orphan_list = ' '.join(orphans)
+            
+            # Remove them using bash -c to handle the list properly
+            success2, stdout, stderr = self.run_command(
+                ["bash", "-c", f"paru -Rns {orphan_list} --noconfirm"],
+                f"Remove orphaned packages ({len(orphans)} found)"
+            )
+        elif self.dry_run:
+            # In dry run mode, just simulate the removal
+            success2, stdout, stderr = self.run_command(
+                ["paru", "-Rns", "--noconfirm"],
+                "Remove orphaned packages (if any)"
+            )
+        else:
+            self.logger.info("No orphaned packages found")
+        
+        return success1 and success2
 
     def run_all_updates(self):
         """Run all update operations"""
