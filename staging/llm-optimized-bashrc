@@ -38,7 +38,7 @@ export CLOUDSDK_CORE_DISABLE_PROMPTS=1  # Prevent interactive prompts
 export PYTHONUNBUFFERED=1  # Immediate output for streaming
 
 # API keys
-source ~/.config/shell/api-keys.sh
+source ~/.config/shell/api-keys.env
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
