@@ -146,27 +146,39 @@ sudo pacman -S --noconfirm \
     rustup
 
 # Install paru for AUR access
-git clone https://aur.archlinux.org/paru-bin.git
-cd paru-bin
-makepkg -si --noconfirm
-cd .. && rm -rf paru-bin
+sudo pacman -S --needed base-devel git
+git clone https://aur.archlinux.org/paru.git /tmp/paru
+cd /tmp/paru && makepkg -si --noconfirm
 
-# Install AI agent prerequisites
-# For Claude Code
-paru -S --noconfirm claude-desktop-bin
-# OR for development version
-npm install -g @anthropic/claude-cli
+# Configure GPG for reliable keyserver access
+mkdir -p ~/.gnupg
+cat > ~/.gnupg/gpg.conf << EOF
+keyserver hkps://keys.openpgp.org
+keyserver-options auto-key-retrieve
+EOF
 
-# For Gemini CLI
-pip install --user google-generativeai
-# OR
-paru -S --noconfirm gemini-cli-bin
+# Install uv first for Python package management
+curl -LsSf https://astral.sh/uv/install.sh | sh
+source ~/.bashrc  # Reload PATH for uv
 
-# Install additional LLM tools
-paru -S --noconfirm \
-    llm-python \
-    ollama-cuda \
-    litellm
+# Configure npm for user-only global installations
+mkdir -p ~/.npm-global
+npm config set prefix '~/.npm-global'
+echo 'export PATH="$HOME/.npm-global/bin:$HOME/.local/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+
+# Install Claude Code locally (user-only)
+npm install --global @anthropic-ai/claude-code
+
+# Install other AI CLI tools
+npm install --global @google/gemini-cli @openai/codex
+uv tool install llm
+
+# Install protonup for Proton management
+uv tool install protonup
+
+# Import 1Password GPG key manually to avoid keyserver issues
+curl -s https://downloads.1password.com/linux/keys/1password.asc | gpg --import
 
 # Create AI agent workspace
 mkdir -p ~/projects/system-config
@@ -186,7 +198,7 @@ system:
 preferences:
   package_manager: "paru"
   editor: "neovim"
-  shell: "zsh"
+  shell: "bash"
   
 paths:
   configs: "~/.config"
@@ -209,7 +221,7 @@ You are helping configure an Arch Linux system on a System76 Kudu laptop.
 ## Next Steps
 1. Install and configure Hyprland
 2. Set up NVIDIA drivers with Wayland support
-3. Configure gaming stack (Steam, Proton-GE, GameMode)
+3. Configure gaming stack (Steam, Proton management, GameMode)
 4. Install development tools
 
 ## System Specifications
@@ -234,31 +246,35 @@ echo "AI Agent Ready! You can now use Claude Code or Gemini CLI to continue setu
 ```bash
 # Install Wayland and Hyprland stack
 paru -S --noconfirm \
-    hyprland \
-    xdg-desktop-portal-hyprland \
-    waybar \
-    wofi \
-    mako \
-    swaylock-effects \
-    swayidle \
+    hyprland xorg-xwayland \
+    waybar wofi \
+    hyprpaper hyprlock hypridle \
     wl-clipboard \
-    grim slurp \
-    xorg-xwayland
+    grim slurp
 
-# Install terminal and file manager
-paru -S --noconfirm \
-    kitty \
-    ranger \
-    thunar thunar-volman \
-    tumbler
+# Install terminal
+paru -S --noconfirm kitty
 
-# Install fonts
+# Install fonts and themes
 paru -S --noconfirm \
-    ttf-font-awesome \
-    ttf-jetbrains-mono \
-    ttf-jetbrains-mono-nerd \
     noto-fonts noto-fonts-emoji \
-    ttf-liberation
+    papirus-icon-theme \
+    xcursor-vanilla-dmz
+
+# Install greetd with tuigreet (minimal display manager)
+paru -S --noconfirm greetd greetd-tuigreet
+sudo systemctl enable greetd
+
+# Configure greetd to use tuigreet
+sudo mkdir -p /etc/greetd
+sudo tee /etc/greetd/config.toml << EOF
+[terminal]
+vt = 1
+
+[default_session]
+command = "tuigreet --time --cmd Hyprland"
+user = "greeter"
+EOF
 
 # Create Hyprland configuration
 mkdir -p ~/.config/hypr
@@ -410,14 +426,14 @@ sudo mkinitcpio -P
 # Install gaming essentials
 paru -S --noconfirm \
     steam \
-    proton-ge-custom-bin \
     mangohud lib32-mangohud \
     gamemode lib32-gamemode \
     gamescope \
-    lutris \
-    wine-staging \
-    wine-gecko wine-mono \
+    lutris bottles goverlay \
+    wine-staging winetricks \
+    protonup-qt-bin \
     lib32-vulkan-icd-loader \
+    lib32-nvidia-utils \
     vulkan-tools
 
 # Configure GameMode
@@ -480,27 +496,27 @@ EOF
 # Core development tools
 paru -S --noconfirm \
     neovim \
-    visual-studio-code-bin \
+    visual-studio-code-insiders-bin \
     docker docker-compose \
-    podman podman-compose \
+    podman podman-compose buildah \
     kubectl helm \
     terraform \
     ansible \
-    vagrant virtualbox
+    distrobox  # For isolated development environments
 
 # Programming languages and tools
 paru -S --noconfirm \
     rustup \
     go \
-    python-pip python-virtualenv \
-    nodejs npm yarn \
+    python-pip python-pipx pyenv \
+    nodejs npm yarn pnpm \
     jdk-openjdk maven gradle \
-    dotnet-sdk \
-    julia \
-    elixir \
-    zig
+    bash zsh fish shellcheck shfmt
 
-# AI/ML frameworks
+# JetBrains suite
+paru -S --noconfirm jetbrains-toolbox
+
+# AI/ML frameworks (CUDA versions for NVIDIA RTX 3060)
 paru -S --noconfirm \
     python-pytorch-cuda \
     python-tensorflow-cuda \
@@ -508,16 +524,21 @@ paru -S --noconfirm \
     python-pandas \
     python-numpy \
     python-matplotlib \
-    jupyter-notebook \
+    python-transformers \
+    python-datasets \
+    python-huggingface-hub \
+    jupyter-notebook jupyterlab \
     cuda cudnn
+
+# Local LLM serving
+paru -S --noconfirm ollama  # CUDA version for RTX 3060
 
 # Cloud development
 paru -S --noconfirm \
-    aws-cli-v2 \
+    aws-cli-v2-bin \
+    aws-sam-cli-bin \
     google-cloud-cli \
-    azure-cli \
-    terraform \
-    pulumi-bin
+    azure-cli
 
 # Database tools
 paru -S --noconfirm \
@@ -554,66 +575,67 @@ paru -S --noconfirm \
 
 # Music production
 paru -S --noconfirm \
+    audacity \
+    reaper  # AUR package
     ardour \
-    reaper-bin \
-    carla \
-    qjackctl \
-    hydrogen \
     lmms \
-    musescore \
-    guitarix
+    qjackctl
 
 # MIDI support
 paru -S --noconfirm \
-    qsynth \
-    fluidsynth \
-    soundfont-fluid \
-    timidity++
+    jack2 qjackctl \
+    a2jmidid  # ALSA to JACK MIDI bridge
 
 # Writing and documentation
 paru -S --noconfirm \
     obsidian \
-    typora \
-    ghostwriter \
-    pandoc \
-    texlive-most
+    pandoc
+
+# Security and password management
+paru -S --noconfirm \
+    gnupg \
+    1password 1password-cli
 ```
 
 ## Package Categories
 
 ### Development Environment
 [Suggested by: All models]
-- **Editors**: Neovim, VS Code, Emacs
-- **Languages**: Rust, Go, Python, Node.js, Java
-- **Containers**: Docker, Podman, Kubernetes
-- **Version Control**: Git, GitHub CLI, GitLab CLI
+- **Editors**: Neovim, VS Code Insiders, JetBrains Toolbox
+- **Languages**: Rust, Go, Python (with pyenv/pipx), Node.js (with pnpm), Java
+- **Shells**: Bash, Zsh, Fish with shellcheck/shfmt
+- **Containers**: Docker, Podman, Buildah, Distrobox
+- **Version Control**: Git, GitHub CLI
 
 ### AI/ML Stack
 [Suggested by: Gemini 2.5 Pro, Claude Opus 4.1]
-- **Frameworks**: PyTorch, TensorFlow (CUDA-enabled)
-- **Local LLM**: Ollama, llama.cpp, LocalAI
-- **Tools**: Jupyter, Claude Code, Gemini CLI, Simon Willison's llm
-- **Model Storage**: /home/models (dedicated partition recommended)
+- **Frameworks**: PyTorch, TensorFlow (CUDA-enabled), Transformers, Datasets
+- **Local LLM**: Ollama (CUDA version)
+- **Tools**: JupyterLab, Claude Code, Gemini CLI, Simon Willison's llm
+- **Python ML**: scikit-learn, pandas, numpy, matplotlib, huggingface-hub
+- **Model Storage**: /home/models (dedicated directory)
 
 ### Cloud Development
 [Suggested by: ChatGPT-5, Claude Sonnet 4]
-- **AWS**: CLI, SAM, CDK
-- **GCP**: Cloud SDK, gcloud CLI
-- **Infrastructure**: Terraform, Pulumi, Ansible
+- **AWS**: aws-cli-v2, SAM CLI
+- **GCP**: google-cloud-cli
+- **Azure**: azure-cli
+- **Infrastructure**: Terraform, Ansible
 
 ### Gaming Infrastructure
 [Suggested by: All models with gaming focus]
-- **Core**: Steam, Lutris, Heroic Games Launcher
-- **Optimization**: Proton-GE, GameMode, MangoHud
-- **Tools**: GOverlay, ProtonUp-Qt, CoreCtrl
-- **Compatibility**: Wine-staging, DXVK, VKD3D
+- **Core**: Steam, Lutris, Bottles
+- **Optimization**: GameMode, MangoHud, Proton management via protonup
+- **Tools**: GOverlay, ProtonUp-Qt
+- **Compatibility**: Wine-staging, winetricks
+- **Libraries**: lib32-mesa, lib32-vulkan-icd-loader, lib32-nvidia-utils
 
 ### Security Hardening
 [Suggested by: Mistral, Perplexity]
-- **Firewall**: ufw or firewalld
-- **Monitoring**: fail2ban, rkhunter
-- **Encryption**: VeraCrypt, GnuPG
-- **Network**: WireGuard, OpenVPN
+- **Firewall**: ufw
+- **Encryption**: GnuPG
+- **Password Management**: 1Password, 1Password CLI
+- **GPG Configuration**: Keyserver setup for reliable package signing
 
 ## Build Order and Dependencies
 
@@ -630,7 +652,7 @@ Once critical path complete, these can be done simultaneously:
 
 **Group A: Gaming**
 - Steam
-- Proton-GE
+- Proton management via protonup
 - Game tools
 
 **Group B: Development**
@@ -757,7 +779,7 @@ trap 'sudo cpupower frequency-set -g schedutil; \
 
 ### Gaming Performance
 - [ ] Steam launches and games run
-- [ ] Proton-GE available for Windows games
+- [ ] Proton versions manageable via protonup
 - [ ] GameMode activates successfully
 - [ ] MangoHud displays performance metrics
 - [ ] 60+ FPS in target games
