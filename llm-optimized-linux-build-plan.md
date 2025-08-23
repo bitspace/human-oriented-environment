@@ -138,7 +138,7 @@ reboot
 nmcli device wifi connect YOUR_SSID password YOUR_PASSWORD
 
 # Install development essentials for AI agents
-sudo pacman -S --noconfirm \
+paru -S --noconfirm \
     python python-pip \
     curl wget httpie jq \
     tmux \
@@ -270,7 +270,7 @@ paru -S --noconfirm \
     xcursor-vanilla-dmz
 
 # Install LightDM with GTK greeter (lightweight display manager)
-sudo pacman -S --noconfirm lightdm lightdm-gtk-greeter
+paru -S --noconfirm lightdm lightdm-gtk-greeter
 sudo systemctl enable lightdm
 
 # Create Hyprland session entry for LightDM
@@ -429,6 +429,11 @@ paru -S --noconfirm \
     nvidia-settings \
     nvidia-prime
 
+# Wait for DKMS to build the modules
+# The nvidia-dkms package should trigger this automatically
+# but we can ensure it's done:
+sudo dkms autoinstall
+
 # Configure NVIDIA for Wayland
 sudo cat > /etc/modprobe.d/nvidia.conf << 'EOF'
 options nvidia-drm modeset=1
@@ -436,9 +441,15 @@ options nvidia NVreg_UsePageAttributeTable=1
 options nvidia NVreg_EnablePCIeGen3=1
 EOF
 
-# Add NVIDIA modules to initramfs
-sudo sed -i 's/MODULES=()/MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)/' /etc/mkinitcpio.conf
-sudo mkinitcpio -P
+# Add NVIDIA modules to initramfs (only if modules exist)
+if [ -f "/lib/modules/$(uname -r)/updates/dkms/nvidia.ko.zst" ] || [ -f "/lib/modules/$(uname -r)/updates/dkms/nvidia.ko.xz" ]; then
+    sudo sed -i 's/MODULES=()/MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)/' /etc/mkinitcpio.conf
+    sudo mkinitcpio -P
+else
+    echo "Note: NVIDIA modules not found. After reboot, run:"
+    echo "  sudo sed -i 's/MODULES=()/MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)/' /etc/mkinitcpio.conf"
+    echo "  sudo mkinitcpio -P"
+fi
 
 # Install gaming essentials
 paru -S --noconfirm \
