@@ -139,9 +139,9 @@ nmcli device wifi connect YOUR_SSID password YOUR_PASSWORD
 
 # Install development essentials for AI agents
 sudo pacman -S --noconfirm \
-    python python-pip nodejs npm \
+    python python-pip \
     curl wget httpie jq \
-    tmux zsh fish \
+    tmux \
     man-db man-pages \
     rustup
 
@@ -161,17 +161,23 @@ EOF
 curl -LsSf https://astral.sh/uv/install.sh | sh
 source ~/.bashrc  # Reload PATH for uv
 
-# Configure npm for user-only global installations
-mkdir -p ~/.npm-global
-npm config set prefix '~/.npm-global'
-echo 'export PATH="$HOME/.npm-global/bin:$HOME/.local/bin:$PATH"' >> ~/.bashrc
-source ~/.bashrc
+# Install nvm for Node.js version management
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+source ~/.bashrc  # Reload to get nvm
 
-# Install Claude Code locally (user-only)
+# Install latest LTS Node.js via nvm
+nvm install --lts
+nvm use --lts
+nvm alias default node  # Set as default
+
+# Install Claude Code and other AI CLI tools locally via nvm-managed npm
 npm install --global @anthropic-ai/claude-code
-
-# Install other AI CLI tools
 npm install --global @google/gemini-cli @openai/codex
+
+# Optional: Install alternative package managers if needed
+# npm install --global yarn pnpm
+
+# Install Python-based LLM tools
 uv tool install llm
 
 # Install protonup for Proton management
@@ -250,7 +256,9 @@ paru -S --noconfirm \
     waybar wofi \
     hyprpaper hyprlock hypridle \
     wl-clipboard \
-    grim slurp
+    grim slurp \
+    xdg-desktop-portal-hyprland \
+    hyprcursor
 
 # Install terminal
 paru -S --noconfirm kitty
@@ -261,19 +269,28 @@ paru -S --noconfirm \
     papirus-icon-theme \
     xcursor-vanilla-dmz
 
-# Install greetd with tuigreet (minimal display manager)
-paru -S --noconfirm greetd greetd-tuigreet
-sudo systemctl enable greetd
+# Install LightDM with GTK greeter (lightweight display manager)
+sudo pacman -S --noconfirm lightdm lightdm-gtk-greeter
+sudo systemctl enable lightdm
 
-# Configure greetd to use tuigreet
-sudo mkdir -p /etc/greetd
-sudo tee /etc/greetd/config.toml << EOF
-[terminal]
-vt = 1
+# Create Hyprland session entry for LightDM
+sudo mkdir -p /usr/share/wayland-sessions
+sudo tee /usr/share/wayland-sessions/hyprland.desktop << EOF
+[Desktop Entry]
+Name=Hyprland
+Comment=Dynamic tiling Wayland compositor
+Exec=Hyprland
+Type=Application
+EOF
 
-[default_session]
-command = "tuigreet --time --cmd Hyprland"
-user = "greeter"
+# Configure LightDM for Wayland sessions
+sudo tee -a /etc/lightdm/lightdm.conf << EOF
+
+# Hyprland/Wayland configuration
+[Seat:*]
+session-wrapper=/usr/share/lightdm/lightdm-session
+greeter-session=lightdm-gtk-greeter
+user-session=hyprland
 EOF
 
 # Create Hyprland configuration
@@ -506,12 +523,14 @@ paru -S --noconfirm \
 
 # Programming languages and tools
 paru -S --noconfirm \
-    rustup \
     go \
-    python-pip python-pipx pyenv \
-    nodejs npm yarn pnpm \
+    python-pipx pyenv \
     jdk-openjdk maven gradle \
-    bash zsh fish shellcheck shfmt
+    bash shellcheck shfmt
+
+# Note: rustup and python-pip already installed in Phase 2
+
+# Note: Node.js managed via nvm, not system packages
 
 # JetBrains suite
 paru -S --noconfirm jetbrains-toolbox
@@ -578,8 +597,7 @@ paru -S --noconfirm \
     audacity \
     reaper  # AUR package
     ardour \
-    lmms \
-    qjackctl
+    lmms
 
 # MIDI support
 paru -S --noconfirm \
@@ -602,8 +620,8 @@ paru -S --noconfirm \
 ### Development Environment
 [Suggested by: All models]
 - **Editors**: Neovim, VS Code Insiders, JetBrains Toolbox
-- **Languages**: Rust, Go, Python (with pyenv/pipx), Node.js (with pnpm), Java
-- **Shells**: Bash, Zsh, Fish with shellcheck/shfmt
+- **Languages**: Rust, Go, Python (with pyenv/pipx), Node.js (via nvm), Java
+- **Shells**: Bash with shellcheck/shfmt
 - **Containers**: Docker, Podman, Buildah, Distrobox
 - **Version Control**: Git, GitHub CLI
 
