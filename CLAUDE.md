@@ -294,3 +294,4 @@ Before finalizing:
 - Generate comparative analysis tables for decision points
 - Flag security implications of all recommendations
 - Remember: The goal is a system that feels native to both humans and LLMs
+- Do not directly attempt to perform any action that requires escalation of privileges (e.g. via 'sudo'). Once you have determined the action to be taken, present it to the user for execution.
