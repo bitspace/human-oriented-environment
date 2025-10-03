@@ -1,0 +1,106 @@
+# Early exit for non-interactive shells
+case $- in
+    *i*) ;;
+      *) return;;
+esac
+
+# Security: Set secure umask
+umask 022
+
+# Core shell behavior
+shopt -s checkwinsize  # Update LINES/COLUMNS after commands
+shopt -s histappend    # Append to history file
+
+export HISTFILE=~/.bash_history
+export HISTFILESIZE=100000
+export HISTSIZE=50000
+export HISTCONTROL=ignoreboth:erasedups
+export HISTTIMEFORMAT='%Y-%m-%d %H:%M:%S '  # Timestamps for AI context
+
+# XDG Base Directory specification (for organized configs)
+export XDG_CONFIG_HOME="${HOME}/.config"
+export XDG_DATA_HOME="${HOME}/.local/share"
+export XDG_CACHE_HOME="${HOME}/.cache"
+export XDG_STATE_HOME="${HOME}/.local/state"
+
+# Structured command output preferences
+export MANPAGER='less -R'
+export LESS='-R'  # Raw color codes
+export COLORTERM='truecolor'
+
+# Editor configuration
+export EDITOR='/usr/bin/code-insiders'
+export VISUAL=${EDITOR}
+export FCEDIT=${EDITOR}
+
+# LLM Tool Configuration
+export CLOUDSDK_CORE_DISABLE_PROMPTS=1  # Prevent interactive prompts
+export PYTHONUNBUFFERED=1  # Immediate output for streaming
+
+# API keys
+source ~/.config/shell/api-keys.env
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+nvm use 24
+
+# Rust
+[ -f "${HOME}/.cargo/env" ] && . "${HOME}/.cargo/env"
+
+export PATH="${HOME}/.local/bin:${HOME}/.cargo/bin:${HOME}/.local/share/JetBrains/Toolbox/scripts:${PATH}"
+. "$HOME/node_modules/.bin/env"
+. "$HOME/.local/bin/env"
+
+# GPG configuration for automation
+export GPG_TTY=$(tty)
+
+# Color configuration for consistent output
+if command -v vivid &> /dev/null; then
+    export LS_COLORS="$(vivid generate catppuccin-macchiato)"
+fi
+
+# Compiler colors
+export GCC_COLORS='error=01;31:warning=01;35:note=01;36:caret=01;32:locus=01:quote=01'
+
+# Load completions and additional configurations
+if ! shopt -oq posix; then
+    if [ -f /usr/share/bash-completion/bash_completion ]; then
+        . /usr/share/bash-completion/bash_completion
+    fi
+fi
+
+# Load aliases
+if [ -f ~/.bash_aliases ]; then
+    . ~/.bash_aliases
+fi
+
+# 1Password completion
+if command -v op &> /dev/null; then
+    source <(op completion bash)
+fi
+
+# GCloud SDK
+if [ -f "${HOME}/.local/share/google-cloud-sdk/path.bash.inc" ]; then
+    . "${HOME}/.local/share/google-cloud-sdk/path.bash.inc"
+fi
+if [ -f "${HOME}/.local/share/google-cloud-sdk/completion.bash.inc" ]; then
+    . "${HOME}/.local/share/google-cloud-sdk/completion.bash.inc"
+fi
+
+# Exercism completion
+if [ -f ~/.config/exercism/exercism_completion.bash ]; then
+    source ~/.config/exercism/exercism_completion.bash
+fi
+
+# Initialize prompt (starship vs LLM-optimized)
+if [ "$LLM_OPTIMIZED_PROMPT" = "true" ]; then
+    # LLM-friendly prompt: structured, minimal
+    PS1='\[\033[0;32m\]\u@\h\[\033[0m\]:\[\033[0;34m\]\w\[\033[0m\]$(git branch 2>/dev/null | sed -n "s/* \(.*\)/ (\1)/p")\$ '
+else
+    # Human-friendly prompt: starship
+    eval "$(starship init bash)"
+fi
+
+export SDKMAN_DIR="${HOME}/.sdkman"
+[[ -s "${HOME}/.sdkman/bin/sdkman-init.sh" ]] && source "${HOME}/.sdkman/bin/sdkman-init.sh"

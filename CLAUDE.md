@@ -286,6 +286,21 @@ Before finalizing:
 5. Create initial build plan draft
 6. Iterate based on findings
 
+## Current System State (Updated 2025-09-12)
+
+### Display Configuration
+- **NO DOCK IN USE** - System uses direct USB-C connections to external monitors
+- **Internal display**: 3840x2400@60Hz, scale 2
+- **Two external GIGABYTE M27Q monitors**: 2560x1440@170Hz via direct USB-C to Thunderbolt 4 ports
+- **Kanshi configuration disabled** - Using direct Hyprland monitor configuration
+- **Monitor ports**: DP-1 (left), DP-2 (right) when using direct USB-C connections
+- **No dock/undock scenarios** - Fixed desktop setup with consistent port assignments
+
+### Key Lessons Learned
+- ThinkPad Thunderbolt 4 Workstation Dock bandwidth limitation: could not handle dual 1440p@144Hz
+- Direct USB-C connections to Thunderbolt 4 ports can drive both monitors at full 170Hz
+- Monitor serial numbers changed when switching from dock to direct connections
+
 ## Notes for Claude Code
 - Prioritize consensus over any single LLM's recommendation
 - When in doubt, choose simplicity and parseability
@@ -294,3 +309,4 @@ Before finalizing:
 - Generate comparative analysis tables for decision points
 - Flag security implications of all recommendations
 - Remember: The goal is a system that feels native to both humans and LLMs
+- Do not directly attempt to perform any action that requires escalation of privileges (e.g. via 'sudo'). Once you have determined the action to be taken, present it to the user for execution.
