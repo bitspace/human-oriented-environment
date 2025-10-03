@@ -1,2 +1,5 @@
 media
 staging
+*.png
+*.jpg
+*.jpeg

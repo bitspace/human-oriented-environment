@@ -1,0 +1,23 @@
+# Kanshi configuration for automatic display management
+# Direct USB-C connection to external monitors (no dock)
+
+# Profile: Laptop only
+profile laptop-only {
+    output eDP-1 enable mode 3840x2400@60.02Hz scale 2 position 0,0
+}
+
+# Profile: With both external monitors connected via USB-C
+profile dual-external {
+    # Laptop display
+    output eDP-1 enable mode 3840x2400@60.02Hz scale 2 position 0,0
+
+    # Left external monitor (serial: 22390B002448)
+    output "GIGA-BYTE TECHNOLOGY CO., LTD. M27Q 22390B002448" enable mode 2560x1440@143.86Hz scale 1 position 1920,0
+
+    # Right external monitor (serial: 20500B002281)
+    output "GIGA-BYTE TECHNOLOGY CO., LTD. M27Q 20500B002281" enable mode 2560x1440@143.86Hz scale 1 position 4480,0
+
+    # Execute workspace assignments after connecting monitors
+    exec ~/.config/kanshi/workspace-fix.sh
+}
+
