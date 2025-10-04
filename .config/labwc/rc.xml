@@ -8,15 +8,10 @@
   </focus>
 
   <desktops>
-    <number>6</number>
+    <number>1</number>
     <firstdesk>1</firstdesk>
     <names>
       <name>1:Main</name>
-      <name>2:Work</name>
-      <name>3:Chat</name>
-      <name>4:Media</name>
-      <name>5:Gaming</name>
-      <name>6:Spare</name>
     </names>
   </desktops>
 
@@ -79,72 +74,10 @@
       </action>
     </keybind>
 
-    <!-- Workspace navigation -->
+    <!-- Desktop navigation (single desktop preserved for compatibility) -->
     <keybind key="Super-1">
       <action name="GoToDesktop">
         <to>1</to>
-      </action>
-    </keybind>
-    <keybind key="Super-2">
-      <action name="GoToDesktop">
-        <to>2</to>
-      </action>
-    </keybind>
-    <keybind key="Super-3">
-      <action name="GoToDesktop">
-        <to>3</to>
-      </action>
-    </keybind>
-    <keybind key="Super-4">
-      <action name="GoToDesktop">
-        <to>4</to>
-      </action>
-    </keybind>
-    <keybind key="Super-5">
-      <action name="GoToDesktop">
-        <to>5</to>
-      </action>
-    </keybind>
-    <keybind key="Super-6">
-      <action name="GoToDesktop">
-        <to>6</to>
-      </action>
-    </keybind>
-
-    <keybind key="Super-Shift-1">
-      <action name="SendToDesktop">
-        <to>1</to>
-        <follow>yes</follow>
-      </action>
-    </keybind>
-    <keybind key="Super-Shift-2">
-      <action name="SendToDesktop">
-        <to>2</to>
-        <follow>yes</follow>
-      </action>
-    </keybind>
-    <keybind key="Super-Shift-3">
-      <action name="SendToDesktop">
-        <to>3</to>
-        <follow>yes</follow>
-      </action>
-    </keybind>
-    <keybind key="Super-Shift-4">
-      <action name="SendToDesktop">
-        <to>4</to>
-        <follow>yes</follow>
-      </action>
-    </keybind>
-    <keybind key="Super-Shift-5">
-      <action name="SendToDesktop">
-        <to>5</to>
-        <follow>yes</follow>
-      </action>
-    </keybind>
-    <keybind key="Super-Shift-6">
-      <action name="SendToDesktop">
-        <to>6</to>
-        <follow>yes</follow>
       </action>
     </keybind>
 
