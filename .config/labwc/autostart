@@ -1,0 +1,21 @@
+#!/bin/sh
+
+export XDG_CURRENT_DESKTOP=labwc
+export SDL_VIDEODRIVER=wayland
+export QT_QPA_PLATFORM=wayland
+export GTK_THEME="Adwaita:dark"
+export QT_STYLE_OVERRIDE="Adwaita-Dark"
+
+dbus-update-activation-environment --systemd WAYLAND_DISPLAY XDG_CURRENT_DESKTOP GTK_THEME QT_STYLE_OVERRIDE SDL_VIDEODRIVER QT_QPA_PLATFORM
+systemctl --user import-environment WAYLAND_DISPLAY XDG_CURRENT_DESKTOP GTK_THEME QT_STYLE_OVERRIDE SDL_VIDEODRIVER QT_QPA_PLATFORM
+
+/usr/bin/gnome-keyring-daemon --start --components=secrets
+/usr/lib/polkit-kde-authentication-agent-1 &
+
+nm-applet --indicator &
+dunst &
+waybar &
+kanshi &
+
+~/.config/labwc/scripts/wallpaper-rotation.sh &
+~/.config/labwc/scripts/idle-manager.sh &

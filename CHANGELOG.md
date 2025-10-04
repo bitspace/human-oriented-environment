@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Snapshot of current Hyprland and supporting configs under `.config/` for reference during compositor migration.
+- `AGENTS.md` operational guide replacing the Claude-specific instructions.
 
 ### Changed
 - Pivoting project focus from Hyprland to Labwc on Arch Linux while maintaining existing hardware and usage profile.
@@ -16,3 +17,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Deprecated
 - Marked previous LLM consensus analyses and `llm-outputs/` responses for retirement during Labwc rollout cleanup.
+- Retired `CLAUDE.md` now that `AGENTS.md` covers agent workflow guidance.

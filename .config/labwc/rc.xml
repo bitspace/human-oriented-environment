@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<labwc_config>
+  <focus>
+    <focusNew>true</focusNew>
+    <followMouse>false</followMouse>
+    <raiseOnFocus>true</raiseOnFocus>
+    <focusLastOnDesktop>true</focusLastOnDesktop>
+  </focus>
+
+  <desktops>
+    <number>6</number>
+    <firstdesk>1</firstdesk>
+    <names>
+      <name>1:Main</name>
+      <name>2:Work</name>
+      <name>3:Chat</name>
+      <name>4:Media</name>
+      <name>5:Gaming</name>
+      <name>6:Spare</name>
+    </names>
+  </desktops>
+
+  <theme>
+    <name>Adwaita-dark</name>
+    <titleLayout>NLIMC</titleLayout>
+    <titlebar>
+      <height>28</height>
+      <font>Noto Sans 11</font>
+    </titlebar>
+  </theme>
+
+  <placement>
+    <policy>Smart</policy>
+    <center>yes</center>
+    <monitor>Primary</monitor>
+  </placement>
+
+  <keyboard>
+    <!-- Core window management -->
+    <keybind key="Super-Q">
+      <action name="Close"/>
+    </keybind>
+
+    <keybind key="Super-Return">
+      <action name="Execute">
+        <command>alacritty</command>
+      </action>
+    </keybind>
+
+    <keybind key="Super-E">
+      <action name="Execute">
+        <command>thunar</command>
+      </action>
+    </keybind>
+
+    <keybind key="Super-R">
+      <action name="Execute">
+        <command>rofi -show drun</command>
+      </action>
+    </keybind>
+
+    <keybind key="Super-V">
+      <action name="ToggleDecorations"/>
+    </keybind>
+
+    <keybind key="Super-F">
+      <action name="ToggleFullscreen"/>
+    </keybind>
+
+    <keybind key="Super-L">
+      <action name="Execute">
+        <command>gtklock</command>
+      </action>
+    </keybind>
+
+    <keybind key="Super-Shift-E">
+      <action name="Execute">
+        <command>labwc-logout</command>
+      </action>
+    </keybind>
+
+    <!-- Workspace navigation -->
+    <keybind key="Super-1">
+      <action name="GoToDesktop">
+        <to>1</to>
+      </action>
+    </keybind>
+    <keybind key="Super-2">
+      <action name="GoToDesktop">
+        <to>2</to>
+      </action>
+    </keybind>
+    <keybind key="Super-3">
+      <action name="GoToDesktop">
+        <to>3</to>
+      </action>
+    </keybind>
+    <keybind key="Super-4">
+      <action name="GoToDesktop">
+        <to>4</to>
+      </action>
+    </keybind>
+    <keybind key="Super-5">
+      <action name="GoToDesktop">
+        <to>5</to>
+      </action>
+    </keybind>
+    <keybind key="Super-6">
+      <action name="GoToDesktop">
+        <to>6</to>
+      </action>
+    </keybind>
+
+    <keybind key="Super-Shift-1">
+      <action name="SendToDesktop">
+        <to>1</to>
+        <follow>yes</follow>
+      </action>
+    </keybind>
+    <keybind key="Super-Shift-2">
+      <action name="SendToDesktop">
+        <to>2</to>
+        <follow>yes</follow>
+      </action>
+    </keybind>
+    <keybind key="Super-Shift-3">
+      <action name="SendToDesktop">
+        <to>3</to>
+        <follow>yes</follow>
+      </action>
+    </keybind>
+    <keybind key="Super-Shift-4">
+      <action name="SendToDesktop">
+        <to>4</to>
+        <follow>yes</follow>
+      </action>
+    </keybind>
+    <keybind key="Super-Shift-5">
+      <action name="SendToDesktop">
+        <to>5</to>
+        <follow>yes</follow>
+      </action>
+    </keybind>
+    <keybind key="Super-Shift-6">
+      <action name="SendToDesktop">
+        <to>6</to>
+        <follow>yes</follow>
+      </action>
+    </keybind>
+
+    <!-- Classic task switching -->
+    <keybind key="A-Tab">
+      <action name="SwitchWindow">
+        <forward>yes</forward>
+        <dialog>icons</dialog>
+      </action>
+    </keybind>
+    <keybind key="A-S-Tab">
+      <action name="SwitchWindow">
+        <forward>no</forward>
+        <dialog>icons</dialog>
+      </action>
+    </keybind>
+
+    <!-- Screen capture -->
+    <keybind key="Print">
+      <action name="Execute">
+        <command>grim -g "$(slurp)" ~/Pictures/Screenshots/$(date +'%Y-%m-%d_%H-%M-%S').png</command>
+      </action>
+    </keybind>
+    <keybind key="Shift-Print">
+      <action name="Execute">
+        <command>grim ~/Pictures/Screenshots/$(date +'%Y-%m-%d_%H-%M-%S').png</command>
+      </action>
+    </keybind>
+
+    <!-- Media keys -->
+    <keybind key="XF86AudioMute">
+      <action name="Execute">
+        <command>pactl set-sink-mute @DEFAULT_SINK@ toggle</command>
+      </action>
+    </keybind>
+    <keybind key="XF86AudioLowerVolume">
+      <action name="Execute">
+        <command>pactl set-sink-volume @DEFAULT_SINK@ -5%</command>
+      </action>
+    </keybind>
+    <keybind key="XF86AudioRaiseVolume">
+      <action name="Execute">
+        <command>pactl set-sink-volume @DEFAULT_SINK@ +5%</command>
+      </action>
+    </keybind>
+    <keybind key="XF86AudioMicMute">
+      <action name="Execute">
+        <command>pactl set-source-mute @DEFAULT_SOURCE@ toggle</command>
+      </action>
+    </keybind>
+    <keybind key="XF86MonBrightnessDown">
+      <action name="Execute">
+        <command>brightnessctl set 5%-</command>
+      </action>
+    </keybind>
+    <keybind key="XF86MonBrightnessUp">
+      <action name="Execute">
+        <command>brightnessctl set 5%+</command>
+      </action>
+    </keybind>
+  </keyboard>
+
+  <mouse>
+    <dragThreshold>4</dragThreshold>
+    <doubleClickTime>200</doubleClickTime>
+    <sloppyFocus>false</sloppyFocus>
+  </mouse>
+
+  <window_rules>
+    <rule window="notification">
+      <action name="Decorations">
+        <state>false</state>
+      </action>
+      <action name="SkipTaskbar">
+        <state>true</state>
+      </action>
+      <action name="Focus">
+        <state>false</state>
+      </action>
+    </rule>
+  </window_rules>
+</labwc_config>
