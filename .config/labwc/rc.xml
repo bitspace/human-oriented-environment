@@ -132,6 +132,14 @@
     </keybind>
   </keyboard>
 
+  <windowSwitcher show="yes" preview="yes" outlines="yes" allWorkspaces="no">
+    <fields>
+      <field content="icon" width="5%" />
+      <field content="desktop_entry_name" width="35%" />
+      <field content="identifier" width="60%" />
+    </fields>
+  </windowSwitcher>
+
   <mouse>
     <dragThreshold>4</dragThreshold>
     <doubleClickTime>200</doubleClickTime>

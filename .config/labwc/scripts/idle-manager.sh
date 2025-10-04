@@ -6,22 +6,22 @@ if ! command -v swayidle >/dev/null 2>&1; then
   exit 0
 fi
 
-if command -v wlopm >/dev/null 2>&1; then
-  dpms_off_cmd='wlopm --off "*"'
-  dpms_on_cmd='wlopm --on "*"'
-else
-  dpms_off_cmd=''
-  dpms_on_cmd=''
+locker_cmd="${HOME}/.config/labwc/scripts/lock-screen.sh"
+if [ ! -x "${locker_cmd}" ]; then
+  locker_cmd="gtklock"
 fi
 
-idle_args="-w"
+# Build the swayidle argument list safely as an array.
+set -- -w
 
-if [ -n "${dpms_off_cmd}" ]; then
-  idle_args="${idle_args} timeout 1800 ${dpms_off_cmd} resume ${dpms_on_cmd}"
+dpms_off_cmd="${HOME}/.config/labwc/scripts/dpms-off.sh"
+dpms_on_cmd="${HOME}/.config/labwc/scripts/dpms-on.sh"
+if [ -x "${dpms_off_cmd}" ] && [ -x "${dpms_on_cmd}" ]; then
+  set -- "$@" timeout 1800 "$dpms_off_cmd" resume "$dpms_on_cmd"
 fi
 
-idle_args="${idle_args} timeout 2400 gtklock"
-idle_args="${idle_args} before-sleep loginctl lock-session"
+set -- "$@" lock "$locker_cmd"
+set -- "$@" timeout 2400 "$locker_cmd"
+set -- "$@" before-sleep "loginctl lock-session"
 
-# shellcheck disable=SC2086
-exec swayidle ${idle_args}
+exec swayidle "$@"

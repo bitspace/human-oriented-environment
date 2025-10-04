@@ -15,6 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Pivoting project focus from Hyprland to Labwc on Arch Linux while maintaining existing hardware and usage profile.
 - Rescoping repository workflow toward hands-on agent-driven iteration rather than cross-model consensus artifacts.
 - Corrected Labwc natural scrolling by setting the libinput default, non-touch, and touchpad categories to use the natural direction.
+- Added Labwc window switcher field configuration so Alt-Tab shows each window's identifier for run-or-raise tuning.
+- Updated the Labwc idle manager to mirror the Hypridle dpms/lock flow, added helpers to avoid duplicate gtklock instances, and supplied a systemd-logind drop-in that locks before suspend on lid close.
 
 ### Deprecated
 - Marked previous LLM consensus analyses and `llm-outputs/` responses for retirement during Labwc rollout cleanup.
