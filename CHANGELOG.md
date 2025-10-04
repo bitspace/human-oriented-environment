@@ -14,6 +14,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Pivoting project focus from Hyprland to Labwc on Arch Linux while maintaining existing hardware and usage profile.
 - Rescoping repository workflow toward hands-on agent-driven iteration rather than cross-model consensus artifacts.
+- Corrected Labwc natural scrolling by setting the libinput default, non-touch, and touchpad categories to use the natural direction.
 
 ### Deprecated
 - Marked previous LLM consensus analyses and `llm-outputs/` responses for retirement during Labwc rollout cleanup.

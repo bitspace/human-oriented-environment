@@ -138,6 +138,18 @@
     <sloppyFocus>false</sloppyFocus>
   </mouse>
 
+  <libinput>
+    <device category="default">
+      <naturalScroll>yes</naturalScroll>
+    </device>
+    <device category="non-touch">
+      <naturalScroll>yes</naturalScroll>
+    </device>
+    <device category="touchpad">
+      <naturalScroll>yes</naturalScroll>
+    </device>
+  </libinput>
+
   <window_rules>
     <rule window="notification">
       <action name="Decorations">
