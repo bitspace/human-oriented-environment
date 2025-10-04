@@ -32,50 +32,48 @@
 
   <keyboard>
     <!-- Core window management -->
-    <keybind key="Super-Q">
+    <keybind key="W-Q">
       <action name="Close"/>
     </keybind>
 
-    <keybind key="Super-Return">
+    <keybind key="W-Return">
       <action name="Execute">
-        <command>alacritty</command>
+        <command>kitty</command>
       </action>
     </keybind>
 
-    <keybind key="Super-E">
+    <keybind key="W-E">
       <action name="Execute">
         <command>thunar</command>
       </action>
     </keybind>
 
-    <keybind key="Super-R">
+    <keybind key="W-R">
       <action name="Execute">
         <command>rofi -show drun</command>
       </action>
     </keybind>
 
-    <keybind key="Super-V">
+    <keybind key="W-V">
       <action name="ToggleDecorations"/>
     </keybind>
 
-    <keybind key="Super-F">
+    <keybind key="W-F">
       <action name="ToggleFullscreen"/>
     </keybind>
 
-    <keybind key="Super-L">
+    <keybind key="W-L">
       <action name="Execute">
         <command>gtklock</command>
       </action>
     </keybind>
 
-    <keybind key="Super-Shift-E">
-      <action name="Execute">
-        <command>labwc-logout</command>
-      </action>
+    <keybind key="W-S-E">
+      <action name="Exit" />
     </keybind>
 
     <!-- Desktop navigation (single desktop preserved for compatibility) -->
-    <keybind key="Super-1">
+    <keybind key="W-1">
       <action name="GoToDesktop">
         <to>1</to>
       </action>
@@ -83,16 +81,10 @@
 
     <!-- Classic task switching -->
     <keybind key="A-Tab">
-      <action name="SwitchWindow">
-        <forward>yes</forward>
-        <dialog>icons</dialog>
-      </action>
+      <action name="NextWindow" />
     </keybind>
     <keybind key="A-S-Tab">
-      <action name="SwitchWindow">
-        <forward>no</forward>
-        <dialog>icons</dialog>
-      </action>
+      <action name="PreviousWindow" />
     </keybind>
 
     <!-- Screen capture -->
