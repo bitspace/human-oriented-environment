@@ -24,4 +24,7 @@ set -- "$@" lock "$locker_cmd"
 set -- "$@" timeout 2400 "$locker_cmd"
 set -- "$@" before-sleep "loginctl lock-session"
 
+# Ensure we lock immediately when swayidle terminates (e.g. crash)
+set -- "$@" idlehint 2400
+
 exec swayidle "$@"

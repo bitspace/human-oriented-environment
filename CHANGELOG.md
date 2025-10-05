@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2025-10-05
+
+### Added
+- Window switcher fields in Labwc showing icon, desktop entry, and identifier to simplify run-or-raise bindings.
+- DPMS helper scripts and a gtklock wrapper so swayidle can safely manage power and screen locking.
+- systemd-logind drop-in to suspend and lock on lid close for Labwc sessions.
+- systemd --user unit (recommended) to keep the idle manager running across restarts.
+
+### Changed
+- Labwc idle manager mirrors Hypridle behavior, re-locks on resume, and restores displays after DPMS.
+- Wallpaper rotation script now logs the chosen image and supports multiple formats.
+
+### Fixed
+- Natural scrolling honored by using libinput categories in Labwc.
+- Lid-close now reliably suspends and shows gtklock on resume.
+
 ### Added
 - Snapshot of current Hyprland and supporting configs under `.config/` for reference during compositor migration.
 - `AGENTS.md` operational guide replacing the Claude-specific instructions.
