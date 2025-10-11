@@ -4,7 +4,11 @@
 
 The primary goal of this project is to gain exposure, experience, and maybe some muscle memory in the realm of large language models, especially with the CLI-based agentic model orchestrator tools: Claude Code, Gemini CLI, and OpenAI Codex. I may retroactively add GitHub Copilot into this, but that's something of a different beast, being a preschooler-targeted "click the pictures and make it go" type of product. (My disdain for the WIMP paradigm is legendary.)  
 
+*revised opinion* GitHub Copilot has matured quite a bit. Additionally, they have also introduced Copilot CLI. The VSCode elements of it are still VSCode and pretty heavily crayon-oriented, but they're better than they were.
+
 The overall goal is to end up with a laptop that suits some of my computing needs (gaming, coding, tinkering with technology, AI, and maybe some music production). I have a System76 Kudu laptop that I'm not really using; it was most recently running Windows 11 to facilitate gaming. However, I couldn't tolerate Wintendo for very long and rage-wiped the disk. Currently it has a barebones Gentoo Linux installation after some iterations on an earlier variant of this experiment to guide the installation. Gentoo turned out not to be a great choice because of the ridiculous source compile times of many core system packages (gcc, llvm, kernel, other suff). Claude Code could not get past the hour+ compile times without timing out and crashing. It turns out that the "build everything from source" is not compatible with "rapid iteration" style work, which is where the conversational nature of the LLM chatbots and agentic tools really shines.  
+
+*update* The System76 device has been put out of its misery. It is no longer a player.
 
 Back to the drawing board, I decided to use this LLM-consensus approach to help me decide on the "best" Linux distribution and the "best" window manager and environment to use, optimizing for how easily the system configuration and other data can be parsed by a LLM.  
 
@@ -19,6 +23,8 @@ The explosion of NLP and LLM's (as well as speech recognition technology such as
 ## The Goal
 
 Using LLM agent technology as much as possible (use plain English to issue commands), build a customized laptop that is optimized for automation/scriptability and LLM parsability. The system must be usable as a daily driver for software development, AI/ML/LLM/MLOps work, gaming (Steam/WINE/Proton), and possibly music production.  
+
+*another revision* the long-term goal is the same, and I think actually inevitable, but I am going to let it happen more organically, rather than try to build some big thing that does all this right up front.  
 
 Prompt several different LLM's with the same goal and guidelines, gather their output, and have my agent orchestrator synthesize a "most suitable" plan and configuration from a consensus of the other models, providing me the opportunity to override any decision.  
 
@@ -56,6 +62,12 @@ I started with Codex, but that shit the bed very quickly. The UX for that tool i
 
 I ditched that fairly quickly and moved on to Gemini CLI. The UX is much more approachable, very similar to Claude Code's UX (I would say "a direct rip-off" but a good idea is a good idea). While that was substantially better than Codex, it fumbled a _lot_. It devised a comprehensive plan, but once it started executing and iterating, it made lots of mistakes. Worse, it is extremely sycophantic. I am certain that I could provide some instructions to compel it to be less of an ass-kisser, but it was very off-putting. "Oh, my! You're absolutely _right_, I am so stupid! What a dumb mistake and you are next to God for having pointed it out to me. I bow to your greatness."  
 
-So, back to Claude Code. What an absolute banger. There were a couple of minor course corrections provided along the way, but once I got the base system installed and instrumented with Claude Code, it essntially ran with it and left me with a running and functional Wayland/Hyprland/Steam/AI/Coding laptop. Oddly enough, it didn't install a browser!  
+So, back to Claude Code. What an absolute banger. There were a couple of minor course corrections provided along the way, but once I got the base system installed and instrumented with Claude Code, it essentially ran with it and left me with a running and functional Steam/AI/Coding laptop. Oddly enough, it didn't install a browser!
+
+### The Evolution
+
+The initial build used Hyprland as the window manager, which provided tremendous flexibility and customization. However, the maintenance overhead and constant configuration tweaks ("yak shaving") became a distraction from actual work. After several iterations, the system was migrated to GNOME, which provides a comprehensive desktop environment with sensible defaults and less manual configuration.
+
+Key takeaway: Sometimes the "simplest" or most "automation-friendly" solution on paper (minimal window manager with text configs) can actually create more friction than a full-featured desktop environment with battle-tested defaults.
 
 I'm intrigued by NixOS, and will probably replace Arch on my other devices with that. Unfortunately it's not an option on my VPS. (Turns out, ssdnodes kinda sucks. You get what you pay for.)

@@ -7,4 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-Coming up: something of an overhaul. NixOS is a joke as a daily driver.
+### Changed
+- Migrated from Hyprland to GNOME desktop environment (2025-10-11)
+- Updated project scope: from "LLM-guided system build" to "system administration assistant"
+- Revised CLAUDE.md to reflect operational system focus rather than initial build orchestration
+- Updated README.md with desktop environment evolution narrative
+- Removed synthesis/orchestration instructions from CLAUDE.md (project phase complete)
+
+### Added
+- System Information Reference section in CLAUDE.md with current hardware/software configuration
+- Enhanced "Key Lessons Learned" documenting Hyprland → GNOME migration rationale
+- New "Operating Guidelines for Claude Code" section with practical assistance focus
+
+### Removed
+- Historical synthesis process instructions (Phase 1-4) from CLAUDE.md
+- Build validation checklists and deliverables sections (no longer applicable)
+- Kanshi and Hyprland-specific configuration references from documentation
